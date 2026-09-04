@@ -280,6 +280,8 @@
 - Normalized users now expose `isAnonymous`; anonymous labels (`匿名`, `匿名.`, `匿名用户`, `匿名观众`) map to `true`, while resolved names map to `false`. This is intended for a frontend badge such as `匿`.
 - Validation: `python -m unittest test_event_store.py test_room_status.py test_room_monitor.py test_anonymous_identity.py` passed 73 tests.
 - This work is in the separate `LiveMngSys-refactor-test` checkout; the original local workspace was not modified. The registry is not yet wired into the single-room HTTP configuration.
+- Scope decision: this refactor remains limited to live monitoring, barrage listening, identity normalization, and externally consumable state; unrelated UI, gift, caption, and MusicBot changes are deferred.
+- Mystery users follow the same identity resolution path as anonymous users. `isMystery` and `privacyLabel` are retained even when a known nickname/avatar is recovered from the message or session memory.
 ## 2026-09-05 GitHub 上传与模块化重构准备
 
 - 已确认 `D:\Proj\LiveMngSys` 原先不是 Git 仓库，也未配置 GitHub remote。

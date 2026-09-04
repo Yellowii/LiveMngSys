@@ -520,11 +520,18 @@ def normalize_user(user: Any) -> dict:
 
     membership_opened = any(badge.get("type") in {"member", "annual_member"} for badge in badges)
     nickname = str(user.get("nickname") or user.get("nickName") or "匿名观众")
-    is_anonymous = nickname.strip() in {"匿名", "匿名.", "匿名用户", "匿名观众"}
+    nickname_key = nickname.strip().lower()
+    is_anonymous = bool(user.get("isAnonymous") or user.get("is_anonym") or user.get("anonymous"))
+    is_anonymous = is_anonymous or nickname_key in {"匿名", "匿名.", "匿名用户", "匿名观众", "anonymous"}
+    is_mystery = bool(user.get("isMystery") or user.get("isMysteryUser") or user.get("is_mystery") or user.get("mysteryUser"))
+    is_mystery = is_mystery or "神秘人" in nickname or "mystery" in nickname_key
+    privacy_label = "匿名" if is_anonymous else "神秘人" if is_mystery else ""
     return {
         "id": str(uid),
         "nickname": nickname,
         "isAnonymous": is_anonymous,
+        "isMystery": is_mystery,
+        "privacyLabel": privacy_label,
         "avatar": avatar,
         "gender": gender,
         "signature": str(user.get("signature") or user.get("signatureText") or user.get("description") or ""),
@@ -1052,6 +1059,9 @@ class EventStore:
                 "displayId": "",
                 "nickname": "",
                 "avatar": "",
+                "isAnonymous": False,
+                "isMystery": False,
+                "privacyLabel": "",
                 "badges": [],
                 "firstSeenAt": _number(timestamp),
                 "lastSeenAt": _number(timestamp),
@@ -1072,6 +1082,9 @@ class EventStore:
         for key in ("id", "secUid", "displayId", "nickname", "avatar"):
             if user.get(key) not in (None, ""):
                 existing[key] = str(user[key]) if key != "avatar" else user[key]
+        for key in ("isAnonymous", "isMystery", "privacyLabel"):
+            if user.get(key):
+                existing[key] = user[key]
         existing["badges"] = _merge_session_badges(existing.get("badges"), user.get("badges"))
         existing["likes"] += max(0, _number(likes))
         existing["giftCount"] += max(0, _number(gift_count))
