@@ -13,6 +13,12 @@ $musicBotBindHost = [string]$serviceConfig.musicBot.host
 $musicBotPort = [int]$serviceConfig.musicBot.port
 $listenerBindHost = [string]$serviceConfig.douyinListener.host
 $listenerPort = [int]$serviceConfig.douyinListener.port
+$speechAsrEnabled = [bool]$serviceConfig.speechAsr.enabled
+$speechAsrBindHost = [string]$serviceConfig.speechAsr.host
+$speechAsrPort = [int]$serviceConfig.speechAsr.port
+$translationEnabled = [bool]$serviceConfig.translation.enabled
+$translationBindHost = [string]$serviceConfig.translation.host
+$translationPort = [int]$serviceConfig.translation.port
 
 function Get-HealthHost([string]$BindHost) {
     if ($BindHost -in @('0.0.0.0', '::', '[::]')) { return '127.0.0.1' }
@@ -21,6 +27,8 @@ function Get-HealthHost([string]$BindHost) {
 
 $musicBotHealthHost = Get-HealthHost $musicBotBindHost
 $listenerHealthHost = Get-HealthHost $listenerBindHost
+$speechAsrHealthHost = Get-HealthHost $speechAsrBindHost
+$translationHealthHost = Get-HealthHost $translationBindHost
 
 function Test-MusicBot([string]$Url) {
     try {
@@ -46,6 +54,24 @@ function Test-DouyinListener([string]$Url) {
     try {
         $health = Invoke-RestMethod -Uri "$Url/health" -TimeoutSec 1
         return $health.service -eq 'douyin-listener' -and $health.status -eq 'ok'
+    } catch {
+        return $false
+    }
+}
+
+function Test-SpeechAsr([string]$Url) {
+    try {
+        $health = Invoke-RestMethod -Uri "$Url/health" -TimeoutSec 1
+        return $health.service -eq 'sherpa-asr' -and $health.status -eq 'ok'
+    } catch {
+        return $false
+    }
+}
+
+function Test-TranslationServer([string]$Url) {
+    try {
+        $health = Invoke-RestMethod -Uri "$Url/health" -TimeoutSec 1
+        return $health.status -eq 'ok'
     } catch {
         return $false
     }
@@ -127,6 +153,63 @@ if (-not $python) { $python = Get-Command py.exe -ErrorAction SilentlyContinue }
 if (-not $python) { $python = Get-Command py -ErrorAction SilentlyContinue }
 if (-not $python) {
     throw 'Python 3 was not found. Install Python 3.10 or newer and try again.'
+}
+
+if ($speechAsrEnabled) {
+    $speechAsrScript = Join-Path $root 'DouyinListener\speech_asr_service.py'
+    $speechAsrUrl = "http://${speechAsrHealthHost}:$speechAsrPort"
+    if (-not (Test-Path -LiteralPath $speechAsrScript)) {
+        Write-Warning "Speech ASR service is enabled but missing: $speechAsrScript"
+    } elseif (-not (Test-SpeechAsr $speechAsrUrl)) {
+        $speechAsrRunner = Start-Process `
+            -FilePath $python.Source `
+            -ArgumentList @($speechAsrScript, '--host', $speechAsrBindHost, '--port', [string]$speechAsrPort) `
+            -WorkingDirectory (Join-Path $root 'DouyinListener') `
+            -WindowStyle $windowStyle `
+            -PassThru
+        $speechAsrReady = $false
+        for ($attempt = 0; $attempt -lt 120; $attempt += 1) {
+            if ($speechAsrRunner.HasExited) { break }
+            if (Test-SpeechAsr $speechAsrUrl) {
+                $speechAsrReady = $true
+                break
+            }
+            Start-Sleep -Milliseconds 500
+        }
+        if (-not $speechAsrReady) {
+            Write-Warning "Speech ASR did not become ready at $speechAsrUrl. Other LiveMngSys services will continue."
+        }
+    }
+}
+
+if ($translationEnabled) {
+    $translationExe = Join-Path $root ([string]$serviceConfig.translation.executable)
+    $translationModel = Join-Path $root ([string]$serviceConfig.translation.model)
+    $translationUrl = "http://${translationHealthHost}:$translationPort"
+    if (-not (Test-Path -LiteralPath $translationExe)) {
+        Write-Warning "Translation server is enabled but llama-server is missing: $translationExe"
+    } elseif (-not (Test-Path -LiteralPath $translationModel)) {
+        Write-Warning "Translation server is enabled but the GGUF model is missing: $translationModel"
+    } elseif (-not (Test-TranslationServer $translationUrl)) {
+        $translationRunner = Start-Process `
+            -FilePath $translationExe `
+            -ArgumentList @('-m', $translationModel, '--host', $translationBindHost, '--port', [string]$translationPort, '-c', [string]$serviceConfig.translation.contextSize, '-np', [string]$serviceConfig.translation.parallel) `
+            -WorkingDirectory (Split-Path -Parent $translationExe) `
+            -WindowStyle $windowStyle `
+            -PassThru
+        $translationReady = $false
+        for ($attempt = 0; $attempt -lt 180; $attempt += 1) {
+            if ($translationRunner.HasExited) { break }
+            if (Test-TranslationServer $translationUrl) {
+                $translationReady = $true
+                break
+            }
+            Start-Sleep -Milliseconds 500
+        }
+        if (-not $translationReady) {
+            Write-Warning "Translation server did not become ready at $translationUrl. ASR captions remain available."
+        }
+    }
 }
 
 $listenerScript = Join-Path $root 'DouyinListener\service.py'
@@ -225,3 +308,5 @@ Write-Host "LiveMngSys is ready at $lanGuiUrl/GUIDemo/"
 Write-Host "LAN GUI: $lanGuiUrl/GUIDemo/"
 Write-Host "MusicBot gateway: $lanGuiUrl/musicbot/"
 Write-Host "Douyin listener API: $lanGuiUrl/api/livemngsys/live/state"
+if ($speechAsrEnabled) { Write-Host "Streaming ASR: http://${speechAsrHealthHost}:$speechAsrPort" }
+if ($translationEnabled) { Write-Host "Translation server: http://${translationHealthHost}:$translationPort" }

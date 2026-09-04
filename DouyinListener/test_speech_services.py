@@ -107,6 +107,7 @@ class SpeechServicesTests(unittest.TestCase):
 
     def test_disabled_feature_does_not_load_optional_dependency(self):
         services = SpeechServices(self.root)
+        self.assertIn("dependencyAvailable", services.status())
         with self.assertRaisesRegex(SpeechServiceError, "disabled"):
             services.recognize_wav(_wav_bytes())
 
@@ -151,6 +152,29 @@ class SpeechServicesTests(unittest.TestCase):
         self.assertEqual(result["text"], "hello")
         request = urlopen.call_args.args[0]
         self.assertEqual(json.loads(request.data)["target"], "en")
+
+    def test_llama_cpp_uses_chat_template_endpoint(self):
+        config = self.config()
+        config["translation"] = {
+            "enabled": True,
+            "provider": "llama_cpp",
+            "endpoint": "http://127.0.0.1:7004/v1/chat/completions",
+            "sourceLanguage": "zh",
+            "targetLanguage": "English",
+            "model": "hy-mt",
+        }
+        services = SpeechServices(self.root, config, _Sherpa())
+        response = unittest.mock.MagicMock()
+        response.__enter__.return_value.read.return_value = json.dumps({
+            "choices": [{"message": {"content": "Hello"}}]
+        }).encode()
+        with patch("urllib.request.urlopen", return_value=response) as urlopen:
+            result = services.translate("你好")
+        payload = json.loads(urlopen.call_args.args[0].data)
+        self.assertEqual(result["text"], "Hello")
+        self.assertEqual(payload["messages"][0]["role"], "user")
+        self.assertEqual(payload["temperature"], 0.7)
+
 
 
 if __name__ == "__main__":

@@ -55,6 +55,7 @@ DouyinListener/data/
 DouyinListener/models/
 DouyinListener/speech_models/
 **/speech_models/
+tools/llama.cpp/
 DouyinListener/Doubao/browser_profile/
 DouyinListener/Doubao/chat_profile/
 DouyinListener/DouyinListener/Doubao/browser_profile/
@@ -69,6 +70,7 @@ Archive/
 tmp/
 **/tmp/
 **/temp/
+test-results/
 Docs/DouyinWebSourceCode/
 
 # Large generated/downloaded media and archives

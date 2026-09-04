@@ -305,3 +305,12 @@
 - 已确认 GitHub 公开仓库 Yellowii/LiveMngSys 的 main 已接收提交 513c988；上传阶段完成，下一步进入模块化重构。
 
 - 已重写根目录需求.txt：完成模块重分类、优先级/验收标准、当前实现映射和重构约束。
+## 2026-09-05 Realtime speech caption pipeline
+
+- Added independent sherpa-onnx streaming ASR on port 7003 with input-device enumeration, small audio chunks, endpoint detection, partial revisions, and final utterances.
+- Added a Python subtitle pipeline in Listener that publishes partial previews, applies rule-only cleaning to final text, and sends only clean final utterances to the independent llama.cpp/HY-MT service on port 7004.
+- Translation runs asynchronously and degrades without losing the source ASR caption. The launcher keeps ASR and translation process failures isolated and starts llama.cpp with one parallel slot.
+- Reworked the GUIDemo speech lab for device selection, start/stop controls, live partial correction, final/clean/translated output, history, and retained TTS configuration.
+- Added installers, local model/binary ignore rules, API and deployment documentation, tests for final-only translation and ASR state revisions, and detailed acceptance constraints in `需求.txt`.
+- Runtime validation: 30 input devices discovered; the default ROUTIST R4 input transitioned `starting -> running -> idle`; an actual WAV completed ASR, cleaning, HY-MT translation, and history publication; desktop and 390px Edge checks had no console errors or horizontal overflow.
+- Failure isolation validation: stopping port 7004 produced a translation-only error while preserving the ASR final and cleaned Chinese text; the launcher restored the translation service successfully. The complete Listener suite passed 147 tests.

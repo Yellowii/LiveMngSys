@@ -4,9 +4,11 @@ from __future__ import annotations
 
 import array
 import importlib
+import importlib.util
 import io
 import json
 import os
+import re
 import threading
 import urllib.error
 import urllib.request
@@ -19,6 +21,8 @@ from typing import Any
 DEFAULT_SPEECH_CONFIG = {
     "enabled": False,
     "modelRoot": "data/speech_models",
+    "asrServiceUrl": "http://127.0.0.1:7003",
+    "cleaning": {"enabled": True, "minCharacters": 3, "fillerWords": ["嗯", "啊", "呃", "额", "唔"]},
     "asr": {
         "enabled": False,
         "modelType": "sense_voice",
@@ -86,6 +90,14 @@ def normalize_speech_config(value: Any) -> dict:
     result = deepcopy(DEFAULT_SPEECH_CONFIG)
     result["enabled"] = bool(source.get("enabled", False))
     result["modelRoot"] = str(source.get("modelRoot") or result["modelRoot"]).strip()
+    result["asrServiceUrl"] = str(source.get("asrServiceUrl") or result["asrServiceUrl"]).strip()[:2048]
+    cleaning = source.get("cleaning") if isinstance(source.get("cleaning"), dict) else {}
+    filler_words = cleaning.get("fillerWords") if isinstance(cleaning.get("fillerWords"), list) else result["cleaning"]["fillerWords"]
+    result["cleaning"] = {
+        "enabled": bool(cleaning.get("enabled", True)),
+        "minCharacters": _bounded_int(cleaning.get("minCharacters"), 3, 1, 20),
+        "fillerWords": [str(item).strip()[:16] for item in filler_words if str(item).strip()][:50],
+    }
 
     asr = source.get("asr") if isinstance(source.get("asr"), dict) else {}
     result["asr"].update({key: str(asr.get(key) or "").strip() for key in ("model", "tokens", "encoder", "decoder")})
@@ -352,8 +364,8 @@ class SpeechServices:
         if len(clean_text) > 10000:
             raise SpeechServiceError("text_too_long", "Translation text cannot exceed 10000 characters", 413)
         provider = config["provider"]
-        if provider not in {"libretranslate", "openai_compatible"}:
-            raise SpeechServiceError("translation_not_configured", "Configure libretranslate or openai_compatible", 503)
+        if provider not in {"libretranslate", "openai_compatible", "llama_cpp"}:
+            raise SpeechServiceError("translation_not_configured", "Configure llama_cpp, libretranslate, or openai_compatible", 503)
         endpoint = config["endpoint"]
         if not endpoint.startswith(("http://", "https://")):
             raise SpeechServiceError("translation_not_configured", "Translation endpoint must be an HTTP(S) URL", 503)
@@ -363,7 +375,21 @@ class SpeechServices:
         headers = {"Content-Type": "application/json", "Accept": "application/json"}
         if api_key:
             headers["Authorization"] = f"Bearer {api_key}"
-        if provider == "libretranslate":
+        if provider == "llama_cpp":
+            payload = {
+                "model": config["model"] or "hy-mt",
+                "messages": [{
+                    "role": "user",
+                    "content": f"Translate the following segment into {target_language}, without additional explanation.\n\n{clean_text}",
+                }],
+                "max_tokens": 256,
+                "temperature": 0.7,
+                "top_k": 20,
+                "top_p": 0.6,
+                "repeat_penalty": 1.05,
+                "stream": False,
+            }
+        elif provider == "libretranslate":
             payload = {"q": clean_text, "source": source_language, "target": target_language, "format": "text"}
             if api_key:
                 payload["api_key"] = api_key
@@ -382,7 +408,12 @@ class SpeechServices:
                 result = json.loads(response.read().decode("utf-8"))
         except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as error:
             raise SpeechServiceError("translation_failed", f"Translation provider failed: {error}", 502) from error
-        if provider == "libretranslate":
+        if provider == "llama_cpp":
+            try:
+                translated = result["choices"][0]["message"]["content"]
+            except (KeyError, IndexError, TypeError):
+                translated = None
+        elif provider == "libretranslate":
             translated = result.get("translatedText") if isinstance(result, dict) else None
         else:
             try:
@@ -391,4 +422,9 @@ class SpeechServices:
                 translated = None
         if not isinstance(translated, str) or not translated.strip():
             raise SpeechServiceError("translation_failed", "Translation provider returned no text", 502)
-        return {"text": translated.strip(), "sourceLanguage": source_language, "targetLanguage": target_language, "provider": provider}
+        translated = translated.strip()
+        if provider == "llama_cpp":
+            tagged = re.search(r"<target>\s*(.*?)\s*</target>", translated, flags=re.DOTALL | re.IGNORECASE)
+            if tagged:
+                translated = tagged.group(1).strip()
+        return {"text": translated, "sourceLanguage": source_language, "targetLanguage": target_language, "provider": provider}

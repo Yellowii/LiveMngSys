@@ -33,6 +33,7 @@ from protocol_audit import build_protocol_audit
 from room_status import RoomStatusProbe
 from spark_service import SparkManager
 from speech_services import DEFAULT_SPEECH_CONFIG, SpeechServiceError, SpeechServices, normalize_speech_config
+from subtitle_pipeline import SubtitlePipeline
 
 
 ROOT = Path(__file__).resolve().parent
@@ -338,6 +339,7 @@ class ListenerManager:
         self.spark = SparkManager()
         self.captions = LiveCaptionCapture(ROOT / "data" / "live_captions", self._schedule_caption_broadcast)
         self.speech = SpeechServices(ROOT, self.config.get("speech"))
+        self.subtitle_pipeline = SubtitlePipeline(lambda: self.config, self.speech, self._schedule_caption_broadcast)
         self.store.configure_room(self.config)
         self.client: DouyinWssClient | DouyinBrowserClient | None = None
         self.task: asyncio.Task | None = None
@@ -366,6 +368,7 @@ class ListenerManager:
         state["login"] = self.login_state
         state["captions"] = self.captions.snapshot()
         state["speech"] = self.speech.status()
+        state["speechCaptions"] = self.subtitle_pipeline.snapshot()
         state["giftAssets"] = {**self.gift_assets.public_state(), "storagePath": self.config["giftAssets"].get("storagePath", "data/gift_assets")}
         return state
 
@@ -853,7 +856,26 @@ async def create_app() -> web.Application:
         return json_response(manager.captions.snapshot())
 
     async def speech_status(_: web.Request) -> web.Response:
-        return json_response({"ok": True, "state": manager.speech.status()})
+        return json_response({"ok": True, "state": manager.speech.status(), "captions": manager.subtitle_pipeline.snapshot()})
+
+    async def speech_devices(_: web.Request) -> web.Response:
+        try:
+            return json_response({"ok": True, "devices": await manager.subtitle_pipeline.devices()})
+        except Exception as error:
+            return json_response({"ok": False, "message": str(error)}, 503)
+
+    async def speech_capture_start(request: web.Request) -> web.Response:
+        try:
+            body = await request.json() if request.can_read_body else {}
+            return json_response({"ok": True, "captions": await manager.subtitle_pipeline.start_capture(body.get("deviceId"))})
+        except Exception as error:
+            return json_response({"ok": False, "message": str(error)}, 503)
+
+    async def speech_capture_stop(_: web.Request) -> web.Response:
+        try:
+            return json_response({"ok": True, "captions": await manager.subtitle_pipeline.stop_capture()})
+        except Exception as error:
+            return json_response({"ok": False, "message": str(error)}, 503)
 
     async def speech_asr(request: web.Request) -> web.Response:
         try:
@@ -1150,6 +1172,9 @@ async def create_app() -> web.Application:
     app.router.add_get("/api/livemngsys/live/state", state)
     app.router.add_get("/api/livemngsys/live/captions", captions_state)
     app.router.add_get("/api/livemngsys/live/speech/status", speech_status)
+    app.router.add_get("/api/livemngsys/live/speech/devices", speech_devices)
+    app.router.add_post("/api/livemngsys/live/speech/capture/start", speech_capture_start)
+    app.router.add_post("/api/livemngsys/live/speech/capture/stop", speech_capture_stop)
     app.router.add_post("/api/livemngsys/live/speech/asr", speech_asr)
     app.router.add_post("/api/livemngsys/live/speech/tts", speech_tts)
     app.router.add_post("/api/livemngsys/live/speech/translate", speech_translate)
@@ -1190,6 +1215,7 @@ async def create_app() -> web.Application:
         manager.schedule_login_account_refresh()
         asyncio.create_task(manager.spark.check_login(), name="douyin-spark-login-check")
         await manager.captions.configure(manager.config.get("liveCaptions") or {})
+        await manager.subtitle_pipeline.start()
         await manager.gift_assets.start()
         await manager.ensure_room_monitor()
 
@@ -1204,6 +1230,7 @@ async def create_app() -> web.Application:
             manager.gift_asset_sync_task.cancel()
             await asyncio.gather(manager.gift_asset_sync_task, return_exceptions=True)
         await manager.captions.stop()
+        await manager.subtitle_pipeline.stop()
         await manager.cancel_login()
         if manager.login_account_task and not manager.login_account_task.done():
             manager.login_account_task.cancel()

@@ -350,6 +350,62 @@
                 </div>
               </section>
 
+              <section class="listener-settings-card speech-lab-card">
+                <div class="listener-card-heading">
+                  <div><span class="listener-state-dot" :class="speechStatusDotClass"></span><strong>语音实验室</strong></div>
+                  <span>{{ speechStatusLabel }}</span>
+                </div>
+                <div class="speech-status-strip">
+                  <span>sherpa-onnx <b :class="speechState.dependencyAvailable ? 'ready' : 'error'">{{ speechState.dependencyAvailable ? '已安装' : '未安装' }}</b></span>
+                  <span>ASR 进程 <b :class="speechCaptionState.state !== 'unavailable' ? 'ready' : 'error'">{{ speechCaptionState.state === 'unavailable' ? '不可用' : '已连接' }}</b></span>
+                  <span>TTS <b>{{ speechState.tts && speechState.tts.loaded ? '已加载' : '待加载' }}</b></span>
+                </div>
+                <label class="listener-switch-row"><span>启用语音服务</span><input v-model="listenerConfig.speech.enabled" :disabled="listenerBusy" type="checkbox"><i></i></label>
+                <div class="speech-model-root"><label>模型目录</label><input v-model.trim="listenerConfig.speech.modelRoot" class="theme-input" placeholder="data/speech_models"></div>
+                <div class="speech-feature-grid">
+                  <section>
+                    <header><strong>TTS</strong><label class="speech-mini-switch"><input v-model="listenerConfig.speech.tts.enabled" type="checkbox"><span>{{ listenerConfig.speech.tts.enabled ? '启用' : '关闭' }}</span></label></header>
+                    <input v-model.trim="listenerConfig.speech.tts.model" class="theme-input" placeholder="TTS model.onnx">
+                    <input v-model.trim="listenerConfig.speech.tts.tokens" class="theme-input" placeholder="TTS tokens.txt">
+                    <input v-model.trim="listenerConfig.speech.tts.lexicon" class="theme-input" placeholder="TTS lexicon.txt">
+                    <div class="speech-inline-fields"><input v-model.number="listenerConfig.speech.tts.speakerId" type="number" min="0" class="theme-input" title="音色 ID" placeholder="音色"><input v-model.number="listenerConfig.speech.tts.speed" type="number" min="0.25" max="4" step="0.05" class="theme-input" title="语速" placeholder="语速"></div>
+                  </section>
+                </div>
+                <details class="speech-translation-config">
+                  <summary>清洗与翻译配置</summary>
+                  <div class="speech-inline-fields"><input v-model.number="listenerConfig.speech.cleaning.minCharacters" type="number" min="1" max="20" class="theme-input" title="最少有效字符" placeholder="最少字符"><input v-model.trim="listenerConfig.speech.cleaning.fillerWordsText" class="theme-input" title="用顿号分隔" placeholder="语气词：嗯、啊、呃"></div>
+                  <label class="listener-switch-row"><span>仅翻译 final 句子</span><input v-model="listenerConfig.speech.translation.enabled" type="checkbox"><i></i></label>
+                  <select v-model="listenerConfig.speech.translation.provider" class="theme-input"><option value="none">未配置</option><option value="llama_cpp">llama.cpp server</option><option value="libretranslate">LibreTranslate</option><option value="openai_compatible">OpenAI-compatible</option></select>
+                  <div class="speech-inline-fields"><input v-model.trim="listenerConfig.speech.translation.sourceLanguage" class="theme-input" placeholder="源语言，如 zh"><input v-model.trim="listenerConfig.speech.translation.targetLanguage" class="theme-input" placeholder="目标语言，如 en"></div>
+                  <input v-model.trim="listenerConfig.speech.translation.endpoint" class="theme-input" placeholder="翻译 API 地址">
+                  <input v-if="listenerConfig.speech.translation.provider === 'openai_compatible'" v-model.trim="listenerConfig.speech.translation.model" class="theme-input" placeholder="模型名称">
+                </details>
+                <button class="btn-primary speech-save" :disabled="listenerBusy" @click="saveSpeechConfig">保存语音配置</button>
+
+                <div class="speech-test-panel">
+                  <div class="listener-transport-segmented speech-test-tabs">
+                    <button type="button" :class="{ active: speechLab.mode === 'live' }" @click="speechLab.mode = 'live'">实时字幕</button>
+                    <button type="button" :class="{ active: speechLab.mode === 'tts' }" @click="speechLab.mode = 'tts'">TTS</button>
+                  </div>
+                  <div v-if="speechLab.mode === 'live'" class="speech-test-body">
+                    <div class="speech-device-row"><select v-model="speechLab.deviceId" class="theme-input" :disabled="speechCaptureActive || speechLab.busy"><option value="">系统默认输入设备</option><option v-for="device in speechLab.devices" :key="device.id" :value="String(device.id)">{{ device.name }}{{ device.default ? '（默认）' : '' }}</option></select><button class="btn-secondary" :disabled="speechLab.busy || speechCaptureActive" @click="loadSpeechDevices">刷新设备</button><button class="btn-primary" :class="{ danger: speechCaptureActive }" :disabled="speechLab.busy" @click="toggleSpeechCapture">{{ speechCaptureActive ? '停止采集' : '开始采集' }}</button></div>
+                    <div class="speech-live-stage">
+                      <div class="speech-result-box partial"><span>实时预览 · partial 不翻译</span><strong>{{ speechCaptionState.partial || (speechCaptureActive ? '正在聆听' : '等待开始') }}</strong></div>
+                      <div class="speech-result-box"><span>完整句子 · final</span><strong>{{ speechCaptionState.final || '等待静音断句' }}</strong></div>
+                      <div class="speech-result-box cleaned"><span>规则清洗</span><strong>{{ speechCaptionState.cleaned || '等待有效句子' }}</strong></div>
+                      <div class="speech-result-box translated"><span>{{ listenerConfig.speech.translation.targetLanguage || 'en' }} 翻译</span><strong>{{ speechCaptionState.translation || (speechCaptionState.translationError ? '翻译不可用，已保留原文' : '等待 final') }}</strong></div>
+                    </div>
+                    <div v-if="speechCaptionState.history && speechCaptionState.history.length" class="speech-history"><article v-for="item in speechCaptionState.history.slice(0, 8)" :key="item.revision"><span>{{ formatTime(item.at) }}</span><strong>{{ item.cleaned || item.raw }}</strong><p v-if="item.translation">{{ item.translation }}</p><p v-else-if="item.translationError" class="error">翻译失败，原文已保留</p></article></div>
+                  </div>
+                  <div v-else class="speech-test-body">
+                    <textarea v-model="speechLab.ttsText" class="theme-input speech-textarea" maxlength="2000" placeholder="输入播报文本"></textarea>
+                    <button class="btn-secondary" :disabled="speechLab.busy || !speechLab.ttsText.trim()" @click="runSpeechTts">生成并播放</button>
+                    <audio v-if="speechLab.audioUrl" :src="speechLab.audioUrl" controls autoplay></audio>
+                  </div>
+                  <p v-if="speechLab.message" class="speech-lab-message" :class="speechLab.messageType">{{ speechLab.message }}</p>
+                </div>
+              </section>
+
               <section class="listener-settings-card listener-effect-card">
                 <div class="listener-card-heading"><div><span class="listener-state-dot" :class="giftAssetState.state || 'idle'"></span><strong>特效更新配置</strong></div><span>{{ giftAssetStatusLabel }}</span></div>
                 <div class="gift-assets-panel">
@@ -1264,6 +1320,10 @@
       giftAssetSyncBusy: false,
       giftAssetLogsLoading: false,
       giftAssetLogs: [],
+      speechLab: {
+        mode: 'live', busy: false, message: '', messageType: '', devices: [], deviceId: '',
+        ttsText: '欢迎来到直播间', audioUrl: ''
+      },
       portsBusy: false,
       systemControlBusy: false,
       terminalVisible: false,
@@ -1368,7 +1428,9 @@
         audience: [],
         audienceStatus: { lastRankRefreshAt: 0, lastPushAt: 0, lastUpdatedAt: 0, rankCount: 0, source: '', revision: 0 },
         records: { redPackets: [], luckyBags: [] },
-        giftAssets: { state: 'idle', message: '', lastAttemptAt: 0, lastSuccessAt: 0, lastError: '', giftCount: 0, effectCount: 0, cachedIcons: 0, cachedEffects: 0, storagePath: 'data/gift_assets' }
+        giftAssets: { state: 'idle', message: '', lastAttemptAt: 0, lastSuccessAt: 0, lastError: '', giftCount: 0, effectCount: 0, cachedIcons: 0, cachedEffects: 0, storagePath: 'data/gift_assets' },
+        speech: { enabled: false, dependencyAvailable: false, modelRoot: '', asr: { enabled: false, modelType: 'sense_voice', loaded: false }, tts: { enabled: false, modelType: 'vits', loaded: false }, translation: { enabled: false, provider: 'none', targetLanguage: 'en' } },
+        speechCaptions: { state: 'idle', message: '等待启动实时识别', partial: '', final: '', cleaned: '', translation: '', history: [] }
       },
       listenerRoomInputMode: 'id',
       listenerRoomDraft: false,
@@ -1377,6 +1439,13 @@
           browserBlockMedia: true, browserVisibleFallback: false, reconnect: true,
           reconnectMax: 10, reconnectDelay: 3, audiencePollInterval: 15, roomStatusPollInterval: 30, saveRaw: false, saveParsed: true,
           liveCaptions: { enabled: false, outputToLiveUi: true, persist: false, fallbackEnabled: false, fallbackTimeoutSeconds: 300, showIdleOnTimeout: false },
+          speech: {
+            enabled: false, modelRoot: 'data/speech_models',
+            asrServiceUrl: 'http://127.0.0.1:7003', cleaning: { enabled: true, minCharacters: 3, fillerWords: ['嗯', '啊', '呃', '额', '唔'], fillerWordsText: '嗯、啊、呃、额、唔' },
+            asr: { enabled: false, modelType: 'sense_voice', model: 'sherpa-onnx-sense-voice-zh-en-ja-ko-yue-int8-2024-07-17/model.int8.onnx', tokens: 'sherpa-onnx-sense-voice-zh-en-ja-ko-yue-int8-2024-07-17/tokens.txt', encoder: '', decoder: '', language: 'auto', task: 'transcribe', useItn: true, numThreads: 2, provider: 'cpu' },
+            tts: { enabled: false, modelType: 'vits', model: 'vits-melo-tts-zh_en/model.onnx', tokens: 'vits-melo-tts-zh_en/tokens.txt', lexicon: 'vits-melo-tts-zh_en/lexicon.txt', dataDir: '', dictDir: 'vits-melo-tts-zh_en/dict', ruleFsts: 'vits-melo-tts-zh_en/phone.fst,vits-melo-tts-zh_en/date.fst,vits-melo-tts-zh_en/number.fst', ruleFars: '', speakerId: 0, speed: 1, numThreads: 2, provider: 'cpu' },
+            translation: { enabled: false, provider: 'none', endpoint: '', sourceLanguage: 'auto', targetLanguage: 'en', model: '', apiKeyEnv: 'LIVEMNGSYS_TRANSLATION_API_KEY', timeoutSeconds: 15 }
+          },
           giftAssets: { enabled: true, refreshHours: 24, storagePath: 'data/gift_assets', cacheGiftIcons: true, cacheEffects: true },
           display: {
           entryFilters: { consumer: 0, followers: true, fansClub: true, member: true, guard: true },
@@ -1421,6 +1490,23 @@
       }
     },
     computed: {
+      speechState() {
+        return this.listenerState.speech || { asr: {}, tts: {}, translation: {} };
+      },
+      speechCaptionState() {
+        return this.listenerState.speechCaptions || { state: 'idle', history: [] };
+      },
+      speechCaptureActive() {
+        return ['starting', 'running'].includes(this.speechCaptionState.state);
+      },
+      speechStatusDotClass() {
+        if (!this.speechState.dependencyAvailable) return 'error';
+        return this.speechState.enabled ? 'connected' : 'idle';
+      },
+      speechStatusLabel() {
+        if (!this.speechState.dependencyAvailable) return '依赖缺失';
+        return this.speechState.enabled ? '已启用' : '未启用';
+      },
       replayWindowEvents() {
         const end = Math.min(this.replay.cursor, this.replay.events.length);
         return this.replay.events.slice(Math.max(0, end - 10000), end);
@@ -2379,7 +2465,14 @@
         display.entryFilters = Object.assign({}, this.listenerConfig.display.entryFilters, display.entryFilters || {});
         const liveCaptions = Object.assign({}, this.listenerConfig.liveCaptions, incoming.liveCaptions || {});
         const giftAssets = Object.assign({}, this.listenerConfig.giftAssets, incoming.giftAssets || {});
-        this.listenerConfig = Object.assign({}, this.listenerConfig, incoming, { display, liveCaptions, giftAssets });
+        const incomingSpeech = incoming.speech || {};
+        const speech = Object.assign({}, this.listenerConfig.speech, incomingSpeech);
+        speech.asr = Object.assign({}, this.listenerConfig.speech.asr, incomingSpeech.asr || {});
+        speech.tts = Object.assign({}, this.listenerConfig.speech.tts, incomingSpeech.tts || {});
+        speech.translation = Object.assign({}, this.listenerConfig.speech.translation, incomingSpeech.translation || {});
+        speech.cleaning = Object.assign({}, this.listenerConfig.speech.cleaning, incomingSpeech.cleaning || {});
+        speech.cleaning.fillerWordsText = (speech.cleaning.fillerWords || []).join('、');
+        this.listenerConfig = Object.assign({}, this.listenerConfig, incoming, { display, liveCaptions, giftAssets, speech });
         const nextInterval = Number(this.listenerConfig.audiencePollInterval || 15);
         if (this.listenerPollTimer && previousInterval !== nextInterval) {
           this.setListenerPolling(true);
@@ -2467,6 +2560,8 @@
           status: Object.assign({}, this.listenerState.status, state.status || {}),
           login: Object.assign({}, this.listenerState.login, state.login || {}),
           giftAssets: Object.assign({}, this.listenerState.giftAssets, state.giftAssets || {}),
+          speech: Object.assign({}, this.listenerState.speech, state.speech || {}),
+          speechCaptions: Object.assign({}, this.listenerState.speechCaptions, state.speechCaptions || {}),
           memberships: this.filterClearedLiveItems(state.memberships),
           gifts: this.filterClearedLiveItems(state.gifts),
           interactions: this.filterClearedLiveItems(state.interactions),
@@ -2530,6 +2625,80 @@
       async saveDisplayConfig() {
         const saved = await this.saveListenerConfig(false, { resetLiveData: false });
         if (saved) this.setListenerPolling(this.activeTab === 'live' && (this.activeSubTab === 'danmaku' || this.activeSubTab === 'car'));
+      },
+      async saveSpeechConfig() {
+        this.listenerConfig.speech.cleaning.fillerWords = String(this.listenerConfig.speech.cleaning.fillerWordsText || '')
+          .split(/[、,，\s]+/).map(item => item.trim()).filter(Boolean);
+        const saved = await this.saveListenerConfig(true, { resetLiveData: false });
+        if (saved) {
+          this.speechLab.message = '语音配置已保存';
+          this.speechLab.messageType = 'success';
+          await this.loadListenerState();
+        }
+      },
+      setSpeechMessage(message, type) {
+        this.speechLab.message = message || '';
+        this.speechLab.messageType = type || '';
+      },
+      async speechResponseError(response) {
+        let result = {};
+        try { result = await response.json(); } catch (_) {}
+        throw new Error(result.message || result.code || `HTTP ${response.status}`);
+      },
+      async loadSpeechDevices() {
+        this.speechLab.busy = true;
+        try {
+          const response = await fetch('/api/livemngsys/live/speech/devices');
+          if (!response.ok) return await this.speechResponseError(response);
+          const result = await response.json();
+          this.speechLab.devices = result.devices || [];
+          if (!this.speechLab.deviceId) {
+            const preferred = this.speechLab.devices.find(device => device.default);
+            if (preferred) this.speechLab.deviceId = String(preferred.id);
+          }
+          this.setSpeechMessage(`发现 ${this.speechLab.devices.length} 个输入设备`, 'success');
+        } catch (error) {
+          this.setSpeechMessage(error.message || '读取输入设备失败', 'error');
+        } finally {
+          this.speechLab.busy = false;
+        }
+      },
+      async toggleSpeechCapture() {
+        this.speechLab.busy = true;
+        try {
+          const stopping = this.speechCaptureActive;
+          const response = await fetch(`/api/livemngsys/live/speech/capture/${stopping ? 'stop' : 'start'}`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: stopping ? '{}' : JSON.stringify({ deviceId: this.speechLab.deviceId === '' ? null : Number(this.speechLab.deviceId) })
+          });
+          if (!response.ok) return await this.speechResponseError(response);
+          const result = await response.json();
+          if (result.captions) this.listenerState.speechCaptions = result.captions;
+          this.setSpeechMessage(stopping ? '音频采集已停止' : '音频采集正在启动', 'success');
+        } catch (error) {
+          this.setSpeechMessage(error.message || '音频采集控制失败', 'error');
+        } finally {
+          this.speechLab.busy = false;
+        }
+      },
+      async runSpeechTts() {
+        this.speechLab.busy = true;
+        this.setSpeechMessage('正在生成语音', 'working');
+        try {
+          const response = await fetch('/api/livemngsys/live/speech/tts', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: this.speechLab.ttsText, speakerId: this.listenerConfig.speech.tts.speakerId, speed: this.listenerConfig.speech.tts.speed })
+          });
+          if (!response.ok) return await this.speechResponseError(response);
+          if (this.speechLab.audioUrl) URL.revokeObjectURL(this.speechLab.audioUrl);
+          this.speechLab.audioUrl = URL.createObjectURL(await response.blob());
+          this.setSpeechMessage('语音已生成', 'success');
+          await this.loadListenerState();
+        } catch (error) {
+          this.setSpeechMessage(error.message || '语音生成失败', 'error');
+        } finally {
+          this.speechLab.busy = false;
+        }
       },
       async syncGiftAssets() {
         if (this.giftAssetSyncBusy || this.giftAssetState.state === 'syncing') return;
@@ -3183,6 +3352,7 @@
       this.loadListenerState();
       this.loadServicePorts();
       this.loadGiftAssetLogs();
+      this.loadSpeechDevices();
       this.setListenerPolling(true);
       this.setMetricsPolling(this.activeTab === 'running' && this.activeSubTab === 'status');
       this.connectListenerSocket();
@@ -3197,6 +3367,7 @@
       this.stopReplayPlayback();
       window.clearInterval(this.sparkPollTimer);
       window.clearInterval(this.metricsTimer);
+      if (this.speechLab.audioUrl) URL.revokeObjectURL(this.speechLab.audioUrl);
       if (this.listenerSocket) this.listenerSocket.close();
     }
   });

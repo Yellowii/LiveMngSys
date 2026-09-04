@@ -12,6 +12,20 @@
     "apiPath": "/api/livemngsys/live",
     "wsPath": "/live-ws"
   },
+  "speechAsr": {
+    "enabled": true,
+    "host": "127.0.0.1",
+    "port": 7003
+  },
+  "translation": {
+    "enabled": true,
+    "host": "127.0.0.1",
+    "port": 7004,
+    "executable": "tools/llama.cpp/llama-server.exe",
+    "model": "DouyinListener/data/speech_models/HY-MT1.5-1.8B-Q4_K_M.gguf",
+    "contextSize": 2048,
+    "parallel": 1
+  },
   "api": {
     "futurePrefix": "/api/livemngsys"
   }
