@@ -282,6 +282,7 @@
 - This work is in the separate `LiveMngSys-refactor-test` checkout; the original local workspace was not modified. The registry is not yet wired into the single-room HTTP configuration.
 - Scope decision: this refactor remains limited to live monitoring, barrage listening, identity normalization, and externally consumable state; unrelated UI, gift, caption, and MusicBot changes are deferred.
 - Mystery users follow the same identity resolution path as anonymous users. `isMystery` and `privacyLabel` are retained even when a known nickname/avatar is recovered from the message or session memory.
+- Scope clarification: multi-room support means status-only polling; it must not open barrage streams or persist barrage events for monitored rooms. Room/session storage is already separated as stable `web_rid`/`roomId` versus changing `live_id`/`sessionId`, under `data/sessions/<room>/场次<session>/`.
 ## 2026-09-05 GitHub 上传与模块化重构准备
 
 - 已确认 `D:\Proj\LiveMngSys` 原先不是 Git 仓库，也未配置 GitHub remote。
