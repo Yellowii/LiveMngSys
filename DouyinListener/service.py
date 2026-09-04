@@ -858,6 +858,12 @@ async def create_app() -> web.Application:
     async def speech_status(_: web.Request) -> web.Response:
         return json_response({"ok": True, "state": manager.speech.status(), "captions": manager.subtitle_pipeline.snapshot()})
 
+    async def speech_options(_: web.Request) -> web.Response:
+        try:
+            return json_response({"ok": True, "options": await asyncio.to_thread(manager.speech.options)})
+        except Exception as error:
+            return json_response({"ok": False, "message": str(error)}, 503)
+
     async def speech_devices(_: web.Request) -> web.Response:
         try:
             return json_response({"ok": True, "devices": await manager.subtitle_pipeline.devices()})
@@ -1172,6 +1178,7 @@ async def create_app() -> web.Application:
     app.router.add_get("/api/livemngsys/live/state", state)
     app.router.add_get("/api/livemngsys/live/captions", captions_state)
     app.router.add_get("/api/livemngsys/live/speech/status", speech_status)
+    app.router.add_get("/api/livemngsys/live/speech/options", speech_options)
     app.router.add_get("/api/livemngsys/live/speech/devices", speech_devices)
     app.router.add_post("/api/livemngsys/live/speech/capture/start", speech_capture_start)
     app.router.add_post("/api/livemngsys/live/speech/capture/stop", speech_capture_stop)

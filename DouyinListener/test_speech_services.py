@@ -105,6 +105,35 @@ class SpeechServicesTests(unittest.TestCase):
         self.assertEqual(config["tts"]["speed"], 4.0)
         self.assertEqual(config["translation"]["timeoutSeconds"], 1)
 
+    def test_options_discovers_models_and_languages(self):
+        asr_dir = self.models / "sense-voice-demo"
+        asr_dir.mkdir()
+        (asr_dir / "model.int8.onnx").write_bytes(b"model")
+        (asr_dir / "tokens.txt").write_text("tokens", encoding="utf-8")
+        tts_dir = self.models / "vits-demo"
+        tts_dir.mkdir()
+        for name in ("model.onnx", "tokens.txt", "lexicon.txt"):
+            (tts_dir / name).write_bytes(b"model")
+        (self.models / "translation.Q4_K_M.gguf").write_bytes(b"model")
+
+        options = SpeechServices(self.root, self.config(), _Sherpa()).options()
+
+        self.assertEqual(options["asrModels"][0]["modelType"], "sense_voice")
+        self.assertEqual(options["ttsModels"][0]["modelType"], "vits")
+        self.assertEqual(options["translationModels"][0]["id"], "translation.Q4_K_M.gguf")
+        self.assertIn({"id": "en", "name": "English"}, options["languages"])
+        self.assertEqual(options["speakerCount"], 1)
+
+    def test_options_discovers_streaming_asr_model(self):
+        streaming_dir = self.models / "streaming-demo"
+        streaming_dir.mkdir()
+        for name in ("tokens.txt", "encoder-epoch.onnx", "decoder-epoch.onnx", "joiner-epoch.onnx"):
+            (streaming_dir / name).write_bytes(b"model")
+
+        options = SpeechServices(self.root, self.config(), _Sherpa()).options()
+
+        self.assertEqual(options["streamingAsrModels"][0]["id"], "streaming-demo")
+
     def test_disabled_feature_does_not_load_optional_dependency(self):
         services = SpeechServices(self.root)
         self.assertIn("dependencyAvailable", services.status())

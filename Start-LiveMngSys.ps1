@@ -158,12 +158,32 @@ if (-not $python) {
 if ($speechAsrEnabled) {
     $speechAsrScript = Join-Path $root 'DouyinListener\speech_asr_service.py'
     $speechAsrUrl = "http://${speechAsrHealthHost}:$speechAsrPort"
+    $speechAsrArguments = @('--host', $speechAsrBindHost, '--port', [string]$speechAsrPort)
+    $listenerSpeechConfigPath = Join-Path $root 'DouyinListener\data\config.json'
+    if (Test-Path -LiteralPath $listenerSpeechConfigPath) {
+        try {
+            $listenerSpeechConfig = Get-Content -LiteralPath $listenerSpeechConfigPath -Raw -Encoding UTF8 | ConvertFrom-Json
+            $streamingModel = [string]$listenerSpeechConfig.speech.asr.streamingModel
+            if ($streamingModel) {
+                $streamingRoot = Join-Path $root 'DouyinListener\data\speech_models' $streamingModel
+                if (Test-Path -LiteralPath $streamingRoot) {
+                    $encoder = Get-ChildItem -LiteralPath $streamingRoot -Filter 'encoder-*.onnx' -File | Sort-Object Name | Select-Object -First 1
+                    $decoder = Get-ChildItem -LiteralPath $streamingRoot -Filter 'decoder-*.onnx' -File | Sort-Object Name | Select-Object -First 1
+                    $joiner = Get-ChildItem -LiteralPath $streamingRoot -Filter 'joiner-*.onnx' -File | Sort-Object Name | Select-Object -First 1
+                    $tokens = Join-Path $streamingRoot 'tokens.txt'
+                    if ($encoder -and $decoder -and $joiner -and (Test-Path -LiteralPath $tokens)) {
+                        $speechAsrArguments += @('--tokens', $tokens, '--encoder', $encoder.FullName, '--decoder', $decoder.FullName, '--joiner', $joiner.FullName)
+                    }
+                }
+            }
+        } catch { Write-Warning "Could not read saved streaming ASR model: $($_.Exception.Message)" }
+    }
     if (-not (Test-Path -LiteralPath $speechAsrScript)) {
         Write-Warning "Speech ASR service is enabled but missing: $speechAsrScript"
     } elseif (-not (Test-SpeechAsr $speechAsrUrl)) {
         $speechAsrRunner = Start-Process `
             -FilePath $python.Source `
-            -ArgumentList @($speechAsrScript, '--host', $speechAsrBindHost, '--port', [string]$speechAsrPort) `
+            -ArgumentList (@($speechAsrScript) + $speechAsrArguments) `
             -WorkingDirectory (Join-Path $root 'DouyinListener') `
             -WindowStyle $windowStyle `
             -PassThru
@@ -185,6 +205,20 @@ if ($speechAsrEnabled) {
 if ($translationEnabled) {
     $translationExe = Join-Path $root ([string]$serviceConfig.translation.executable)
     $translationModel = Join-Path $root ([string]$serviceConfig.translation.model)
+    $listenerSpeechConfigPath = Join-Path $root 'DouyinListener\data\config.json'
+    if (Test-Path -LiteralPath $listenerSpeechConfigPath) {
+        try {
+            $listenerSpeechConfig = Get-Content -LiteralPath $listenerSpeechConfigPath -Raw -Encoding UTF8 | ConvertFrom-Json
+            $savedModel = [string]$listenerSpeechConfig.speech.translation.model
+            if ($savedModel -and (Test-Path -LiteralPath $savedModel)) {
+                $translationModel = (Resolve-Path -LiteralPath $savedModel).Path
+            } elseif ($savedModel -and (Test-Path -LiteralPath (Join-Path $root $savedModel))) {
+                $translationModel = (Resolve-Path -LiteralPath (Join-Path $root $savedModel)).Path
+            }
+        } catch {
+            Write-Warning "Could not read saved speech model selection: $($_.Exception.Message)"
+        }
+    }
     $translationUrl = "http://${translationHealthHost}:$translationPort"
     if (-not (Test-Path -LiteralPath $translationExe)) {
         Write-Warning "Translation server is enabled but llama-server is missing: $translationExe"

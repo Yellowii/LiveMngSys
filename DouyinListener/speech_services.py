@@ -35,6 +35,7 @@ DEFAULT_SPEECH_CONFIG = {
         "useItn": True,
         "numThreads": 2,
         "provider": "cpu",
+        "streamingModel": "",
     },
     "tts": {
         "enabled": False,
@@ -101,6 +102,7 @@ def normalize_speech_config(value: Any) -> dict:
 
     asr = source.get("asr") if isinstance(source.get("asr"), dict) else {}
     result["asr"].update({key: str(asr.get(key) or "").strip() for key in ("model", "tokens", "encoder", "decoder")})
+    result["asr"]["streamingModel"] = str(asr.get("streamingModel") or "").strip()[:512]
     result["asr"].update({
         "enabled": bool(asr.get("enabled", False)),
         "modelType": str(asr.get("modelType") or "sense_voice").strip().lower(),
@@ -209,6 +211,57 @@ class SpeechServices:
                 "provider": self.config["translation"]["provider"],
                 "targetLanguage": self.config["translation"]["targetLanguage"],
             },
+        }
+
+    def options(self) -> dict:
+        """Return model and voice choices discoverable from the local model root."""
+        root = self._model_root()
+        asr_models = []
+        streaming_asr_models = []
+        tts_models = []
+        translation_models = []
+        if root.is_dir():
+            for directory in sorted(item for item in root.iterdir() if item.is_dir()):
+                files = {item.name for item in directory.iterdir() if item.is_file()}
+                if "tokens.txt" in files and any(name.endswith(".onnx") for name in files):
+                    if any(name.startswith("encoder-") for name in files) and any(name.startswith("decoder-") for name in files) and any(name.startswith("joiner-") for name in files):
+                        streaming_asr_models.append({"id": str(directory.relative_to(root)).replace("\\", "/"), "name": directory.name})
+                    if "sense-voice" in directory.name.lower() and ("model.int8.onnx" in files or "model.onnx" in files):
+                        asr_models.append({
+                            "id": str(directory.relative_to(root)).replace("\\", "/"),
+                            "name": directory.name,
+                            "model": str(directory.relative_to(root)).replace("\\", "/") + ("/model.int8.onnx" if "model.int8.onnx" in files else "/model.onnx"),
+                            "tokens": str(directory.relative_to(root)).replace("\\", "/") + "/tokens.txt",
+                            "modelType": "sense_voice" if "sense-voice" in directory.name.lower() else "sense_voice",
+                        })
+                if "model.onnx" in files and "tokens.txt" in files and ("lexicon.txt" in files or "vits" in directory.name.lower()):
+                    tts_models.append({
+                        "id": str(directory.relative_to(root)).replace("\\", "/"),
+                        "name": directory.name,
+                        "model": str(directory.relative_to(root)).replace("\\", "/") + "/model.onnx",
+                        "tokens": str(directory.relative_to(root)).replace("\\", "/") + "/tokens.txt",
+                        "lexicon": str(directory.relative_to(root)).replace("\\", "/") + ("/lexicon.txt" if "lexicon.txt" in files else ""),
+                        "modelType": "vits",
+                    })
+            for model in sorted(root.glob("*.gguf")):
+                translation_models.append({"id": model.name, "name": model.name, "path": str(model.relative_to(self.root)).replace("\\", "/")})
+        speaker_count = 1
+        if self._tts is not None:
+            try:
+                speaker_count = max(1, int(getattr(self._tts, "num_speakers", 1) or 1))
+            except (TypeError, ValueError):
+                speaker_count = 1
+        return {
+            "asrModels": asr_models,
+            "streamingAsrModels": streaming_asr_models,
+            "ttsModels": tts_models,
+            "translationModels": translation_models,
+            "languages": [
+                {"id": "auto", "name": "自动检测"}, {"id": "zh", "name": "中文"},
+                {"id": "en", "name": "English"}, {"id": "ja", "name": "日本語"},
+                {"id": "ko", "name": "한국어"}, {"id": "yue", "name": "粤语"},
+            ],
+            "speakerCount": speaker_count,
         }
 
     def _require_enabled(self, feature: str) -> dict:

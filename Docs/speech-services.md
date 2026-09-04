@@ -55,11 +55,12 @@ cd DouyinListener
 }
 ```
 
-字幕清洗、目标语言和 TTS 设置位于 Listener 的本地 `data/config.json`，也可在 `运行状态 > 配置 > 语音实验室` 修改。llama.cpp endpoint 应为 `http://127.0.0.1:7004/v1/chat/completions`。
+字幕清洗、离线 ASR/TTS 模型路径、翻译目标语言、翻译 GGUF 和 TTS 音色位于 Listener 的本地 `data/config.json`，也可在 `运行状态 > 配置 > 语音实验室` 的下拉框修改。离线 ASR/TTS 选择保存后由 Listener 重新加载；实时 7003 使用启动参数指定的 streaming 模型。单模型 llama.cpp server 切换 GGUF 后保存配置并重启 7004，启动脚本会读取已保存路径。MeloTTS 当前模型只有音色 0，多音色模型会按 sherpa-onnx 的 `num_speakers` 自动生成音色选项。llama.cpp endpoint 应为 `http://127.0.0.1:7004/v1/chat/completions`。
 
 ## 接口
 
 - `GET /api/livemngsys/live/speech/devices`：系统音频输入设备。
+- `GET /api/livemngsys/live/speech/options`：从本机模型目录发现 ASR/TTS/GGUF 模型、语言和 TTS 音色数量。
 - `POST /api/livemngsys/live/speech/capture/start`：`{"deviceId": 1}`，启动持续采集。
 - `POST /api/livemngsys/live/speech/capture/stop`：停止采集。
 - `GET /api/livemngsys/live/captions`：Windows 字幕源状态。
