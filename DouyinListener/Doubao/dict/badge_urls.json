@@ -1,0 +1,131 @@
+{
+  "_meta": {
+    "desc": "抖音直播间徽章图片URL分类枚举 - 按URL/文件名关键字自动分类徽章类型",
+    "version": "1.0.0",
+    "match": "对URL（含uri/文件名）做不区分大小写的子串匹配，按 priority 从高到低匹配"
+  },
+  "categories": [
+    {
+      "kind": "admin",
+      "label": "房管",
+      "priority": 100,
+      "bg_color": "#ff4757",
+      "fg_color": "#ffffff",
+      "match": ["webcast_admin_badge", "admin_badge"]
+    },
+    {
+      "kind": "guard",
+      "label": "星守护",
+      "priority": 90,
+      "bg_color": "#b37feb",
+      "fg_color": "#ffffff",
+      "match": ["star_guard", "resident_guest", "guard_advanced", "guard_badge"]
+    },
+    {
+      "kind": "annual_member",
+      "label": "年费VIP",
+      "priority": 85,
+      "bg_color": "#d4a017",
+      "fg_color": "#1a1a2e",
+      "match": ["31231321vnian", "annual_vip", "nian_member", "year_vip"]
+    },
+    {
+      "kind": "vip",
+      "label": "VIP/贵族",
+      "priority": 80,
+      "bg_color": "#d4a017",
+      "fg_color": "#1a1a2e",
+      "match": [
+        "noble_badge", "noble_icon", "noble_level", "noble_",
+        "vip_badge", "vip_icon", "vip_level", "vip_mark",
+        "seat_badge", "seat_icon", "noble_enter", "king_badge",
+        "1231241211v"
+      ]
+    },
+    {
+      "kind": "member",
+      "label": "专属会员",
+      "priority": 75,
+      "bg_color": "#c0392b",
+      "fg_color": "#f5d76e",
+      "match": [
+        "subscribe_new", "special_member", "family_member", "member_badge", "member_v_badge",
+        "live_member", "exclusive_member", "room_member", "anchor_member",
+        "member_mark", "member_icon", "member_level", "fans_member",
+        "v_badge", "v_mark", "v_icon", "exclusive_v", "zhuan_shu", "1231241211v"
+      ]
+    },
+    {
+      "kind": "subscribe",
+      "label": "订阅",
+      "priority": 70,
+      "bg_color": "#08979c",
+      "fg_color": "#ffffff",
+      "match": ["subscription", "subscriber"]
+    },
+    {
+      "kind": "fans_club",
+      "label": "粉丝团",
+      "priority": 60,
+      "bg_color": "#ff6b35",
+      "fg_color": "#ffffff",
+      "match": [
+        "fansclub_level_v6_", "fans_club", "fansclub_new_advanced",
+        "fansclub_level_v6_lightdown"
+      ],
+      "extract_level_regex": "fansclub_level_v6_(\\d+)|fansclub_new_advanced_badge_(\\d+)",
+      "label_format": "粉丝团Lv{level}"
+    },
+    {
+      "kind": "pay_grade",
+      "label": "消费等级",
+      "priority": 50,
+      "bg_color": "#4a3fff",
+      "fg_color": "#ffffff",
+      "match": [
+        "new_user_grade_level_v1_", "grade_level_v", "user_grade_level",
+        "aweme_pay_grade_2x_", "pay_grade", "grade_icon"
+      ],
+      "extract_level_regex": "new_user_grade_level_v1_(\\d+)|grade_level_v\\d+_(\\d+)|aweme_pay_grade_2x_\\d+_(\\d+)",
+      "label_format": "消费Lv{level}"
+    },
+    {
+      "kind": "live_star",
+      "label": "直播之星",
+      "priority": 40,
+      "bg_color": "#1890ff",
+      "fg_color": "#ffffff",
+      "match": ["live_star", "star_badge"]
+    },
+    {
+      "kind": "top_vip",
+      "label": "TopVIP",
+      "priority": 30,
+      "bg_color": "#d4a017",
+      "fg_color": "#1a1a2e",
+      "match": ["top_vip", "topvip"]
+    },
+    {
+      "kind": "medal",
+      "label": "勋章",
+      "priority": 20,
+      "bg_color": "#555555",
+      "fg_color": "#cccccc",
+      "match": ["medal", "anchor_medal"]
+    },
+    {
+      "kind": "avatar_border",
+      "label": "头像框",
+      "priority": 10,
+      "bg_color": "#555555",
+      "fg_color": "#cccccc",
+      "match": ["avatar_border", "border_"]
+    }
+  ],
+  "default": {
+    "kind": "badge",
+    "label": "徽章",
+    "bg_color": "#555555",
+    "fg_color": "#cccccc"
+  }
+}

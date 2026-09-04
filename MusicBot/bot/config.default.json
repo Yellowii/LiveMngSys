@@ -1,0 +1,94 @@
+{
+  "server": {
+    "host": "127.0.0.1",
+    "port": 7001
+  },
+  "queue": {
+    "maxLength": 50,
+    "userCooldownSeconds": 60,
+    "maxSongSeconds": 300,
+    "dedupeIdleOnly": true,
+    "autoIdle": true,
+    "interruptIdleOnRequest": false,
+    "idleMode": "sequence",
+    "preloadCount": 1
+  },
+  "music": {
+    "neteaseCookie": "",
+    "login": null,
+    "bitrate": 320000,
+    "level": "standard",
+    "enableUnblock": true,
+    "defaultPlaylistLimit": 200,
+    "localExtensions": [".mp3", ".flac", ".wav", ".m4a", ".aac", ".ogg"]
+  },
+  "player": {
+    "type": "mpv",
+    "command": "mpv",
+    "audioDevice": "auto",
+    "volume": 80,
+    "ipcName": "musicbot-mpv"
+  },
+  "display": {
+    "volume": 0.8,
+    "overlaySeconds": 5
+  },
+  "permissions": {
+    "requestEnabled": true,
+    "freeRequest": true,
+    "requestAdminOnly": false,
+    "requestAdminFree": true,
+    "requestFanOnly": false,
+    "requestFanFree": true,
+    "requestMemberOnly": false,
+    "requestMemberFree": true,
+    "requestGuardianOnly": false,
+    "requestGuardianFree": true,
+    "balanceQueryEnabled": true,
+    "intelligentRequest": true,
+    "smartDjFilter": false,
+    "freeSkip": true,
+    "freeTop": true,
+    "freeSuperTop": false,
+    "adminFreeSkip": true,
+    "adminFreeTop": true,
+    "adminFreeSuperTop": true
+  },
+  "points": {
+    "requestCost": 0,
+    "skipCost": 0,
+    "topCost": 0,
+    "superTopCost": 0
+  },
+  "audioNormalization": {
+    "enabled": false,
+    "targetLufs": -14,
+    "maxGainDb": 6,
+    "minGainDb": -12
+  },
+  "soundpad": {
+    "masterVolume": 80,
+    "audioDevice": "auto",
+    "externalEnabled": false
+  },
+  "commands": {
+    "request": "点歌",
+    "skip": "切歌",
+    "top": "顶歌",
+    "superTop": "超级置顶",
+    "balance": "查询余额"
+  },
+  "controls": {
+    "keyboardEnabled": true,
+    "externalCommandEnabled": false,
+    "deviceControlEnabled": false,
+    "startStopHotkey": "Ctrl+Alt+F1",
+    "playPauseHotkey": "Ctrl+Alt+P",
+    "previousHotkey": "Ctrl+Alt+Left",
+    "nextHotkey": "Ctrl+Alt+Right",
+    "volumeUpHotkey": "Ctrl+Alt+Up",
+    "volumeDownHotkey": "Ctrl+Alt+Down",
+    "blacklistHotkey": "Ctrl+Alt+B",
+    "skipHotkey": "Ctrl+Alt+S"
+  }
+}

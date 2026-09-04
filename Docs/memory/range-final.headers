@@ -1,0 +1,13 @@
+HTTP/1.1 206 Partial Content
+cache-control: public, max-age=86400
+content-type: video/mp4
+etag: "18c783550387330c-3db413"
+last-modified: Fri, 31 Jul 2026 23:22:59 GMT
+content-length: 1024
+accept-ranges: bytes
+content-range: bytes 0-1023/4043795
+date: Sat, 01 Aug 2026 00:00:31 GMT
+server: Python/3.12 aiohttp/3.14.3
+Connection: keep-alive
+Keep-Alive: timeout=5
+

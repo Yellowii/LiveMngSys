@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pixso HTML</title>
+  <link rel="stylesheet" href="css/font.css">
+  <script src="js/animation.js"></script>
+  <style>
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+ol,ul,menu {
+  padding-inline-start: 0;
+  list-style: none;
+}
+
+ol li::marker, ul li::before {
+  letter-spacing: 0;
+}
+
+.scroll-container > div {
+  width: 100%;
+}
+
+.container > div {
+  width: 100%;
+}
+
+.canvas-0_1 > div {
+  width: 100%;
+}
+
+html {
+  width: 100%;
+  height: 100%;
+}
+
+body { 
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  background-color: white;
+}
+    
+span {
+  word-break: break-word;
+}
+
+.container {
+  width: 100%;
+  height: 100%;
+}
+
+
+
+
+  </style>
+</head>
+<body>
+<div style="height: 100%; width: 100%; overflow: auto">
+  <div id="0_1" style="width: 100%; height: 100%; position: relative; flex-shrink: 0">
+    <div id="4_27" style="width: 100%; height: 40px; min-width: 40px; position: relative; flex-shrink: 0"></div>
+    <div id="4_33" style="width: 100%; height: 40px; min-width: 600px; position: relative; flex-shrink: 0"></div>
+    <div id="4_29" style="width: 100%; height: 40px; min-width: 180px; position: relative; flex-shrink: 0"></div>
+    <div id="4_28" style="width: 100%; height: 40px; min-width: 180px; position: relative; flex-shrink: 0"></div>
+    <div id="4_30" style="width: 100%; height: 40px; min-width: 300px; position: relative; flex-shrink: 0"></div>
+    <div id="4_15" style="width: 100%; height: 210px; min-width: 270px; position: relative; flex-shrink: 0">
+      <p id="4_16" style="font-size: 25px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(0, 0, 0, 1); width: 250px; height: 30px; position: absolute; left: 10px; top: 165px; mix-blend-mode: normal">导入/导出</p>
+      <p id="4_17" style="font-size: 25px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(0, 0, 0, 1); width: 250px; height: 30px; position: absolute; left: 10px; top: 125px; mix-blend-mode: normal">数据解析</p>
+      <p id="4_18" style="font-size: 25px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(0, 0, 0, 1); width: 250px; height: 30px; position: absolute; left: 10px; top: 85px; mix-blend-mode: normal">弹幕模拟</p>
+      <p id="4_19" style="font-size: 25px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(0, 0, 0, 1); width: 250px; height: 30px; position: absolute; left: 10px; top: 45px">直播回顾</p>
+      <p id="4_20" style="font-size: 20px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; font-feature-settings: &quot;locl&quot; 0; text-decoration: none; color: rgba(0, 0, 0, 1); width: 260px; height: auto; position: absolute; left: 5px; top: 5px; white-space: pre; mix-blend-mode: normal">工具</p>
+    </div>
+    <div id="4_21" style="width: 100%; height: 210px; min-width: 270px; position: relative; flex-shrink: 0">
+      <p id="4_22" style="font-size: 25px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(0, 0, 0, 1); width: 250px; height: 30px; position: absolute; left: 10px; top: 165px; mix-blend-mode: normal">字段管理</p>
+      <p id="4_23" style="font-size: 25px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(0, 0, 0, 1); width: 250px; height: 30px; position: absolute; left: 10px; top: 125px; mix-blend-mode: normal">表格编辑</p>
+      <p id="4_24" style="font-size: 25px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(0, 0, 0, 1); width: 250px; height: 30px; position: absolute; left: 10px; top: 85px; mix-blend-mode: normal">粉丝列表</p>
+      <p id="4_25" style="font-size: 25px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(0, 0, 0, 1); width: 250px; height: 30px; position: absolute; left: 10px; top: 45px">概览</p>
+      <p id="4_26" style="font-size: 20px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(0, 0, 0, 1); width: 260px; height: 30px; position: absolute; left: 5px; top: 5px; mix-blend-mode: normal">粉丝数据</p>
+    </div>
+    <div id="4_9" style="width: 100%; height: 170px; min-width: 270px; position: relative; flex-shrink: 0">
+      <p id="4_11" style="font-size: 25px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(0, 0, 0, 1); width: 250px; height: 30px; position: absolute; left: 10px; top: 125px; mix-blend-mode: normal">多卡片控制台</p>
+      <p id="4_12" style="font-size: 25px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(0, 0, 0, 1); width: 250px; height: 30px; position: absolute; left: 10px; top: 85px; mix-blend-mode: normal">直播卡片</p>
+      <p id="4_13" style="font-size: 25px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(0, 0, 0, 1); width: 250px; height: 30px; position: absolute; left: 10px; top: 45px">直播UI</p>
+      <p id="4_14" style="font-size: 20px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(0, 0, 0, 1); width: 260px; height: 30px; position: absolute; left: 5px; top: 5px; mix-blend-mode: normal">卡片</p>
+    </div>
+    <div id="4_3" style="width: 100%; height: 210px; min-width: 270px; position: relative; flex-shrink: 0">
+      <p id="4_4" style="font-size: 25px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(0, 0, 0, 1); width: 250px; height: 30px; position: absolute; left: 10px; top: 165px; mix-blend-mode: normal">UI配置</p>
+      <p id="4_8" style="font-size: 25px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(0, 0, 0, 1); width: 250px; height: 30px; position: absolute; left: 10px; top: 125px; mix-blend-mode: normal">点歌</p>
+      <p id="4_7" style="font-size: 25px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(0, 0, 0, 1); width: 250px; height: 30px; position: absolute; left: 10px; top: 85px; mix-blend-mode: normal">上车</p>
+      <p id="4_5" style="font-size: 25px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(0, 0, 0, 1); width: 250px; height: 30px; position: absolute; left: 10px; top: 45px">实时弹幕</p>
+      <p id="4_6" style="font-size: 20px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(0, 0, 0, 1); width: 260px; height: 30px; position: absolute; left: 5px; top: 5px; mix-blend-mode: normal">直播</p>
+    </div>
+    <div id="4_31" style="width: 100%; height: 40px; min-width: 40px; position: relative; flex-shrink: 0"></div>
+    <div id="2_5" style="width: 100%; height: 130px; min-width: 270px; position: relative; flex-shrink: 0">
+      <p id="2_7" style="font-size: 25px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(0, 0, 0, 1); width: 250px; height: 30px; position: absolute; left: 10px; top: 85px; mix-blend-mode: normal">配置</p>
+      <p id="2_8" style="font-size: 25px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(0, 0, 0, 1); width: 250px; height: 30px; position: absolute; left: 10px; top: 45px; mix-blend-mode: normal">状态</p>
+      <p id="4_2" style="font-size: 20px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(0, 0, 0, 1); width: 260px; height: 30px; position: absolute; left: 5px; top: 5px; mix-blend-mode: normal">运行</p>
+    </div>
+    <div id="4_1" style="width: 100%; height: 60px; min-width: 270px; position: relative; flex-shrink: 0"></div>
+  </div>
+</div>
+
+
+<script>
+const $ = id => document.getElementById(id);
+
+ $('4_1').style.display = "none";
+ $('4_3').style.display = "none";
+ $('4_9').style.display = "none";
+ $('4_15').style.display = "none";
+ $('4_21').style.display = "none";
+ $('4_27').style.display = "none";
+ $('4_28').style.display = "none";
+ $('4_29').style.display = "none";
+ $('4_30').style.display = "none";
+ $('4_31').style.display = "none";
+ $('4_33').style.display = "none";
+</script>
+
+</body>
+</html>

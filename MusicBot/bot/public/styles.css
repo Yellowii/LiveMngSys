@@ -1,0 +1,392 @@
+:root {
+  color-scheme: dark;
+  --bg: #111318;
+  --panel: #1b2028;
+  --panel-2: #202733;
+  --text: #eef2f6;
+  --muted: #9aa7b4;
+  --line: #343d4a;
+  --accent: #38bdf8;
+  --green: #48c78e;
+  --red: #ff6b6b;
+  --app-max-width: 1180px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+  letter-spacing: 0;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  min-height: 36px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--panel-2);
+  color: var(--text);
+  cursor: pointer;
+}
+
+button:hover {
+  border-color: var(--accent);
+}
+
+input,
+select {
+  min-height: 36px;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #12161d;
+  color: var(--text);
+  padding: 0 10px;
+}
+
+.shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  grid-template-areas:
+    "player side"
+    "lyrics side"
+    "queue idle";
+  gap: 14px;
+  width: min(var(--app-max-width), 100%);
+  margin: 0 auto;
+  padding: 14px;
+}
+
+.player,
+.lyrics,
+.panel,
+.list {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+.player {
+  grid-area: player;
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  gap: 18px;
+  padding: 18px;
+  min-height: 220px;
+}
+
+.cover {
+  aspect-ratio: 1;
+  border-radius: 8px;
+  background: #2c3541;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 52px;
+}
+
+.cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.song {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.eyebrow {
+  color: var(--accent);
+  font-size: 13px;
+}
+
+h1,
+h2,
+p,
+dl {
+  margin: 0;
+}
+
+h1 {
+  margin-top: 8px;
+  font-size: 34px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+h2 {
+  font-size: 16px;
+}
+
+.artist {
+  margin-top: 8px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.progress {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) 52px;
+  align-items: center;
+  gap: 10px;
+  margin-top: 24px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.device-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 96px;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.controls button {
+  width: 78px;
+}
+
+.controls label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+}
+
+.lyrics {
+  grid-area: lyrics;
+  height: 280px;
+  overflow: hidden;
+  padding: 18px;
+}
+
+.ktv-current,
+.ktv-next {
+  font-size: 28px;
+  line-height: 1.35;
+  min-height: 42px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9), 0 0 8px rgba(0, 0, 0, 0.72);
+}
+
+.ktv-current {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  color: #ffe770;
+  font-weight: 700;
+}
+
+.ktv-current::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--lyric-fill, 0%);
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  color: #baff6a;
+  text-shadow: 0 0 6px rgba(186, 255, 106, 0.95), 0 0 16px rgba(186, 255, 106, 0.72), 0 1px 2px rgba(0, 0, 0, 0.95);
+  transition: width 0.18s linear;
+  pointer-events: none;
+}
+
+.ktv-next {
+  margin-top: 14px;
+  color: rgba(255, 245, 207, 0.86);
+  font-weight: 600;
+}
+
+.word-line {
+  font-size: 30px;
+  line-height: 1.35;
+  min-height: 44px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #ffe770;
+  font-weight: 700;
+}
+
+.word-token {
+  position: relative;
+  display: inline-block;
+  white-space: pre;
+  color: rgba(255, 245, 207, 0.82);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9), 0 0 8px rgba(0, 0, 0, 0.72);
+  vertical-align: baseline;
+}
+
+.word-token::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--word-fill, 0%);
+  max-width: 100%;
+  overflow: hidden;
+  white-space: pre;
+  color: #baff6a;
+  text-shadow: 0 0 6px rgba(186, 255, 106, 0.95), 0 0 16px rgba(186, 255, 106, 0.72), 0 1px 2px rgba(0, 0, 0, 0.95);
+  transition: width 0.08s linear;
+  pointer-events: none;
+}
+
+.lyric-line {
+  min-height: 30px;
+  color: var(--muted);
+  transition: color 120ms ease, transform 120ms ease;
+}
+
+.lyric-line.active {
+  color: var(--text);
+  transform: translateX(8px);
+}
+
+.side {
+  grid-area: side;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.panel {
+  padding: 14px;
+}
+
+.command-row,
+.stack {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.command-row {
+  grid-template-columns: minmax(0, 1fr) 72px;
+}
+
+#notice {
+  margin-top: 10px;
+  min-height: 22px;
+  color: var(--green);
+}
+
+.qr {
+  display: block;
+  width: 180px;
+  height: 180px;
+  border-radius: 6px;
+  background: white;
+}
+
+dl {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+  color: var(--muted);
+}
+
+dd {
+  margin: 0;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.list {
+  min-height: 300px;
+  max-height: 420px;
+  overflow: auto;
+}
+
+.list:not(.idle) {
+  grid-area: queue;
+}
+
+.idle {
+  grid-area: idle;
+}
+
+.list-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+  background: var(--panel);
+}
+
+.item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  padding: 10px 14px;
+  border-bottom: 1px solid #28303b;
+}
+
+.item-title {
+  overflow-wrap: anywhere;
+}
+
+.item-meta {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.item-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.item-actions button {
+  width: 54px;
+  min-height: 30px;
+}
+
+@media (max-width: 980px) {
+  .shell {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "player"
+      "lyrics"
+      "side"
+      "queue"
+      "idle";
+  }
+
+  .player {
+    grid-template-columns: 110px minmax(0, 1fr);
+    min-height: 160px;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+}

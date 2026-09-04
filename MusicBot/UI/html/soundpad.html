@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SoundPad</title>
+  <link rel="stylesheet" href="soundpad.css">
+</head>
+<body>
+  <div class="soundpad-app">
+    <aside class="soundpad-sidebar" id="soundpad-sidebar">
+      <div class="soundpad-brand"><span class="brand-name"><span>Sound</span><strong>Pad</strong></span><button class="icon-button" id="toggle-sidebar" title="收起侧栏">≡</button></div>
+      <nav class="soundpad-nav" aria-label="SoundPad 导航">
+        <button class="side-tab active" data-view="board"><b>音</b><span>音效板</span></button>
+        <button class="side-tab" data-view="library"><b>库</b><span>音效库</span></button>
+        <button class="side-tab" data-view="settings"><b>设</b><span>设置</span></button>
+      </nav>
+      <label class="side-field row-height-field"><span>按钮行高</span><input id="row-height" type="range" min="72" max="200" step="4"><output id="row-height-value"></output></label>
+      <section class="side-section soundpad-actions">
+        <button class="secondary-button" id="import-file">导入单文件</button>
+        <button class="secondary-button" id="import-folder">扫描文件夹</button>
+        <div class="mode-switch" role="group" aria-label="操作模式"><button class="active" data-mode="play">播放</button><button data-mode="configure">配置</button></div>
+        <label class="side-field"><span>面板列数</span><select id="panel-columns"><option value="3">3 列</option><option value="4">4 列</option><option value="5">5 列</option><option value="6">6 列</option><option value="7">7 列</option><option value="8">8 列</option></select></label>
+      </section>
+      <section class="side-section soundpad-pages"><span class="side-heading">页面</span><div id="page-list"></div><button class="ghost-button" id="new-page">新建页面</button></section>
+    </aside>
+
+    <main class="soundpad-main">
+      <header class="playback-bar">
+        <div class="playback-state"><span class="status-dot" id="playback-dot"></span><div><small>当前播放</small><strong id="now-playing-title">尚未播放</strong></div></div>
+        <small id="now-playing-time">00:00 / 00:00</small>
+        <button class="stop-button" id="stop-sound">停止全部</button>
+      </header>
+
+      <section class="soundpad-view active" id="view-board">
+        <div class="board-heading"><div><strong id="active-page-name">主面板</strong><small id="board-mode-note">单击按钮播放音效</small></div><span id="player-status">播放器待命</span></div>
+        <div class="soundpad-grid" id="soundpad-grid"></div>
+      </section>
+
+      <section class="soundpad-view" id="view-library">
+        <div class="section-heading"><div><h1>音效库</h1><p>导入的文件会保存在 SoundPad 管理目录。</p></div><span id="library-count"></span></div>
+        <div class="soundpad-library" id="soundpad-library"></div>
+      </section>
+
+      <section class="soundpad-view" id="view-settings">
+        <div class="section-heading"><div><h1>设置</h1><p>SoundPad 使用独立的播放设备和整体音量。</p></div></div>
+        <div class="settings-layout">
+          <section class="settings-section"><h2>播放设置</h2><label>整体音量 <input id="master-volume" type="range" min="0" max="100"><output id="master-volume-value"></output></label><label>播放设备 <select id="soundpad-device"></select></label><button class="primary-button" id="save-settings">保存播放设置</button></section>
+          <section class="settings-section"><h2>外设接口</h2><label class="toggle-row"><span>允许外部控制</span><input id="external-enabled" type="checkbox"><i></i></label><p>外设读取 <code>GET /api/integrations/soundpad</code>，控制使用 <code>POST /api/integrations/soundpad</code>。</p></section>
+        </div>
+      </section>
+    </main>
+
+    <aside class="config-drawer" id="config-drawer" aria-hidden="true">
+      <header><div><small>按键配置</small><strong id="drawer-button-id"></strong></div><button class="icon-button" id="close-drawer" title="关闭">×</button></header>
+      <div class="drawer-body">
+        <label>音效文件 <select id="button-clip"></select></label>
+        <label>按钮标签 <input id="button-label" maxlength="32" type="text"></label>
+        <div class="color-field"><span>基础填充色</span><input id="button-fill-color" type="color" aria-label="基础填充色"></div>
+        <div class="color-field"><span>播放进度填充色</span><input id="button-progress-color" type="color" aria-label="播放进度填充色"></div>
+        <label>图片 <div class="inline-control"><input id="button-image-name" readonly type="text" placeholder="未设置图片"><button class="secondary-button" id="select-button-image">选择图片</button></div></label>
+        <label>单独音量 <input id="button-volume" min="0" max="100" type="range"><output id="button-volume-value"></output></label>
+        <label>延时播放（毫秒） <input id="button-delay" min="0" max="60000" step="100" type="number"></label>
+        <label>循环次数 <input id="button-loop-count" min="-1" max="999" step="1" type="number"><small>0 为不循环，正数为重复次数，-1 为无限循环。</small></label>
+        <p class="drawer-hint">外设映射 ID：<code id="drawer-mapping-id"></code></p>
+      </div>
+      <footer><button class="secondary-button" id="clear-button">清空按键</button><button class="primary-button" id="save-button">保存配置</button></footer>
+    </aside>
+    <div class="drawer-scrim" id="drawer-scrim"></div>
+    <div class="dialog-scrim" id="page-dialog" aria-hidden="true">
+      <section class="app-dialog" role="dialog" aria-modal="true" aria-labelledby="page-dialog-title">
+        <h2 id="page-dialog-title">新建页面</h2>
+        <label>页面名称 <input id="page-name-input" maxlength="32" type="text" placeholder="例如：常用音效"></label>
+        <footer><button class="secondary-button" id="cancel-new-page">取消</button><button class="primary-button" id="confirm-new-page">新建页面</button></footer>
+      </section>
+    </div>
+  </div>
+  <input id="audio-file-input" type="file" accept="audio/*,.mp3,.wav,.ogg,.m4a,.aac,.flac,.webm" hidden>
+  <input id="audio-folder-input" type="file" accept="audio/*,.mp3,.wav,.ogg,.m4a,.aac,.flac,.webm" webkitdirectory multiple hidden>
+  <script src="soundpad.js"></script>
+</body>
+</html>

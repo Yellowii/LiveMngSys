@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+package Doubao;
+
+import "douyin_live.proto";
+
+// Fields verified from recorded WSS payloads. Unknown fields remain preserved by protobuf.
+message WebcastLuckyBoxMessage {
+  Common common = 1;
+  uint64 diamondCount = 2;
+  uint64 luckyBoxId = 3;
+  uint64 sendTime = 4;
+  uint64 delayTime = 5;
+  uint64 boxType = 6;
+  string title = 7;
+  User user = 12;
+  uint64 displayDuration = 15;
+  string luckyBoxIdStr = 24;
+  string activityId = 27;
+  string bizExtra = 31;
+}
+
+message WebcastLuckyBoxRewardMessage {
+  Common common = 1;
+  uint64 luckyBoxId = 2;
+  string luckyBoxIdStr = 3;
+  repeated string userIds = 4;
+  repeated string rewardedDetails = 5;
+  uint64 rewardMessageType = 6;
+  string relatedItemId = 7;
+}
+
+message WebcastLuckyBoxTempStatusMessage {
+  Common common = 1;
+}
+
+// The lottery push carries the original-client winner profile details when present.
+message WebcastXGLotteryMessage {
+  Common common = 1;
+  LotteryInfo lotteryInfo = 2;
+}
+
+message LotteryInfo {
+  uint64 lotteryId = 1;
+  uint32 status = 6;
+  uint64 prizeCount = 9;
+  uint64 luckyCount = 10;
+  uint64 startTime = 12;
+  uint64 drawTime = 13;
+  repeated LotteryLuckyUser luckyUsers = 19;
+  uint64 candidateNum = 21;
+  string lotteryIdStr = 22;
+}
+
+message LotteryLuckyUser {
+  uint64 luckyId = 1;
+  uint64 lotteryId = 2;
+  uint64 roomId = 3;
+  uint64 userId = 4;
+  string userName = 5;
+  string avatarUrl = 6;
+  uint64 grantCount = 7;
+  string secUserId = 10;
+  string prizeName = 12;
+  string userIdStr = 40;
+}

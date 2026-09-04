@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusicBot</title>
+    <link rel="stylesheet" href="css/font.css">
+    <link rel="stylesheet" href="musicbot-ui.css">
+    <script>
+      if (window.location.protocol === 'file:') {
+        const params = new URLSearchParams(window.location.search)
+        const host = params.get('host') || window.location.hostname || '127.0.0.1'
+        const protocol = window.location.protocol === 'https:' ? 'https:' : 'http:'
+        window.location.replace(`${protocol}://${host}:7001/`)
+      }
+    </script>
+  <script src="js/animation.js"></script>
+  <style>
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+ol,ul,menu {
+  padding-inline-start: 0;
+  list-style: none;
+}
+
+ol li::marker, ul li::before {
+  letter-spacing: 0;
+}
+
+.scroll-container > div {
+  width: 100%;
+}
+
+.container > div {
+  width: 100%;
+}
+
+.canvas-0_1 > div {
+  width: 100%;
+}
+
+html {
+  width: 100%;
+  height: 100%;
+}
+
+body { 
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  background-color: white;
+}
+    
+span {
+  word-break: break-word;
+}
+
+.container {
+  width: 100%;
+  height: 100%;
+}
+
+
+
+
+  </style>
+</head>
+<body>
+<div style="height: 100%; width: 100%; overflow: auto">
+  <div id="0_1" style="width: 100%; height: 100%; position: relative; flex-shrink: 0">
+    <div id="2_17" style="width: 100%; height: 900px; min-width: 1440px; position: relative; flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-start; background-color: rgba(15, 17, 23, 1); mix-blend-mode: normal">
+      <div id="2_18" style="position: relative; width: 100%; height: 140px; display: flex; flex-shrink: 0">
+        <div style="width: 100%; height: 100%; position: relative; flex-shrink: 0; display: flex; flex-direction: row; align-items: center; background-color: rgba(22, 27, 39, 1); mix-blend-mode: normal"></div>
+        <div style="position: absolute; inset: 0px; border-radius: 0px 0px 0px 0px; pointer-events: none; border-width: 0px 0px 1px 0px; border-style: solid; box-sizing: border-box; border-color: rgba(42, 47, 62, 1)"></div>
+        <div style="position: absolute; inset: 0; width: 100%; height: 100%">
+          <div style="display: flex; flex-direction: row; align-items: center; padding: 0px 28px 0px 28px; width: 100%; height: 100%; position: relative">
+            <div id="2_337" style="width: 288px; height: 140px; position: relative; flex-shrink: 0; display: flex; flex-direction: row; align-items: center; align-self: stretch; background-color: rgba(22, 27, 39, 0); mix-blend-mode: normal">
+              <div style="display: flex; flex-direction: row; gap: 14px; align-items: center; width: 100%; height: 100%; position: relative">
+                <div id="2_19" style="width: 116px; height: 116px; background-image: url(./image/Frame_2_19.png); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                <div id="2_20" style="width: auto; height: auto; position: relative; flex-shrink: 0; display: flex; flex-direction: column; gap: 6px; align-items: flex-start; mix-blend-mode: normal">
+                  <p id="2_21" style="font-size: 18px; font-family: &quot;Noto Sans SC-Bold&quot;; font-weight: 700; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(240, 242, 248, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">晴天</p>
+                  <p id="2_22" style="font-size: 12px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(139, 146, 168, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">周杰伦 · 叶惠美</p>
+                  <div id="2_23" style="width: auto; height: auto; position: relative; flex-shrink: 0; display: flex; flex-direction: row; gap: 5px; align-items: center; padding: 4px 10px 4px 10px; border-radius: 4px 4px 4px 4px; background-color: rgba(30, 58, 95, 1); mix-blend-mode: normal">
+                    <div id="2_24" style="width: 12px; height: 12px; background-image: url(./image/music0.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                    <p id="2_28" style="font-size: 12px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(59, 158, 255, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">网易云音乐</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="2_338" style="width: 100%; height: 140px; position: relative; flex-shrink: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; flex-grow: 1; flex-basis: 0; align-self: stretch; background-color: rgba(22, 27, 39, 0); mix-blend-mode: normal">
+              <div style="display: flex; flex-direction: column; gap: 10px; align-items: center; justify-content: center; width: 100%; height: 100%; position: relative">
+                <div id="2_334" style="width: 100%; height: auto; position: relative; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; mix-blend-mode: normal">
+                  <div style="display: flex; flex-direction: column; gap: 10px; align-items: center; width: 100%; position: relative">
+                    <div id="2_30" style="width: 100%; height: auto; position: relative; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; mix-blend-mode: normal">
+                      <div style="display: flex; flex-direction: column; gap: 6px; align-items: center; width: 100%; position: relative">
+                        <p id="2_31" style="font-size: 15px; font-family: &quot;Noto Sans SC-SemiBold&quot;; font-weight: 500; text-align: center; letter-spacing: 0px; font-feature-settings: &quot;locl&quot; 0; text-decoration: none; color: rgba(255, 255, 255, 1); width: 100%; height: auto; position: relative; flex-shrink: 0; flex-grow: 0; mix-blend-mode: normal">故事的小黄花 从出生那年就飘着</p>
+                        <p id="2_32" style="font-size: 12px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: center; letter-spacing: 0px; font-feature-settings: &quot;locl&quot; 0; text-decoration: none; color: rgba(90, 96, 122, 1); width: 100%; height: auto; position: relative; flex-shrink: 0; flex-grow: 0; mix-blend-mode: normal">童年的荡秋千 随记忆一直晃到现在</p>
+                      </div>
+                    </div>
+                    <div id="2_46" style="width: 100%; height: auto; position: relative; flex-shrink: 0; display: flex; flex-direction: row; align-items: center; mix-blend-mode: normal">
+                      <div style="display: flex; flex-direction: row; gap: 10px; align-items: center; width: 100%; position: relative">
+                        <p id="2_47" style="font-size: 11px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(139, 146, 168, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">02:14</p>
+                        <div id="2_48" style="width: 100%; height: 4px; position: relative; flex-shrink: 1; flex-grow: 1; flex-basis: 0; border-radius: 2px 2px 2px 2px; background-color: rgba(42, 47, 62, 1); mix-blend-mode: normal">
+                          <div id="2_49" style="width: 160px; height: 4px; position: absolute; left: 0px; top: 0px; border-radius: 2px 2px 2px 2px; background-color: rgba(79, 142, 247, 1); mix-blend-mode: normal"></div>
+                          <div id="2_50" style="width: 10px; height: 10px; position: absolute; left: 155px; top: -3px; border-radius: 5px 5px 5px 5px; background-color: rgba(255, 255, 255, 1); mix-blend-mode: normal"></div>
+                        </div>
+                        <p id="2_51" style="font-size: 11px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(139, 146, 168, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">04:59</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="2_339" style="width: 288px; height: 140px; position: relative; flex-shrink: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; align-self: stretch; background-color: rgba(22, 27, 39, 0); mix-blend-mode: normal">
+              <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0px 20px 0px 20px; width: 100%; height: 100%; position: relative">
+                <div id="2_335" style="width: 100%; height: auto; position: relative; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; mix-blend-mode: normal">
+                  <div style="display: flex; flex-direction: column; gap: 10px; align-items: center; width: 100%; position: relative">
+                    <div id="2_35" style="width: 100%; height: auto; position: relative; flex-shrink: 0; display: flex; flex-direction: row; justify-content: center; align-items: center; mix-blend-mode: normal">
+                      <div style="display: flex; flex-direction: row; gap: 20px; align-items: center; justify-content: center; width: 100%; position: relative">
+                        <div id="2_36" style="width: 18px; height: 18px; background-image: url(./image/skipback.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                        <div id="2_39" style="width: 36px; height: 36px; position: relative; flex-shrink: 0; display: flex; flex-direction: row; justify-content: center; align-items: center; border-radius: 18px 18px 18px 18px; background-color: rgba(79, 142, 247, 1); mix-blend-mode: normal">
+                          <div style="display: flex; flex-direction: row; align-items: center; justify-content: center; width: 100%; height: 100%; position: relative">
+                            <div id="2_40" style="width: 16px; height: 16px; position: relative; flex-shrink: 0; mix-blend-mode: normal">
+                              <div id="2_41" style="position: absolute; left: 58.33%; top: 12.5%; right: 20.83%; bottom: 12.5%; width: 20.84%; height: 75%">
+                                <div style="width: 100%; height: 100%; position: relative; border-radius: 0.75px 0.75px 0.75px 0.75px; mix-blend-mode: normal"></div>
+                                <div style="position: absolute; inset: -0.75px -0.75px -0.75px -0.75px; border-radius: 0.75px 0.75px 0.75px 0.75px; pointer-events: none; border-width: 1.5px 1.5px 1.5px 1.5px; border-style: solid; box-sizing: border-box; border-color: rgba(255, 255, 255, 1)"></div>
+                              </div>
+                              <div id="2_42" style="position: absolute; left: 20.83%; top: 12.5%; right: 58.33%; bottom: 12.5%; width: 20.84%; height: 75%">
+                                <div style="width: 100%; height: 100%; position: relative; border-radius: 0.75px 0.75px 0.75px 0.75px; mix-blend-mode: normal"></div>
+                                <div style="position: absolute; inset: -0.75px -0.75px -0.75px -0.75px; border-radius: 0.75px 0.75px 0.75px 0.75px; pointer-events: none; border-width: 1.5px 1.5px 1.5px 1.5px; border-style: solid; box-sizing: border-box; border-color: rgba(255, 255, 255, 1)"></div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div id="2_43" style="width: 18px; height: 18px; background-image: url(./image/skipforward.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                      </div>
+                    </div>
+                    <div id="2_336" style="width: 100%; height: auto; position: relative; flex-shrink: 0; display: flex; flex-direction: row; align-items: center; mix-blend-mode: normal">
+                      <div style="display: flex; flex-direction: row; gap: 8px; align-items: center; width: 100%; position: relative">
+                        <div id="2_53" style="width: 100%; height: auto; position: relative; flex-shrink: 1; display: flex; flex-direction: row; align-items: center; flex-grow: 1; flex-basis: 0; mix-blend-mode: normal">
+                          <div style="display: flex; flex-direction: row; gap: 8px; align-items: center; width: 100%; position: relative">
+                            <div id="2_54" style="width: 16px; height: 16px; background-image: url(./image/volume2.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                            <div id="2_58" style="width: 100%; height: 3px; position: relative; flex-shrink: 1; flex-grow: 1; flex-basis: 0; border-radius: 2px 2px 2px 2px; background-color: rgba(42, 47, 62, 1); mix-blend-mode: normal">
+                              <div id="2_59" style="width: 56px; height: 4px; position: absolute; left: 0px; top: 0px; border-radius: 2px 2px 2px 2px; background-color: rgba(79, 142, 247, 1); mix-blend-mode: normal"></div>
+                            </div>
+                          </div>
+                        </div>
+                        <p id="2_340" style="font-size: 11px; font-family: &quot;Inter-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(139, 146, 168, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">80%</p>
+                      </div>
+                    </div>
+                    <div id="2_61" style="position: relative; width: 100%; height: auto; display: flex; flex-shrink: 0">
+                      <div style="width: 100%; height: 100%; position: relative; flex-shrink: 0; display: flex; flex-direction: row; justify-content: center; align-items: center; border-radius: 8px 8px 8px 8px; background-color: rgba(30, 36, 54, 1); mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; gap: 6px; align-items: center; justify-content: center; padding: 6px 0px 6px 0px; width: 100%; position: relative">
+                          <div id="2_62" style="width: 14px; height: 14px; position: relative; flex-shrink: 0; mix-blend-mode: normal">
+                            <div id="2_63" style="width: 18.75%; height: 8.34%; background-image: url(./image/Vector_2_63.svg); background-size: 100% 100%; background-repeat: no-repeat; position: absolute; left: 22.92%; right: 58.33%; top: 83.33%; bottom: 8.33%"></div>
+                            <div id="2_64" style="width: 8.38%; height: 8.33%; background-image: url(./image/Vector_2_64.svg); background-size: 100% 100%; background-repeat: no-repeat; position: absolute; left: 70.83%; right: 20.79%; top: 37.5%; bottom: 54.17%"></div>
+                            <div id="2_65" style="position: absolute; left: 50%; top: 16.67%; right: 8.33%; bottom: 16.67%; width: 41.67%; height: 66.66%">
+                              <div style="width: 100%; height: 100%; position: relative; border-radius: 1.333333px 1.333333px 1.333333px 1.333333px; mix-blend-mode: normal"></div>
+                              <div style="position: absolute; inset: -0.6666665px -0.6666665px -0.6666665px -0.6666665px; border-radius: 1.333333px 1.333333px 1.333333px 1.333333px; pointer-events: none; border-width: 1.333333px 1.333333px 1.333333px 1.333333px; border-style: solid; box-sizing: border-box; border-color: rgba(139, 146, 168, 1)"></div>
+                            </div>
+                            <div id="2_66" style="width: 33.34%; height: 50%; background-image: url(./image/Vector_2_66.svg); background-size: 100% 100%; background-repeat: no-repeat; position: absolute; left: 8.33%; right: 58.33%; top: 25%; bottom: 25%"></div>
+                            <div id="2_67" style="width: 16.66%; height: 16.67%; background-image: url(./image/Ellipse_2_67.svg); background-size: 100% 100%; background-repeat: no-repeat; position: absolute; left: 66.67%; right: 16.67%; top: 58.33%; bottom: 25%"></div>
+                          </div>
+                          <p id="2_68" style="font-size: 12px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(200, 206, 222, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">本机音频</p>
+                          <div id="2_69" style="width: 12px; height: 12px; background-image: url(./image/chevrondown.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                        </div>
+                      </div>
+                      <div style="position: absolute; inset: 0px; border-radius: 8px 8px 8px 8px; pointer-events: none; border-width: 1px 1px 1px 1px; border-style: solid; box-sizing: border-box; border-color: rgba(42, 47, 62, 1)"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="2_71" style="width: 100%; height: auto; overflow: hidden; position: relative; flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-start; flex-grow: 1; background-color: rgba(15, 17, 23, 1); mix-blend-mode: normal">
+        <div style="display: flex; flex-direction: column; align-items: flex-start; width: 100%; height: 100%; position: relative">
+          <div id="2_72" style="position: relative; width: 100%; height: auto; display: flex; flex-shrink: 0">
+            <div style="width: 100%; height: 100%; position: relative; flex-shrink: 0; display: flex; flex-direction: row; align-items: center; background-color: rgba(22, 27, 39, 1); mix-blend-mode: normal">
+              <div style="display: flex; flex-direction: row; align-items: center; padding: 0px 24px 0px 24px; width: 100%; position: relative">
+                <div id="2_73" style="position: relative; width: auto; height: auto; display: flex; flex-shrink: 0">
+                  <div style="width: 100%; height: 100%; position: relative; flex-shrink: 0; display: flex; flex-direction: row; gap: 8px; align-items: center; padding: 14px 20px 14px 20px; background-color: rgba(15, 17, 23, 1); mix-blend-mode: normal">
+                    <div id="2_74" style="width: 15px; height: 15px; background-image: url(./image/listmusic.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                    <p id="2_80" style="font-size: 14px; font-family: &quot;Noto Sans SC-SemiBold&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(79, 142, 247, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">点播列表</p>
+                    <div id="2_81" style="width: auto; height: auto; position: relative; flex-shrink: 0; display: flex; flex-direction: row; align-items: center; padding: 2px 7px 2px 7px; border-radius: 10px 10px 10px 10px; background-color: rgba(79, 142, 247, 1); mix-blend-mode: normal">
+                      <p id="2_82" style="font-size: 11px; font-family: &quot;Noto Sans SC-SemiBold&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(255, 255, 255, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">12</p>
+                    </div>
+                  </div>
+                  <div style="position: absolute; inset: 0px; border-radius: 0px 0px 0px 0px; pointer-events: none; border-width: 0px 0px 3px 0px; border-style: solid; box-sizing: border-box; border-color: rgba(79, 142, 247, 1)"></div>
+                </div>
+                <div id="2_83" style="width: auto; height: auto; position: relative; flex-shrink: 0; display: flex; flex-direction: row; gap: 8px; align-items: center; padding: 14px 20px 14px 20px; background-color: rgba(0, 0, 0, 0); mix-blend-mode: normal">
+                  <div id="2_84" style="width: 15px; height: 15px; background-image: url(./image/music2.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                  <p id="2_87" style="font-size: 14px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(139, 146, 168, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">空闲歌单</p>
+                </div>
+                <div id="2_88" style="width: auto; height: auto; position: relative; flex-shrink: 0; display: flex; flex-direction: row; gap: 8px; align-items: center; padding: 14px 20px 14px 20px; background-color: rgba(0, 0, 0, 0); mix-blend-mode: normal">
+                  <div id="2_89" style="width: 15px; height: 15px; background-image: url(./image/history.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                  <p id="2_94" style="font-size: 14px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(139, 146, 168, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">已播列表</p>
+                </div>
+                <div id="2_341" style="width: auto; height: auto; position: relative; flex-shrink: 0; display: flex; flex-direction: row; gap: 8px; align-items: center; padding: 14px 20px 14px 20px; background-color: rgba(0, 0, 0, 0); mix-blend-mode: normal">
+                  <div id="2_342" style="width: 15px; height: 15px; background-image: url(./image/filter.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                  <p id="2_344" style="font-size: 14px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(139, 146, 168, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">歌名过滤</p>
+                </div>
+                <div id="2_345" style="width: auto; height: auto; position: relative; flex-shrink: 0; display: flex; flex-direction: row; gap: 8px; align-items: center; padding: 14px 20px 14px 20px; background-color: rgba(0, 0, 0, 0); mix-blend-mode: normal">
+                  <div id="2_346" style="width: 15px; height: 15px; background-image: url(./image/ban4.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                  <p id="2_349" style="font-size: 14px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(139, 146, 168, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">黑名单</p>
+                </div>
+                <div id="2_350" style="width: auto; height: auto; position: relative; flex-shrink: 0; display: flex; flex-direction: row; gap: 8px; align-items: center; padding: 14px 20px 14px 20px; background-color: rgba(0, 0, 0, 0); mix-blend-mode: normal">
+                  <div id="2_351" style="width: 15px; height: 15px; background-image: url(./image/settings2.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                  <p id="2_356" style="font-size: 14px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(139, 146, 168, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">点歌设置</p>
+                </div>
+                <div id="2_357" style="width: auto; height: auto; position: relative; flex-shrink: 0; display: flex; flex-direction: row; gap: 8px; align-items: center; padding: 14px 20px 14px 20px; background-color: rgba(0, 0, 0, 0); mix-blend-mode: normal">
+                  <div id="2_358" style="width: 15px; height: 15px; background-image: url(./image/coins.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                  <p id="2_363" style="font-size: 14px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(139, 146, 168, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">积分详情</p>
+                </div>
+                <div id="2_95" style="width: 100%; height: 1px; position: relative; flex-shrink: 1; flex-grow: 1; flex-basis: 0; background-color: rgba(0, 0, 0, 0); mix-blend-mode: normal"></div>
+                <div id="2_96" style="position: relative; width: 220px; height: 34px; display: flex; flex-shrink: 0">
+                  <div style="width: 100%; height: 100%; position: relative; flex-shrink: 0; display: flex; flex-direction: row; align-items: center; border-radius: 6px 6px 6px 6px; background-color: rgba(30, 36, 54, 1); mix-blend-mode: normal"></div>
+                  <div style="position: absolute; inset: 0px; border-radius: 6px 6px 6px 6px; pointer-events: none; border-width: 1px 1px 1px 1px; border-style: solid; box-sizing: border-box; border-color: rgba(42, 47, 62, 1)"></div>
+                  <div style="position: absolute; inset: 0; width: 100%; height: 100%">
+                    <div style="display: flex; flex-direction: row; gap: 8px; align-items: center; padding: 0px 12px 0px 12px; width: 100%; height: 100%; position: relative">
+                      <div id="2_97" style="width: 14px; height: 14px; background-image: url(./image/search.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                      <p id="2_100" style="font-size: 13px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(90, 96, 122, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">搜索歌曲或歌手...</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div style="position: absolute; inset: 0px; border-radius: 0px 0px 0px 0px; pointer-events: none; border-width: 0px 0px 1px 0px; border-style: solid; box-sizing: border-box; border-color: rgba(42, 47, 62, 1)"></div>
+          </div>
+          <div id="2_101" style="width: 100%; height: auto; position: relative; flex-shrink: 0; display: flex; flex-direction: row; align-items: flex-start; flex-grow: 1; background-color: rgba(15, 17, 23, 1); mix-blend-mode: normal">
+            <div style="display: flex; flex-direction: row; align-items: flex-start; width: 100%; height: 100%; position: relative">
+              <div id="2_102" style="width: 100%; height: 712px; overflow: hidden; position: relative; flex-shrink: 1; display: flex; flex-direction: column; align-items: flex-start; flex-grow: 1; flex-basis: 0; align-self: stretch; background-color: rgba(15, 17, 23, 1); mix-blend-mode: normal">
+                <div style="display: flex; flex-direction: column; align-items: flex-start; width: 100%; height: 100%; position: relative">
+                  <div id="2_103" style="width: 100%; height: 40px; position: relative; flex-shrink: 0; display: flex; flex-direction: row; align-items: center; background-color: rgba(22, 27, 39, 1); mix-blend-mode: normal">
+                    <div style="display: flex; flex-direction: row; align-items: center; padding: 0px 24px 0px 24px; width: 100%; height: 100%; position: relative">
+                      <div id="2_368" style="width: 320px; height: 40px; position: relative; flex-shrink: 0; display: flex; flex-direction: row; align-items: center; align-self: stretch; mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; align-items: center; width: 100%; height: 100%; position: relative">
+                          <p id="2_369" style="font-size: 12px; font-family: &quot;Noto Sans SC-Medium&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(90, 96, 122, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">歌曲</p>
+                        </div>
+                      </div>
+                      <div id="2_370" style="width: 120px; height: 40px; position: relative; flex-shrink: 0; display: flex; flex-direction: row; align-items: center; align-self: stretch; mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; align-items: center; width: 100%; height: 100%; position: relative">
+                          <p id="2_371" style="font-size: 12px; font-family: &quot;Noto Sans SC-Medium&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(90, 96, 122, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">点播人</p>
+                        </div>
+                      </div>
+                      <div id="2_372" style="width: 72px; height: 40px; position: relative; flex-shrink: 0; display: flex; flex-direction: row; align-items: center; align-self: stretch; mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; align-items: center; width: 100%; height: 100%; position: relative">
+                          <p id="2_373" style="font-size: 12px; font-family: &quot;Noto Sans SC-Medium&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(90, 96, 122, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">时长</p>
+                        </div>
+                      </div>
+                      <div id="2_374" style="width: 104px; height: 40px; position: relative; flex-shrink: 0; display: flex; flex-direction: row; align-items: center; align-self: stretch; mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; align-items: center; width: 100%; height: 100%; position: relative">
+                          <p id="2_375" style="font-size: 12px; font-family: &quot;Noto Sans SC-Medium&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(90, 96, 122, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">下载状态</p>
+                        </div>
+                      </div>
+                      <div id="2_376" style="width: 96px; height: 40px; position: relative; flex-shrink: 0; display: flex; flex-direction: row; align-items: center; align-self: stretch; mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; align-items: center; width: 100%; height: 100%; position: relative">
+                          <p id="2_377" style="font-size: 12px; font-family: &quot;Noto Sans SC-Medium&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(90, 96, 122, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">来源</p>
+                        </div>
+                      </div>
+                      <div id="2_380" style="width: 96px; height: 40px; position: relative; flex-shrink: 0; display: flex; flex-direction: row; align-items: center; align-self: stretch; mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; align-items: center; width: 100%; height: 100%; position: relative">
+                          <p id="2_381" style="font-size: 12px; font-family: &quot;Noto Sans SC-Medium&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(90, 96, 122, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">歌词格式</p>
+                        </div>
+                      </div>
+                      <div id="2_382" style="width: 100%; height: 40px; position: relative; flex-shrink: 1; display: flex; flex-direction: row; align-items: center; flex-grow: 1; flex-basis: 0; align-self: stretch; mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; align-items: center; width: 100%; height: 100%; position: relative">
+                          <p id="2_383" style="font-size: 12px; font-family: &quot;Noto Sans SC-Medium&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(90, 96, 122, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">点播时间</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div id="2_384" style="position: relative; width: 100%; height: 60px; display: flex; flex-shrink: 0">
+                    <div style="width: 100%; height: 100%; position: relative; flex-shrink: 0; display: flex; flex-direction: row; isolation: isolate; align-items: center; background-color: rgba(19, 27, 46, 1); mix-blend-mode: normal"></div>
+                    <div style="position: absolute; inset: 0px; border-radius: 0px 0px 0px 0px; pointer-events: none; z-index: 9; border-width: 0px 0px 0px 2px; border-style: solid; box-sizing: border-box; border-color: rgba(37, 99, 235, 1)"></div>
+                    <div style="position: absolute; inset: 0; width: 100%; height: 100%">
+                      <div style="display: flex; flex-direction: row; align-items: center; padding: 0px 24px 0px 24px; width: 100%; height: 100%; position: relative">
+                        <div id="2_385" style="width: 320px; height: 60px; position: relative; flex-shrink: 0; z-index: 1; display: flex; flex-direction: row; align-items: center; align-self: stretch; mix-blend-mode: normal">
+                          <div style="display: flex; flex-direction: row; gap: 10px; align-items: center; width: 100%; height: 100%; position: relative">
+                            <p id="2_386" style="font-size: 12px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: center; letter-spacing: 0px; font-feature-settings: &quot;locl&quot; 0; text-decoration: none; color: rgba(79, 142, 247, 1); width: 20px; height: auto; position: relative; flex-shrink: 0; white-space: pre; mix-blend-mode: normal">1</p>
+                            <div id="2_387" style="width: 38px; height: 38px; background-image: url(./image/Frame_2_387.png); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                            <div id="2_388" style="width: 100%; height: auto; position: relative; flex-shrink: 1; display: flex; flex-direction: column; align-items: flex-start; flex-grow: 1; flex-basis: 0; mix-blend-mode: normal">
+                              <div style="display: flex; flex-direction: column; gap: 3px; align-items: flex-start; width: 100%; position: relative">
+                                <p id="2_389" style="font-size: 13px; font-family: &quot;Noto Sans SC-Medium&quot;; font-weight: 500; text-align: left; letter-spacing: 0px; font-feature-settings: &quot;locl&quot; 0; text-decoration: none; color: rgba(79, 142, 247, 1); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1; overflow: hidden; width: 100%; height: 19px; position: relative; flex-shrink: 0; mix-blend-mode: normal">晴天</p>
+                                <p id="2_390" style="font-size: 11px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; font-feature-settings: &quot;locl&quot; 0; text-decoration: none; color: rgba(90, 96, 122, 1); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1; overflow: hidden; width: 100%; height: 16px; position: relative; flex-shrink: 0; mix-blend-mode: normal">周杰伦</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div id="2_391" style="width: 120px; height: 60px; position: relative; flex-shrink: 0; z-index: 2; display: flex; flex-direction: row; align-items: center; align-self: stretch; mix-blend-mode: normal">
+                          <div style="display: flex; flex-direction: row; gap: 6px; align-items: center; width: 100%; height: 100%; position: relative">
+                            <div id="2_392" style="width: 14px; height: 14px; background-image: url(./image/user3.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                            <p id="2_395" style="font-size: 12px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(200, 206, 222, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">小明</p>
+                          </div>
+                        </div>
+                        <div id="2_396" style="width: 72px; height: 60px; position: relative; flex-shrink: 0; z-index: 3; display: flex; flex-direction: row; align-items: center; align-self: stretch; mix-blend-mode: normal">
+                          <div style="display: flex; flex-direction: row; align-items: center; width: 100%; height: 100%; position: relative">
+                            <p id="2_397" style="font-size: 12px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(139, 146, 168, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">04:59</p>
+                          </div>
+                        </div>
+                        <div id="2_398" style="width: 104px; height: 60px; position: relative; flex-shrink: 0; z-index: 4; display: flex; flex-direction: row; align-items: center; align-self: stretch; mix-blend-mode: normal">
+                          <div style="display: flex; flex-direction: row; gap: 4px; align-items: center; width: 100%; height: 100%; position: relative">
+                            <div id="2_399" style="width: 14px; height: 14px; background-image: url(./image/checkcircle1.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                            <p id="2_402" style="font-size: 12px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(34, 197, 94, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">已下载</p>
+                          </div>
+                        </div>
+                        <div id="2_403" style="width: 96px; height: 60px; position: relative; flex-shrink: 0; z-index: 5; display: flex; flex-direction: row; align-items: center; align-self: stretch; mix-blend-mode: normal">
+                          <div style="display: flex; flex-direction: row; gap: 4px; align-items: center; padding: 3px 8px 3px 8px; width: 100%; height: 100%; position: relative">
+                            <div id="2_404" style="width: auto; height: auto; position: relative; flex-shrink: 0; display: flex; flex-direction: row; gap: 4px; align-items: center; padding: 3px 8px 3px 8px; border-radius: 4px 4px 4px 4px; background-color: rgba(30, 58, 95, 1); mix-blend-mode: normal">
+                              <p id="2_405" style="font-size: 11px; font-family: &quot;Noto Sans SC-Medium&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(79, 142, 247, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">网易云</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div id="2_412" style="width: 96px; height: 60px; position: relative; flex-shrink: 0; z-index: 6; display: flex; flex-direction: row; align-items: center; align-self: stretch; mix-blend-mode: normal">
+                          <div style="display: flex; flex-direction: row; gap: 4px; align-items: center; width: 100%; height: 100%; position: relative">
+                            <div id="2_413" style="width: auto; height: auto; position: relative; flex-shrink: 0; display: flex; flex-direction: row; align-items: center; padding: 3px 6px 3px 6px; border-radius: 4px 4px 4px 4px; background-color: rgba(30, 45, 64, 1); mix-blend-mode: normal">
+                              <p id="2_414" style="font-size: 11px; font-family: &quot;Noto Sans SC-SemiBold&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(79, 142, 247, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">LRC</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div id="2_415" style="width: 100%; height: 60px; position: relative; flex-shrink: 1; z-index: 7; display: flex; flex-direction: row; align-items: center; flex-grow: 1; flex-basis: 0; align-self: stretch; mix-blend-mode: normal">
+                          <div style="display: flex; flex-direction: row; align-items: center; width: 100%; height: 100%; position: relative">
+                            <p id="2_416" style="font-size: 12px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(90, 96, 122, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">14:32:05</p>
+                          </div>
+                        </div>
+                        <div id="2_417" style="width: 280px; height: 60px; position: absolute; z-index: 8; left: 840px; top: 0px; display: flex; flex-direction: row; align-items: center; background-repeat: no-repeat; background-size: 100% 100%; background-position: center; background-image: url(data:image/svg+xml;utf8,%3Csvg%20viewBox%3D0%200%20280%2060%20preserveAspectRatio%3Dnone%20xmlns%3Dhttp%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3Dgrad%20gradientUnits%3DobjectBoundingBox%20x1%3D0%20y1%3D0.5%20x2%3D1%20y2%3D0.5%20gradientTransform%3Dmatrix(1.0000%2C%200.0000%2C%200.0000%2C%201.0000%2C%200.0000%2C%200.0000)'%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20stop-color%3D'rgba(19%2C27%2C46%2C0)'%20offset%3D'0'%2F%3E%3Cstop%20stop-color%3D'rgba(19%2C27%2C46%2C1)'%20offset%3D'0.4'%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D'100%25'%20height%3D'100%25'%20fill%3D'url(%23grad)'%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E&quot;); mix-blend-mode: normal">
+                          <div style="display: flex; flex-direction: row; gap: 10px; align-items: center; padding: 0px 16px 0px 16px; width: 100%; height: 100%; position: relative">
+                            <div id="2_418" style="width: 28px; height: 28px; background-image: url(./image/play3.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                            <div id="2_420" style="width: 28px; height: 28px; background-image: url(./image/arrowuptoline3.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                            <div id="2_424" style="width: 28px; height: 28px; background-image: url(./image/listplus3.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                            <div id="2_430" style="width: 28px; height: 28px; background-image: url(./image/ban3.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                            <div id="2_433" style="width: 28px; height: 28px; background-image: url(./image/trash24.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div id="2_439" style="width: 100%; height: 60px; position: relative; flex-shrink: 0; display: flex; flex-direction: row; isolation: isolate; align-items: center; background-color: rgba(15, 17, 23, 1); mix-blend-mode: normal">
+                    <div style="display: flex; flex-direction: row; align-items: center; padding: 0px 24px 0px 24px; width: 100%; height: 100%; position: relative">
+                      <div id="2_440" style="width: 320px; height: 60px; position: relative; flex-shrink: 0; z-index: 1; display: flex; flex-direction: row; align-items: center; align-self: stretch; mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; gap: 10px; align-items: center; width: 100%; height: 100%; position: relative">
+                          <p id="2_441" style="font-size: 12px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: center; letter-spacing: 0px; font-feature-settings: &quot;locl&quot; 0; text-decoration: none; color: rgba(90, 96, 122, 1); width: 20px; height: auto; position: relative; flex-shrink: 0; white-space: pre; mix-blend-mode: normal">2</p>
+                          <div id="2_442" style="width: 38px; height: 38px; background-image: url(./image/Frame_2_442.png); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                          <div id="2_443" style="width: 100%; height: auto; position: relative; flex-shrink: 1; display: flex; flex-direction: column; align-items: flex-start; flex-grow: 1; flex-basis: 0; mix-blend-mode: normal">
+                            <div style="display: flex; flex-direction: column; gap: 3px; align-items: flex-start; width: 100%; position: relative">
+                              <p id="2_444" style="font-size: 13px; font-family: &quot;Noto Sans SC-Medium&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; font-feature-settings: &quot;locl&quot; 0; text-decoration: none; color: rgba(232, 236, 245, 1); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1; overflow: hidden; width: 100%; height: 19px; position: relative; flex-shrink: 0; mix-blend-mode: normal">稻香</p>
+                              <p id="2_445" style="font-size: 11px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; font-feature-settings: &quot;locl&quot; 0; text-decoration: none; color: rgba(90, 96, 122, 1); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1; overflow: hidden; width: 100%; height: 16px; position: relative; flex-shrink: 0; mix-blend-mode: normal">周杰伦</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div id="2_446" style="width: 120px; height: 60px; position: relative; flex-shrink: 0; z-index: 2; display: flex; flex-direction: row; align-items: center; align-self: stretch; mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; gap: 6px; align-items: center; width: 100%; height: 100%; position: relative">
+                          <div id="2_447" style="width: 14px; height: 14px; background-image: url(./image/user2.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                          <p id="2_450" style="font-size: 12px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(200, 206, 222, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">花花</p>
+                        </div>
+                      </div>
+                      <div id="2_451" style="width: 72px; height: 60px; position: relative; flex-shrink: 0; z-index: 3; display: flex; flex-direction: row; align-items: center; align-self: stretch; mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; align-items: center; width: 100%; height: 100%; position: relative">
+                          <p id="2_452" style="font-size: 12px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(139, 146, 168, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">03:41</p>
+                        </div>
+                      </div>
+                      <div id="2_453" style="width: 104px; height: 60px; position: relative; flex-shrink: 0; z-index: 4; display: flex; flex-direction: row; align-items: center; align-self: stretch; mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; gap: 4px; align-items: center; width: 100%; height: 100%; position: relative">
+                          <div id="2_454" style="width: 14px; height: 14px; background-image: url(./image/loader.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                          <p id="2_457" style="font-size: 12px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(245, 158, 11, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">下载中...</p>
+                        </div>
+                      </div>
+                      <div id="2_458" style="width: 96px; height: 60px; position: relative; flex-shrink: 0; z-index: 5; display: flex; flex-direction: row; align-items: center; align-self: stretch; mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; gap: 4px; align-items: center; padding: 3px 8px 3px 8px; width: 100%; height: 100%; position: relative">
+                          <div id="2_459" style="width: auto; height: auto; position: relative; flex-shrink: 0; display: flex; flex-direction: row; gap: 4px; align-items: center; padding: 3px 8px 3px 8px; border-radius: 4px 4px 4px 4px; background-color: rgba(30, 58, 95, 1); mix-blend-mode: normal">
+                            <p id="2_460" style="font-size: 11px; font-family: &quot;Noto Sans SC-Medium&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(79, 142, 247, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">QQ音乐</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div id="2_467" style="width: 96px; height: 60px; position: relative; flex-shrink: 0; z-index: 6; display: flex; flex-direction: row; align-items: center; align-self: stretch; mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; gap: 4px; align-items: center; width: 100%; height: 100%; position: relative">
+                          <div id="2_468" style="width: auto; height: auto; position: relative; flex-shrink: 0; display: flex; flex-direction: row; align-items: center; padding: 3px 6px 3px 6px; border-radius: 4px 4px 4px 4px; background-color: rgba(30, 45, 64, 1); mix-blend-mode: normal">
+                            <p id="2_469" style="font-size: 11px; font-family: &quot;Noto Sans SC-SemiBold&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(79, 142, 247, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">LRC</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div id="2_470" style="width: 100%; height: 60px; position: relative; flex-shrink: 1; z-index: 7; display: flex; flex-direction: row; align-items: center; flex-grow: 1; flex-basis: 0; align-self: stretch; mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; align-items: center; width: 100%; height: 100%; position: relative">
+                          <p id="2_471" style="font-size: 12px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(90, 96, 122, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">14:30:18</p>
+                        </div>
+                      </div>
+                      <div id="2_472" style="width: 280px; height: 60px; position: absolute; z-index: 8; left: 840px; top: 0px; display: flex; flex-direction: row; align-items: center; background-repeat: no-repeat; background-size: 100% 100%; background-position: center; background-image: url(data:image/svg+xml;utf8,%3Csvg%20viewBox%3D0%200%20280%2060%20preserveAspectRatio%3Dnone%20xmlns%3Dhttp%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3Dgrad%20gradientUnits%3DobjectBoundingBox%20x1%3D0%20y1%3D0.5%20x2%3D1%20y2%3D0.5%20gradientTransform%3Dmatrix(1.0000%2C%200.0000%2C%200.0000%2C%201.0000%2C%200.0000%2C%200.0000)'%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20stop-color%3D'rgba(15%2C17%2C23%2C0)'%20offset%3D'0'%2F%3E%3Cstop%20stop-color%3D'rgba(15%2C17%2C23%2C1)'%20offset%3D'0.4'%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D'100%25'%20height%3D'100%25'%20fill%3D'url(%23grad)'%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E&quot;); mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; gap: 10px; align-items: center; padding: 0px 16px 0px 16px; width: 100%; height: 100%; position: relative">
+                          <div id="2_473" style="width: 28px; height: 28px; background-image: url(./image/play2.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                          <div id="2_475" style="width: 28px; height: 28px; background-image: url(./image/arrowuptoline2.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                          <div id="2_479" style="width: 28px; height: 28px; background-image: url(./image/listplus2.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                          <div id="2_485" style="width: 28px; height: 28px; background-image: url(./image/ban2.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                          <div id="2_488" style="width: 28px; height: 28px; background-image: url(./image/trash23.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div id="2_494" style="width: 100%; height: 60px; position: relative; flex-shrink: 0; display: flex; flex-direction: row; isolation: isolate; align-items: center; background-color: rgba(19, 22, 31, 1); mix-blend-mode: normal">
+                    <div style="display: flex; flex-direction: row; align-items: center; padding: 0px 24px 0px 24px; width: 100%; height: 100%; position: relative">
+                      <div id="2_495" style="width: 320px; height: 60px; position: relative; flex-shrink: 0; z-index: 1; display: flex; flex-direction: row; align-items: center; align-self: stretch; mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; gap: 10px; align-items: center; width: 100%; height: 100%; position: relative">
+                          <p id="2_496" style="font-size: 12px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: center; letter-spacing: 0px; font-feature-settings: &quot;locl&quot; 0; text-decoration: none; color: rgba(90, 96, 122, 1); width: 20px; height: auto; position: relative; flex-shrink: 0; white-space: pre; mix-blend-mode: normal">3</p>
+                          <div id="2_497" style="width: 38px; height: 38px; background-image: url(./image/Frame_2_497.png); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                          <div id="2_498" style="width: 100%; height: auto; position: relative; flex-shrink: 1; display: flex; flex-direction: column; align-items: flex-start; flex-grow: 1; flex-basis: 0; mix-blend-mode: normal">
+                            <div style="display: flex; flex-direction: column; gap: 3px; align-items: flex-start; width: 100%; position: relative">
+                              <p id="2_499" style="font-size: 13px; font-family: &quot;Noto Sans SC-Medium&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; font-feature-settings: &quot;locl&quot; 0; text-decoration: none; color: rgba(232, 236, 245, 1); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1; overflow: hidden; width: 100%; height: 19px; position: relative; flex-shrink: 0; mix-blend-mode: normal">七里香</p>
+                              <p id="2_500" style="font-size: 11px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; font-feature-settings: &quot;locl&quot; 0; text-decoration: none; color: rgba(90, 96, 122, 1); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1; overflow: hidden; width: 100%; height: 16px; position: relative; flex-shrink: 0; mix-blend-mode: normal">周杰伦</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div id="2_501" style="width: 120px; height: 60px; position: relative; flex-shrink: 0; z-index: 2; display: flex; flex-direction: row; align-items: center; align-self: stretch; mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; gap: 6px; align-items: center; width: 100%; height: 100%; position: relative">
+                          <div id="2_502" style="width: 14px; height: 14px; background-image: url(./image/user1.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                          <p id="2_505" style="font-size: 12px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(200, 206, 222, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">阿龙</p>
+                        </div>
+                      </div>
+                      <div id="2_506" style="width: 72px; height: 60px; position: relative; flex-shrink: 0; z-index: 3; display: flex; flex-direction: row; align-items: center; align-self: stretch; mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; align-items: center; width: 100%; height: 100%; position: relative">
+                          <p id="2_507" style="font-size: 12px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(139, 146, 168, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">05:02</p>
+                        </div>
+                      </div>
+                      <div id="2_508" style="width: 104px; height: 60px; position: relative; flex-shrink: 0; z-index: 4; display: flex; flex-direction: row; align-items: center; align-self: stretch; mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; gap: 4px; align-items: center; width: 100%; height: 100%; position: relative">
+                          <div id="2_509" style="width: 14px; height: 14px; background-image: url(./image/checkcircle0.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                          <p id="2_512" style="font-size: 12px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(34, 197, 94, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">已下载</p>
+                        </div>
+                      </div>
+                      <div id="2_513" style="width: 96px; height: 60px; position: relative; flex-shrink: 0; z-index: 5; display: flex; flex-direction: row; align-items: center; align-self: stretch; mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; gap: 4px; align-items: center; padding: 3px 8px 3px 8px; width: 100%; height: 100%; position: relative">
+                          <div id="2_514" style="width: auto; height: auto; position: relative; flex-shrink: 0; display: flex; flex-direction: row; gap: 4px; align-items: center; padding: 3px 8px 3px 8px; border-radius: 4px 4px 4px 4px; background-color: rgba(30, 58, 95, 1); mix-blend-mode: normal">
+                            <p id="2_515" style="font-size: 11px; font-family: &quot;Noto Sans SC-Medium&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(79, 142, 247, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">网易云</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div id="2_522" style="width: 96px; height: 60px; position: relative; flex-shrink: 0; z-index: 6; display: flex; flex-direction: row; align-items: center; align-self: stretch; mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; gap: 4px; align-items: center; width: 100%; height: 100%; position: relative">
+                          <div id="2_523" style="width: auto; height: auto; position: relative; flex-shrink: 0; display: flex; flex-direction: row; align-items: center; padding: 3px 6px 3px 6px; border-radius: 4px 4px 4px 4px; background-color: rgba(30, 45, 64, 1); mix-blend-mode: normal">
+                            <p id="2_524" style="font-size: 11px; font-family: &quot;Noto Sans SC-SemiBold&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(79, 142, 247, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">LRC</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div id="2_525" style="width: 100%; height: 60px; position: relative; flex-shrink: 1; z-index: 7; display: flex; flex-direction: row; align-items: center; flex-grow: 1; flex-basis: 0; align-self: stretch; mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; align-items: center; width: 100%; height: 100%; position: relative">
+                          <p id="2_526" style="font-size: 12px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(90, 96, 122, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">14:28:54</p>
+                        </div>
+                      </div>
+                      <div id="2_527" style="width: 280px; height: 60px; position: absolute; z-index: 8; left: 840px; top: 0px; display: flex; flex-direction: row; align-items: center; background-repeat: no-repeat; background-size: 100% 100%; background-position: center; background-image: url(data:image/svg+xml;utf8,%3Csvg%20viewBox%3D0%200%20280%2060%20preserveAspectRatio%3Dnone%20xmlns%3Dhttp%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3Dgrad%20gradientUnits%3DobjectBoundingBox%20x1%3D0%20y1%3D0.5%20x2%3D1%20y2%3D0.5%20gradientTransform%3Dmatrix(1.0000%2C%200.0000%2C%200.0000%2C%201.0000%2C%200.0000%2C%200.0000)'%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20stop-color%3D'rgba(19%2C22%2C31%2C0)'%20offset%3D'0'%2F%3E%3Cstop%20stop-color%3D'rgba(19%2C22%2C31%2C1)'%20offset%3D'0.4'%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D'100%25'%20height%3D'100%25'%20fill%3D'url(%23grad)'%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E&quot;); mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; gap: 10px; align-items: center; padding: 0px 16px 0px 16px; width: 100%; height: 100%; position: relative">
+                          <div id="2_528" style="width: 28px; height: 28px; background-image: url(./image/play1.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                          <div id="2_530" style="width: 28px; height: 28px; background-image: url(./image/arrowuptoline1.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                          <div id="2_534" style="width: 28px; height: 28px; background-image: url(./image/listplus1.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                          <div id="2_540" style="width: 28px; height: 28px; background-image: url(./image/ban1.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                          <div id="2_543" style="width: 28px; height: 28px; background-image: url(./image/trash22.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div id="2_549" style="width: 100%; height: 60px; position: relative; flex-shrink: 0; display: flex; flex-direction: row; isolation: isolate; align-items: center; background-color: rgba(15, 17, 23, 1); mix-blend-mode: normal">
+                    <div style="display: flex; flex-direction: row; align-items: center; padding: 0px 24px 0px 24px; width: 100%; height: 100%; position: relative">
+                      <div id="2_550" style="width: 320px; height: 60px; position: relative; flex-shrink: 0; z-index: 1; display: flex; flex-direction: row; align-items: center; align-self: stretch; mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; gap: 10px; align-items: center; width: 100%; height: 100%; position: relative">
+                          <p id="2_551" style="font-size: 12px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: center; letter-spacing: 0px; font-feature-settings: &quot;locl&quot; 0; text-decoration: none; color: rgba(90, 96, 122, 1); width: 20px; height: auto; position: relative; flex-shrink: 0; white-space: pre; mix-blend-mode: normal">4</p>
+                          <div id="2_552" style="width: 38px; height: 38px; background-image: url(./image/Frame_2_552.png); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                          <div id="2_553" style="width: 100%; height: auto; position: relative; flex-shrink: 1; display: flex; flex-direction: column; align-items: flex-start; flex-grow: 1; flex-basis: 0; mix-blend-mode: normal">
+                            <div style="display: flex; flex-direction: column; gap: 3px; align-items: flex-start; width: 100%; position: relative">
+                              <p id="2_554" style="font-size: 13px; font-family: &quot;Noto Sans SC-Medium&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; font-feature-settings: &quot;locl&quot; 0; text-decoration: none; color: rgba(232, 236, 245, 1); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1; overflow: hidden; width: 100%; height: 19px; position: relative; flex-shrink: 0; mix-blend-mode: normal">告白气球</p>
+                              <p id="2_555" style="font-size: 11px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; font-feature-settings: &quot;locl&quot; 0; text-decoration: none; color: rgba(90, 96, 122, 1); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1; overflow: hidden; width: 100%; height: 16px; position: relative; flex-shrink: 0; mix-blend-mode: normal">周杰伦</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div id="2_556" style="width: 120px; height: 60px; position: relative; flex-shrink: 0; z-index: 2; display: flex; flex-direction: row; align-items: center; align-self: stretch; mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; gap: 6px; align-items: center; width: 100%; height: 100%; position: relative">
+                          <div id="2_557" style="width: 14px; height: 14px; background-image: url(./image/user0.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                          <p id="2_560" style="font-size: 12px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(200, 206, 222, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">小七</p>
+                        </div>
+                      </div>
+                      <div id="2_561" style="width: 72px; height: 60px; position: relative; flex-shrink: 0; z-index: 3; display: flex; flex-direction: row; align-items: center; align-self: stretch; mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; align-items: center; width: 100%; height: 100%; position: relative">
+                          <p id="2_562" style="font-size: 12px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(139, 146, 168, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">03:29</p>
+                        </div>
+                      </div>
+                      <div id="2_563" style="width: 104px; height: 60px; position: relative; flex-shrink: 0; z-index: 4; display: flex; flex-direction: row; align-items: center; align-self: stretch; mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; gap: 4px; align-items: center; width: 100%; height: 100%; position: relative">
+                          <div id="2_564" style="width: 14px; height: 14px; background-image: url(./image/cloudoff.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                          <p id="2_567" style="font-size: 12px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(90, 96, 122, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">未下载</p>
+                        </div>
+                      </div>
+                      <div id="2_568" style="width: 96px; height: 60px; position: relative; flex-shrink: 0; z-index: 5; display: flex; flex-direction: row; align-items: center; align-self: stretch; mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; gap: 4px; align-items: center; padding: 3px 8px 3px 8px; width: 100%; height: 100%; position: relative">
+                          <div id="2_569" style="width: auto; height: auto; position: relative; flex-shrink: 0; display: flex; flex-direction: row; gap: 4px; align-items: center; padding: 3px 8px 3px 8px; border-radius: 4px 4px 4px 4px; background-color: rgba(30, 58, 95, 1); mix-blend-mode: normal">
+                            <p id="2_570" style="font-size: 11px; font-family: &quot;Noto Sans SC-Medium&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(79, 142, 247, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">酷狗</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div id="2_577" style="width: 96px; height: 60px; position: relative; flex-shrink: 0; z-index: 6; display: flex; flex-direction: row; align-items: center; align-self: stretch; mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; gap: 4px; align-items: center; width: 100%; height: 100%; position: relative">
+                          <div id="2_578" style="width: auto; height: auto; position: relative; flex-shrink: 0; display: flex; flex-direction: row; align-items: center; padding: 3px 6px 3px 6px; border-radius: 4px 4px 4px 4px; background-color: rgba(42, 42, 58, 1); mix-blend-mode: normal">
+                            <p id="2_579" style="font-size: 11px; font-family: &quot;Noto Sans SC-SemiBold&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(79, 142, 247, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">无</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div id="2_580" style="width: 100%; height: 60px; position: relative; flex-shrink: 1; z-index: 7; display: flex; flex-direction: row; align-items: center; flex-grow: 1; flex-basis: 0; align-self: stretch; mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; align-items: center; width: 100%; height: 100%; position: relative">
+                          <p id="2_581" style="font-size: 12px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(90, 96, 122, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">14:25:33</p>
+                        </div>
+                      </div>
+                      <div id="2_582" style="width: 280px; height: 60px; position: absolute; z-index: 8; left: 840px; top: 0px; display: flex; flex-direction: row; align-items: center; background-repeat: no-repeat; background-size: 100% 100%; background-position: center; background-image: url(data:image/svg+xml;utf8,%3Csvg%20viewBox%3D0%200%20280%2060%20preserveAspectRatio%3Dnone%20xmlns%3Dhttp%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3Dgrad%20gradientUnits%3DobjectBoundingBox%20x1%3D0%20y1%3D0.5%20x2%3D1%20y2%3D0.5%20gradientTransform%3Dmatrix(1.0000%2C%200.0000%2C%200.0000%2C%201.0000%2C%200.0000%2C%200.0000)'%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20stop-color%3D'rgba(15%2C17%2C23%2C0)'%20offset%3D'0'%2F%3E%3Cstop%20stop-color%3D'rgba(15%2C17%2C23%2C1)'%20offset%3D'0.4'%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D'100%25'%20height%3D'100%25'%20fill%3D'url(%23grad)'%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E&quot;); mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; gap: 10px; align-items: center; padding: 0px 16px 0px 16px; width: 100%; height: 100%; position: relative">
+                          <div id="2_583" style="width: 28px; height: 28px; background-image: url(./image/play0.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                          <div id="2_585" style="width: 28px; height: 28px; background-image: url(./image/arrowuptoline0.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                          <div id="2_589" style="width: 28px; height: 28px; background-image: url(./image/listplus0.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                          <div id="2_595" style="width: 28px; height: 28px; background-image: url(./image/ban0.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                          <div id="2_598" style="width: 28px; height: 28px; background-image: url(./image/trash21.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div id="2_604" style="width: 100%; height: 60px; position: relative; flex-shrink: 0; display: flex; flex-direction: row; isolation: isolate; align-items: center; background-color: rgba(19, 22, 31, 1); mix-blend-mode: normal">
+                    <div style="display: flex; flex-direction: row; align-items: center; padding: 0px 24px 0px 24px; width: 100%; height: 100%; position: relative">
+                      <div id="2_605" style="width: 320px; height: 60px; position: relative; flex-shrink: 0; z-index: 1; display: flex; flex-direction: row; align-items: center; align-self: stretch; mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; gap: 10px; align-items: center; width: 100%; height: 100%; position: relative">
+                          <p id="2_606" style="font-size: 12px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: center; letter-spacing: 0px; font-feature-settings: &quot;locl&quot; 0; text-decoration: none; color: rgba(90, 96, 122, 1); width: 20px; height: auto; position: relative; flex-shrink: 0; white-space: pre; mix-blend-mode: normal">5</p>
+                          <div id="2_607" style="width: 38px; height: 38px; background-image: url(./image/Frame_2_607.png); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                          <div id="2_608" style="width: 100%; height: auto; position: relative; flex-shrink: 1; display: flex; flex-direction: column; align-items: flex-start; flex-grow: 1; flex-basis: 0; mix-blend-mode: normal">
+                            <div style="display: flex; flex-direction: column; gap: 3px; align-items: flex-start; width: 100%; position: relative">
+                              <p id="2_609" style="font-size: 13px; font-family: &quot;Noto Sans SC-Medium&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; font-feature-settings: &quot;locl&quot; 0; text-decoration: none; color: rgba(232, 236, 245, 1); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1; overflow: hidden; width: 100%; height: 19px; position: relative; flex-shrink: 0; mix-blend-mode: normal">夜曲</p>
+                              <p id="2_610" style="font-size: 11px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; font-feature-settings: &quot;locl&quot; 0; text-decoration: none; color: rgba(90, 96, 122, 1); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1; overflow: hidden; width: 100%; height: 16px; position: relative; flex-shrink: 0; mix-blend-mode: normal">周杰伦</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div id="2_611" style="width: 120px; height: 60px; position: relative; flex-shrink: 0; z-index: 2; display: flex; flex-direction: row; align-items: center; align-self: stretch; mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; gap: 6px; align-items: center; width: 100%; height: 100%; position: relative">
+                          <div id="2_612" style="width: 14px; height: 14px; background-image: url(./image/user.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                          <p id="2_615" style="font-size: 12px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(200, 206, 222, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">张三</p>
+                        </div>
+                      </div>
+                      <div id="2_616" style="width: 72px; height: 60px; position: relative; flex-shrink: 0; z-index: 3; display: flex; flex-direction: row; align-items: center; align-self: stretch; mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; align-items: center; width: 100%; height: 100%; position: relative">
+                          <p id="2_617" style="font-size: 12px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(139, 146, 168, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">04:20</p>
+                        </div>
+                      </div>
+                      <div id="2_618" style="width: 104px; height: 60px; position: relative; flex-shrink: 0; z-index: 4; display: flex; flex-direction: row; align-items: center; align-self: stretch; mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; gap: 4px; align-items: center; width: 100%; height: 100%; position: relative">
+                          <div id="2_619" style="width: 14px; height: 14px; background-image: url(./image/checkcircle.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                          <p id="2_622" style="font-size: 12px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(34, 197, 94, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">已下载</p>
+                        </div>
+                      </div>
+                      <div id="2_623" style="width: 96px; height: 60px; position: relative; flex-shrink: 0; z-index: 5; display: flex; flex-direction: row; align-items: center; align-self: stretch; mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; gap: 4px; align-items: center; padding: 3px 8px 3px 8px; width: 100%; height: 100%; position: relative">
+                          <div id="2_624" style="width: auto; height: auto; position: relative; flex-shrink: 0; display: flex; flex-direction: row; gap: 4px; align-items: center; padding: 3px 8px 3px 8px; border-radius: 4px 4px 4px 4px; background-color: rgba(30, 58, 95, 1); mix-blend-mode: normal">
+                            <p id="2_625" style="font-size: 11px; font-family: &quot;Noto Sans SC-Medium&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(79, 142, 247, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">哔哩哔哩</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div id="2_632" style="width: 96px; height: 60px; position: relative; flex-shrink: 0; z-index: 6; display: flex; flex-direction: row; align-items: center; align-self: stretch; mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; gap: 4px; align-items: center; width: 100%; height: 100%; position: relative">
+                          <div id="2_633" style="width: auto; height: auto; position: relative; flex-shrink: 0; display: flex; flex-direction: row; align-items: center; padding: 3px 6px 3px 6px; border-radius: 4px 4px 4px 4px; background-color: rgba(30, 45, 64, 1); mix-blend-mode: normal">
+                            <p id="2_634" style="font-size: 11px; font-family: &quot;Noto Sans SC-SemiBold&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(79, 142, 247, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">KRC</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div id="2_635" style="width: 100%; height: 60px; position: relative; flex-shrink: 1; z-index: 7; display: flex; flex-direction: row; align-items: center; flex-grow: 1; flex-basis: 0; align-self: stretch; mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; align-items: center; width: 100%; height: 100%; position: relative">
+                          <p id="2_636" style="font-size: 12px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(90, 96, 122, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">14:22:10</p>
+                        </div>
+                      </div>
+                      <div id="2_637" style="width: 280px; height: 60px; position: absolute; z-index: 8; left: 840px; top: 0px; display: flex; flex-direction: row; align-items: center; background-repeat: no-repeat; background-size: 100% 100%; background-position: center; background-image: url(data:image/svg+xml;utf8,%3Csvg%20viewBox%3D0%200%20280%2060%20preserveAspectRatio%3Dnone%20xmlns%3Dhttp%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3Dgrad%20gradientUnits%3DobjectBoundingBox%20x1%3D0%20y1%3D0.5%20x2%3D1%20y2%3D0.5%20gradientTransform%3Dmatrix(1.0000%2C%200.0000%2C%200.0000%2C%201.0000%2C%200.0000%2C%200.0000)'%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20stop-color%3D'rgba(19%2C22%2C31%2C0)'%20offset%3D'0'%2F%3E%3Cstop%20stop-color%3D'rgba(19%2C22%2C31%2C1)'%20offset%3D'0.4'%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D'100%25'%20height%3D'100%25'%20fill%3D'url(%23grad)'%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E&quot;); mix-blend-mode: normal">
+                        <div style="display: flex; flex-direction: row; gap: 10px; align-items: center; padding: 0px 16px 0px 16px; width: 100%; height: 100%; position: relative">
+                          <div id="2_638" style="width: 28px; height: 28px; background-image: url(./image/play.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                          <div id="2_640" style="width: 28px; height: 28px; background-image: url(./image/arrowuptoline.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                          <div id="2_644" style="width: 28px; height: 28px; background-image: url(./image/listplus.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                          <div id="2_650" style="width: 28px; height: 28px; background-image: url(./image/ban.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                          <div id="2_653" style="width: 28px; height: 28px; background-image: url(./image/trash20.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div id="2_659" style="width: 100%; height: auto; position: relative; flex-shrink: 0; flex-grow: 1; background-color: rgba(15, 17, 23, 1); mix-blend-mode: normal"></div>
+                  <div id="2_660" style="position: relative; width: 100%; height: 68px; display: flex; flex-shrink: 0">
+                    <div style="width: 100%; height: 100%; position: relative; flex-shrink: 0; display: flex; flex-direction: row; align-items: center; background-color: rgba(17, 21, 32, 1); mix-blend-mode: normal"></div>
+                    <div style="position: absolute; inset: 0px; border-radius: 0px 0px 0px 0px; pointer-events: none; border-width: 1px 0px 0px 0px; border-style: solid; box-sizing: border-box; border-color: rgba(30, 38, 66, 1)"></div>
+                    <div style="position: absolute; inset: 0; width: 100%; height: 100%">
+                      <div style="display: flex; flex-direction: row; gap: 12px; align-items: center; padding: 0px 20px 0px 20px; width: 100%; height: 100%; position: relative">
+                        <div id="2_661" style="position: relative; width: 100%; height: 42px; display: flex; flex-shrink: 1; flex-grow: 1; flex-basis: 0">
+                          <div style="width: 100%; height: 100%; position: relative; flex-shrink: 1; display: flex; flex-direction: row; align-items: center; flex-grow: 1; flex-basis: 0; border-radius: 8px 8px 8px 8px; background-color: rgba(26, 32, 53, 1); mix-blend-mode: normal"></div>
+                          <div style="position: absolute; inset: 0px; border-radius: 8px 8px 8px 8px; pointer-events: none; border-width: 1px 1px 1px 1px; border-style: solid; box-sizing: border-box; border-color: rgba(42, 51, 82, 1)"></div>
+                          <div style="position: absolute; inset: 0; width: 100%; height: 100%">
+                            <div style="display: flex; flex-direction: row; gap: 8px; align-items: center; padding: 0px 14px 0px 14px; width: 100%; height: 100%; position: relative">
+                              <div id="2_677" style="width: 16px; height: 16px; background-image: url(./image/music.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                              <p id="2_681" style="font-size: 13px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(58, 64, 96, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">输入歌曲名或歌手名点歌...</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div id="2_662" style="width: auto; height: 42px; position: relative; flex-shrink: 0; display: flex; flex-direction: row; align-items: center; border-radius: 8px 8px 8px 8px; background-color: rgba(37, 99, 235, 1); mix-blend-mode: normal">
+                          <div style="display: flex; flex-direction: row; gap: 6px; align-items: center; padding: 0px 20px 0px 20px; height: 100%; position: relative">
+                            <div id="2_663" style="width: 16px; height: 16px; background-image: url(./image/music4.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                            <p id="2_668" style="font-size: 13px; font-family: &quot;Noto Sans SC-SemiBold&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(255, 255, 255, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">点歌</p>
+                          </div>
+                        </div>
+                        <div id="2_669" style="position: relative; width: auto; height: 42px; display: flex; flex-shrink: 0">
+                          <div style="width: 100%; height: 100%; position: relative; flex-shrink: 0; display: flex; flex-direction: row; align-items: center; border-radius: 8px 8px 8px 8px; background-color: rgba(30, 36, 54, 1); mix-blend-mode: normal">
+                            <div style="display: flex; flex-direction: row; gap: 6px; align-items: center; padding: 0px 16px 0px 16px; height: 100%; position: relative">
+                              <div id="2_670" style="width: 16px; height: 16px; background-image: url(./image/trash2.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                              <p id="2_676" style="font-size: 13px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(139, 146, 168, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">清空列表</p>
+                            </div>
+                          </div>
+                          <div style="position: absolute; inset: 0px; border-radius: 8px 8px 8px 8px; pointer-events: none; border-width: 1px 1px 1px 1px; border-style: solid; box-sizing: border-box; border-color: rgba(42, 51, 82, 1)"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div id="2_205" style="position: relative; width: 320px; height: 712px; display: flex; flex-shrink: 0">
+                <div style="width: 100%; height: 100%; position: relative; flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-start; align-self: stretch; background-color: rgba(12, 15, 26, 1); mix-blend-mode: normal"></div>
+                <div style="position: absolute; inset: 0px; border-radius: 0px 0px 0px 0px; pointer-events: none; border-width: 0px 0px 0px 1px; border-style: solid; box-sizing: border-box; border-color: rgba(42, 47, 62, 1)"></div>
+                <div style="position: absolute; inset: 0; width: 100%; height: 100%">
+                  <div style="display: flex; flex-direction: column; align-items: flex-start; width: 100%; height: 100%; position: relative">
+                    <div id="2_206" style="position: relative; width: 100%; height: 48px; display: flex; flex-shrink: 0">
+                      <div style="width: 100%; height: 100%; position: relative; flex-shrink: 0; display: flex; flex-direction: row; align-items: center; background-color: rgba(17, 21, 32, 1); mix-blend-mode: normal"></div>
+                      <div style="position: absolute; inset: 0px; border-radius: 0px 0px 0px 0px; pointer-events: none; border-width: 0px 0px 1px 0px; border-style: solid; box-sizing: border-box; border-color: rgba(42, 47, 62, 1)"></div>
+                      <div style="position: absolute; inset: 0; width: 100%; height: 100%">
+                        <div style="display: flex; flex-direction: row; gap: 8px; align-items: center; padding: 0px 16px 0px 16px; width: 100%; height: 100%; position: relative">
+                          <div id="2_207" style="width: 14px; height: 14px; background-image: url(./image/activity.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                          <p id="2_209" style="font-size: 14px; font-family: &quot;Noto Sans SC-SemiBold&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(232, 236, 245, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">实时日志</p>
+                          <div id="2_210" style="width: 100%; height: 1px; position: relative; flex-shrink: 1; flex-grow: 1; flex-basis: 0; background-color: rgba(0, 0, 0, 0); mix-blend-mode: normal"></div>
+                          <div id="2_211" style="width: auto; height: auto; position: relative; flex-shrink: 0; display: flex; flex-direction: row; align-items: center; padding: 2px 8px 2px 8px; border-radius: 10px 10px 10px 10px; background-color: rgba(30, 36, 54, 1); mix-blend-mode: normal">
+                            <p id="2_212" style="font-size: 11px; font-family: &quot;Noto Sans SC-Medium&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(139, 146, 168, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">24 条</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div id="2_213" style="width: 100%; height: auto; position: relative; flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-start; flex-grow: 1; background-color: rgba(12, 15, 26, 1); mix-blend-mode: normal">
+                      <div style="display: flex; flex-direction: column; align-items: flex-start; width: 100%; height: 100%; position: relative">
+                        <div id="2_214" style="position: relative; width: 100%; height: auto; display: flex; flex-shrink: 0">
+                          <div style="width: 100%; height: 100%; position: relative; flex-shrink: 0; display: flex; flex-direction: row; align-items: flex-start; background-color: rgba(12, 15, 26, 1); mix-blend-mode: normal">
+                            <div style="display: flex; flex-direction: row; gap: 10px; align-items: flex-start; padding: 12px 16px 12px 16px; width: 100%; position: relative">
+                              <div id="2_215" style="width: 6px; height: 6px; position: relative; flex-shrink: 0; border-radius: 3px 3px 3px 3px; background-color: rgba(79, 142, 247, 1); mix-blend-mode: normal"></div>
+                              <div id="2_216" style="width: 100%; height: auto; position: relative; flex-shrink: 1; display: flex; flex-direction: column; align-items: flex-start; flex-grow: 1; flex-basis: 0; mix-blend-mode: normal">
+                                <div style="display: flex; flex-direction: column; gap: 3px; align-items: flex-start; width: 100%; position: relative">
+                                  <p id="2_217" style="font-size: 12px; font-family: &quot;Noto Sans SC-Medium&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; font-feature-settings: &quot;locl&quot; 0; text-decoration: none; color: rgba(200, 206, 222, 1); width: 250px; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">小明 点播了「晴天」</p>
+                                  <p id="2_218" style="font-size: 11px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(90, 96, 122, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">14:32:05</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div style="position: absolute; inset: 0px; border-radius: 0px 0px 0px 0px; pointer-events: none; border-width: 0px 0px 1px 0px; border-style: solid; box-sizing: border-box; border-color: rgba(26, 31, 46, 1)"></div>
+                        </div>
+                        <div id="2_219" style="position: relative; width: 100%; height: auto; display: flex; flex-shrink: 0">
+                          <div style="width: 100%; height: 100%; position: relative; flex-shrink: 0; display: flex; flex-direction: row; align-items: flex-start; background-color: rgba(12, 15, 26, 1); mix-blend-mode: normal">
+                            <div style="display: flex; flex-direction: row; gap: 10px; align-items: flex-start; padding: 12px 16px 12px 16px; width: 100%; position: relative">
+                              <div id="2_220" style="width: 6px; height: 6px; position: relative; flex-shrink: 0; border-radius: 3px 3px 3px 3px; background-color: rgba(76, 200, 122, 1); mix-blend-mode: normal"></div>
+                              <div id="2_221" style="width: 100%; height: auto; position: relative; flex-shrink: 1; display: flex; flex-direction: column; align-items: flex-start; flex-grow: 1; flex-basis: 0; mix-blend-mode: normal">
+                                <div style="display: flex; flex-direction: column; gap: 3px; align-items: flex-start; width: 100%; position: relative">
+                                  <p id="2_222" style="font-size: 12px; font-family: &quot;Noto Sans SC-Medium&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; font-feature-settings: &quot;locl&quot; 0; text-decoration: none; color: rgba(200, 206, 222, 1); width: 250px; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">开始播放「晴天」</p>
+                                  <p id="2_223" style="font-size: 11px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(90, 96, 122, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">14:31:50</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div style="position: absolute; inset: 0px; border-radius: 0px 0px 0px 0px; pointer-events: none; border-width: 0px 0px 1px 0px; border-style: solid; box-sizing: border-box; border-color: rgba(26, 31, 46, 1)"></div>
+                        </div>
+                        <div id="2_224" style="position: relative; width: 100%; height: auto; display: flex; flex-shrink: 0">
+                          <div style="width: 100%; height: 100%; position: relative; flex-shrink: 0; display: flex; flex-direction: row; align-items: flex-start; background-color: rgba(12, 15, 26, 1); mix-blend-mode: normal">
+                            <div style="display: flex; flex-direction: row; gap: 10px; align-items: flex-start; padding: 12px 16px 12px 16px; width: 100%; position: relative">
+                              <div id="2_225" style="width: 6px; height: 6px; position: relative; flex-shrink: 0; border-radius: 3px 3px 3px 3px; background-color: rgba(79, 142, 247, 1); mix-blend-mode: normal"></div>
+                              <div id="2_226" style="width: 100%; height: auto; position: relative; flex-shrink: 1; display: flex; flex-direction: column; align-items: flex-start; flex-grow: 1; flex-basis: 0; mix-blend-mode: normal">
+                                <div style="display: flex; flex-direction: column; gap: 3px; align-items: flex-start; width: 100%; position: relative">
+                                  <p id="2_227" style="font-size: 12px; font-family: &quot;Noto Sans SC-Medium&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; font-feature-settings: &quot;locl&quot; 0; text-decoration: none; color: rgba(200, 206, 222, 1); width: 250px; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">大白 点播了「光年之外」</p>
+                                  <p id="2_228" style="font-size: 11px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(90, 96, 122, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">14:31:22</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div style="position: absolute; inset: 0px; border-radius: 0px 0px 0px 0px; pointer-events: none; border-width: 0px 0px 1px 0px; border-style: solid; box-sizing: border-box; border-color: rgba(26, 31, 46, 1)"></div>
+                        </div>
+                        <div id="2_229" style="position: relative; width: 100%; height: auto; display: flex; flex-shrink: 0">
+                          <div style="width: 100%; height: 100%; position: relative; flex-shrink: 0; display: flex; flex-direction: row; align-items: flex-start; background-color: rgba(12, 15, 26, 1); mix-blend-mode: normal">
+                            <div style="display: flex; flex-direction: row; gap: 10px; align-items: flex-start; padding: 12px 16px 12px 16px; width: 100%; position: relative">
+                              <div id="2_230" style="width: 6px; height: 6px; position: relative; flex-shrink: 0; border-radius: 3px 3px 3px 3px; background-color: rgba(255, 90, 90, 1); mix-blend-mode: normal"></div>
+                              <div id="2_231" style="width: 100%; height: auto; position: relative; flex-shrink: 1; display: flex; flex-direction: column; align-items: flex-start; flex-grow: 1; flex-basis: 0; mix-blend-mode: normal">
+                                <div style="display: flex; flex-direction: column; gap: 3px; align-items: flex-start; width: 100%; position: relative">
+                                  <p id="2_232" style="font-size: 12px; font-family: &quot;Noto Sans SC-Medium&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; font-feature-settings: &quot;locl&quot; 0; text-decoration: none; color: rgba(255, 128, 128, 1); width: 250px; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">搜索失败：「未知歌曲」无法找到</p>
+                                  <p id="2_233" style="font-size: 11px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(90, 96, 122, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">14:30:55</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div style="position: absolute; inset: 0px; border-radius: 0px 0px 0px 0px; pointer-events: none; border-width: 0px 0px 1px 0px; border-style: solid; box-sizing: border-box; border-color: rgba(26, 31, 46, 1)"></div>
+                        </div>
+                        <div id="2_234" style="position: relative; width: 100%; height: auto; display: flex; flex-shrink: 0">
+                          <div style="width: 100%; height: 100%; position: relative; flex-shrink: 0; display: flex; flex-direction: row; align-items: flex-start; background-color: rgba(12, 15, 26, 1); mix-blend-mode: normal">
+                            <div style="display: flex; flex-direction: row; gap: 10px; align-items: flex-start; padding: 12px 16px 12px 16px; width: 100%; position: relative">
+                              <div id="2_235" style="width: 6px; height: 6px; position: relative; flex-shrink: 0; border-radius: 3px 3px 3px 3px; background-color: rgba(79, 142, 247, 1); mix-blend-mode: normal"></div>
+                              <div id="2_236" style="width: 100%; height: auto; position: relative; flex-shrink: 1; display: flex; flex-direction: column; align-items: flex-start; flex-grow: 1; flex-basis: 0; mix-blend-mode: normal">
+                                <div style="display: flex; flex-direction: column; gap: 3px; align-items: flex-start; width: 100%; position: relative">
+                                  <p id="2_237" style="font-size: 12px; font-family: &quot;Noto Sans SC-Medium&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; font-feature-settings: &quot;locl&quot; 0; text-decoration: none; color: rgba(200, 206, 222, 1); width: 250px; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">Cherry 点播了「稻香」</p>
+                                  <p id="2_238" style="font-size: 11px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(90, 96, 122, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">14:30:40</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div style="position: absolute; inset: 0px; border-radius: 0px 0px 0px 0px; pointer-events: none; border-width: 0px 0px 1px 0px; border-style: solid; box-sizing: border-box; border-color: rgba(26, 31, 46, 1)"></div>
+                        </div>
+                        <div id="2_239" style="position: relative; width: 100%; height: auto; display: flex; flex-shrink: 0">
+                          <div style="width: 100%; height: 100%; position: relative; flex-shrink: 0; display: flex; flex-direction: row; align-items: flex-start; background-color: rgba(12, 15, 26, 1); mix-blend-mode: normal">
+                            <div style="display: flex; flex-direction: row; gap: 10px; align-items: flex-start; padding: 12px 16px 12px 16px; width: 100%; position: relative">
+                              <div id="2_240" style="width: 6px; height: 6px; position: relative; flex-shrink: 0; border-radius: 3px 3px 3px 3px; background-color: rgba(76, 200, 122, 1); mix-blend-mode: normal"></div>
+                              <div id="2_241" style="width: 100%; height: auto; position: relative; flex-shrink: 1; display: flex; flex-direction: column; align-items: flex-start; flex-grow: 1; flex-basis: 0; mix-blend-mode: normal">
+                                <div style="display: flex; flex-direction: column; gap: 3px; align-items: flex-start; width: 100%; position: relative">
+                                  <p id="2_242" style="font-size: 12px; font-family: &quot;Noto Sans SC-Medium&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; font-feature-settings: &quot;locl&quot; 0; text-decoration: none; color: rgba(200, 206, 222, 1); width: 250px; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">弹幕点歌已连接到 bilibili 直播间</p>
+                                  <p id="2_243" style="font-size: 11px; font-family: &quot;Noto Sans SC-Regular&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(90, 96, 122, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">14:28:00</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div style="position: absolute; inset: 0px; border-radius: 0px 0px 0px 0px; pointer-events: none; border-width: 0px 0px 1px 0px; border-style: solid; box-sizing: border-box; border-color: rgba(26, 31, 46, 1)"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div id="2_262" style="position: relative; width: 100%; height: 48px; display: flex; flex-shrink: 0">
+                      <div style="width: 100%; height: 100%; position: relative; flex-shrink: 0; display: flex; flex-direction: row; justify-content: center; align-items: center; background-color: rgba(12, 15, 26, 1); mix-blend-mode: normal"></div>
+                      <div style="position: absolute; inset: 0px; border-radius: 0px 0px 0px 0px; pointer-events: none; border-width: 1px 0px 0px 0px; border-style: solid; box-sizing: border-box; border-color: rgba(26, 31, 46, 1)"></div>
+                      <div style="position: absolute; inset: 0; width: 100%; height: 100%">
+                        <div style="display: flex; flex-direction: row; gap: 8px; align-items: center; justify-content: center; padding: 0px 16px 0px 16px; width: 100%; height: 100%; position: relative">
+                          <div id="2_263" style="position: relative; width: 100%; height: auto; display: flex; flex-shrink: 1; flex-grow: 1; flex-basis: 0">
+                            <div style="width: 100%; height: 100%; position: relative; flex-shrink: 1; display: flex; flex-direction: row; justify-content: center; align-items: center; flex-grow: 1; flex-basis: 0; border-radius: 6px 6px 6px 6px; background-color: rgba(22, 27, 39, 1); mix-blend-mode: normal">
+                              <div style="display: flex; flex-direction: row; gap: 6px; align-items: center; justify-content: center; padding: 7px 0px 7px 0px; width: 100%; position: relative">
+                                <div id="2_264" style="width: 13px; height: 13px; background-image: url(./image/eraser.svg); background-size: 100% 100%; background-repeat: no-repeat; position: relative; flex-shrink: 0"></div>
+                                <p id="2_267" style="font-size: 12px; font-family: &quot;Noto Sans SC-Medium&quot;; font-weight: 400; text-align: left; letter-spacing: 0px; text-decoration: none; color: rgba(90, 96, 122, 1); width: auto; height: auto; position: relative; flex-shrink: 0; white-space: pre; flex-grow: 0; mix-blend-mode: normal">清空日志</p>
+                              </div>
+                            </div>
+                            <div style="position: absolute; inset: 0px; border-radius: 6px 6px 6px 6px; pointer-events: none; border-width: 1px 1px 1px 1px; border-style: solid; box-sizing: border-box; border-color: rgba(42, 47, 62, 1)"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+
+</script>
+<script src="musicbot-ui.js"></script>
+
+</body>
+</html>

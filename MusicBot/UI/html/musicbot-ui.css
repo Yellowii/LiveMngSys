@@ -1,0 +1,2248 @@
+html,
+body {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  overflow: hidden;
+  background: #0f1117;
+}
+
+.musicbot-root {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100%;
+  height: 100vh !important;
+  height: 100dvh !important;
+  min-height: 0;
+  overflow: hidden;
+}
+
+@media (min-resolution: 120dpi), (min-resolution: 1.25dppx) {
+  .musicbot-root {
+    width: 100% !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    zoom: 1;
+  }
+}
+
+[id="2_102"] {
+  height: auto !important;
+  min-height: 0 !important;
+  flex: 1 1 0 !important;
+}
+
+.musicbot-workspace {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  align-items: stretch;
+  overflow: hidden;
+  background: #0b0e12;
+}
+
+.musicbot-content-pane {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  flex-direction: column;
+  overflow: hidden;
+  background: #0d1116;
+}
+
+.musicbot-content-pane > [id="2_72"] {
+  width: 100% !important;
+  flex: 0 0 auto !important;
+}
+
+.musicbot-log-pane {
+  width: 320px !important;
+  height: 100% !important;
+  min-width: 0;
+  min-height: 0;
+  align-self: stretch !important;
+  overflow: hidden;
+  background: #10151b;
+}
+
+.musicbot-log-pane > div:last-child,
+.musicbot-log-pane > div:last-child > div {
+  height: 100% !important;
+  min-height: 0;
+}
+
+.musicbot-log-pane [id="2_213"] {
+  height: auto !important;
+  min-height: 0;
+  overflow: hidden;
+  flex: 1 1 0 !important;
+  background: #0e1319 !important;
+}
+
+.musicbot-log-pane [id="2_262"] {
+  display: none !important;
+}
+
+.musicbot-clickable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.musicbot-clickable:focus-visible,
+.musicbot-input:focus-visible,
+.musicbot-select:focus-visible {
+  outline: 2px solid #4f8ef7;
+  outline-offset: 2px;
+}
+
+.musicbot-input {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #e8ecf5;
+  font: 13px "Noto Sans SC-Regular", sans-serif;
+}
+
+.musicbot-top-title,
+.musicbot-top-artist,
+.musicbot-top-source {
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+}
+
+.musicbot-top-background-layer {
+  z-index: 0;
+  background-color: #101521 !important;
+}
+
+[id="2_18"] {
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.musicbot-top-content-layer {
+  z-index: 2;
+}
+
+.musicbot-top-border-layer {
+  z-index: 3;
+}
+
+.musicbot-nebula-layer {
+  --nebula-1: 79, 142, 247;
+  --nebula-2: 117, 96, 255;
+  --nebula-3: 42, 213, 194;
+  --nebula-4: 255, 112, 192;
+  --nebula-5: 255, 187, 76;
+  --nebula-drift-duration: 4200ms;
+  --nebula-x: 0%;
+  --nebula-y: 0px;
+  --nebula-scale: 1.05;
+  position: absolute;
+  z-index: 1;
+  inset: -14px -2%;
+  display: block;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate3d(var(--nebula-x), var(--nebula-y), 0) scale(var(--nebula-scale));
+  background-image:
+    radial-gradient(ellipse at 14% 100%, rgba(var(--nebula-3), 0.3) 0%, rgba(var(--nebula-2), 0.16) 34%, transparent 70%),
+    radial-gradient(ellipse at 51% 100%, rgba(var(--nebula-4), 0.24) 0%, rgba(var(--nebula-1), 0.12) 38%, transparent 72%),
+    radial-gradient(ellipse at 86% 100%, rgba(var(--nebula-5), 0.26) 0%, rgba(var(--nebula-2), 0.14) 36%, transparent 70%),
+    linear-gradient(178deg, transparent 40%, rgba(var(--nebula-1), 0.06) 49%, rgba(var(--nebula-2), 0.45) 57%, rgba(255, 255, 255, 0.08) 61%, transparent 69%),
+    linear-gradient(166deg, transparent 50%, rgba(var(--nebula-4), 0.46) 59%, rgba(var(--nebula-1), 0.32) 66%, rgba(255, 255, 255, 0.06) 70%, transparent 78%),
+    linear-gradient(184deg, transparent 29%, rgba(var(--nebula-3), 0.42) 39%, rgba(var(--nebula-5), 0.44) 47%, rgba(255, 255, 255, 0.07) 51%, transparent 58%),
+    linear-gradient(155deg, transparent 63%, rgba(var(--nebula-2), 0.42) 72%, rgba(var(--nebula-4), 0.34) 79%, rgba(255, 255, 255, 0.06) 83%, transparent 91%);
+  background-repeat: no-repeat;
+  background-size: 125% 100%, 140% 100%, 118% 100%, 152% 100%;
+  background-position: -18% 0%, 114% 0%, 34% 0%, 84% 0%;
+  filter: blur(18px) saturate(1.45) brightness(1.04) drop-shadow(0 0 10px rgba(var(--nebula-2), 0.26));
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, transparent 18%, rgba(0, 0, 0, 0.45) 30%, #000 43%, #000 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, transparent 18%, rgba(0, 0, 0, 0.45) 30%, #000 43%, #000 100%);
+  transition:
+    opacity 900ms ease-out,
+    transform var(--nebula-drift-duration) ease-in-out,
+    background-position var(--nebula-drift-duration) ease-in-out,
+    background-size var(--nebula-drift-duration) ease-in-out;
+  will-change: opacity, transform, background-position, background-size;
+}
+
+.musicbot-nebula-layer.musicbot-nebula-playing {
+  opacity: 0.64;
+}
+
+.musicbot-nebula-layer.musicbot-nebula-settling {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0) scale(1.04);
+}
+
+.musicbot-top-title,
+.musicbot-top-artist {
+  max-width: 146px !important;
+}
+
+.musicbot-top-source {
+  display: block !important;
+  width: 132px !important;
+  max-width: 132px !important;
+}
+
+.musicbot-source-badge {
+  width: 152px !important;
+  max-width: 152px !important;
+  overflow: hidden !important;
+}
+
+.musicbot-top-lyric,
+.musicbot-top-lyric-next {
+  display: block !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+}
+
+.musicbot-top-lyric {
+  min-height: 30px;
+  font-size: 22px !important;
+  font-weight: 600 !important;
+  line-height: 30px !important;
+}
+
+.musicbot-top-lyric-next {
+  min-height: 22px;
+  color: #d4dbe7 !important;
+  font-size: 17px !important;
+  line-height: 24px !important;
+}
+
+.musicbot-lyric-panel {
+  min-height: 58px;
+  justify-content: center;
+}
+
+.musicbot-progress-row {
+  margin-top: 6px;
+  transform: translateY(3px);
+}
+
+.musicbot-input::placeholder {
+  color: #5a607a;
+}
+
+input:focus::placeholder,
+textarea:focus::placeholder {
+  color: transparent !important;
+  opacity: 0 !important;
+}
+
+input:not(:placeholder-shown)::placeholder,
+textarea:not(:placeholder-shown)::placeholder {
+  color: transparent !important;
+  opacity: 0 !important;
+}
+
+.musicbot-input-shell {
+  isolation: isolate;
+}
+
+.musicbot-input-shell p {
+  opacity: 0 !important;
+  pointer-events: none;
+}
+
+.musicbot-search-input {
+  padding: 0 12px 0 34px;
+}
+
+.musicbot-request-input {
+  padding: 0 14px 0 40px;
+}
+
+.musicbot-range {
+  position: absolute;
+  top: -8px;
+  left: 0;
+  right: auto;
+  bottom: auto;
+  z-index: 6;
+  width: 100%;
+  height: 20px;
+  margin: 0;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: auto;
+}
+
+.musicbot-select {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  padding: 0 30px 0 30px;
+  appearance: none;
+  background: transparent;
+  color: transparent;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.musicbot-select option,
+.musicbot-select optgroup {
+  background: #0f1117;
+  color: #c8cede;
+}
+
+.musicbot-root [id="2_61"],
+.musicbot-root [id="2_61"] > div:first-child,
+.musicbot-root [id="2_61"] > div:first-child > div {
+  min-width: 0 !important;
+}
+
+.musicbot-root [id="2_68"] {
+  display: block !important;
+  min-width: 0 !important;
+  max-width: calc(100% - 44px) !important;
+  overflow: hidden !important;
+  flex: 1 1 auto !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+}
+
+.musicbot-control-active {
+  animation: musicbot-control-press 180ms ease-out;
+}
+
+@keyframes musicbot-control-press {
+  0% { transform: scale(1); }
+  45% { transform: scale(0.84); }
+  100% { transform: scale(1); }
+}
+
+.musicbot-play-control.musicbot-paused .musicbot-play-icon {
+  background-image: url('./image/play3.svg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 18px 18px;
+  filter: brightness(0) invert(1);
+}
+
+.musicbot-play-control.musicbot-paused .musicbot-play-icon > div {
+  display: none;
+}
+
+.musicbot-play-control.musicbot-playing .musicbot-play-icon {
+  background-image: none;
+}
+
+.musicbot-table {
+  min-width: 760px;
+}
+
+.musicbot-content-pane [id="2_103"] > div {
+  display: grid !important;
+  grid-template-columns: minmax(230px, 1fr) 72px 104px 96px 96px minmax(96px, 1fr);
+  align-items: center;
+  padding: 0 24px !important;
+}
+
+.musicbot-content-pane [id="2_103"] > div > div {
+  width: auto !important;
+  min-width: 0;
+}
+
+.musicbot-column-hidden {
+  display: none !important;
+}
+
+.musicbot-table-body {
+  width: 100%;
+  min-height: 0;
+  overflow: auto;
+  flex: 1 1 auto;
+  background: #0d1116;
+}
+
+.musicbot-table-body-filter {
+  overflow: hidden;
+}
+
+.musicbot-filter-view {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  flex-direction: column;
+  background: #0d1116;
+}
+
+.musicbot-filter-list {
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
+
+.musicbot-filter-row {
+  display: grid;
+  min-height: 54px;
+  grid-template-columns: 52px minmax(0, 1fr) 40px;
+  align-items: center;
+  padding: 0 24px;
+  border-bottom: 1px solid #202833;
+  color: #d9dfeb;
+}
+
+.musicbot-filter-row:nth-child(even) {
+  background: #121820;
+}
+
+.musicbot-filter-row:hover {
+  background: #1a2430;
+}
+
+.musicbot-filter-index {
+  display: inline-flex;
+  width: 3ch;
+  min-width: 3ch;
+  max-width: 3ch;
+  justify-content: center;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  color: #8e99af;
+  font-size: 13px;
+  text-align: center;
+}
+
+.musicbot-blacklist-index {
+  display: inline-flex;
+  width: 3ch;
+  min-width: 3ch;
+  max-width: 3ch;
+  justify-content: center;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  color: #8e99af;
+  text-align: center;
+}
+
+.musicbot-filter-keyword {
+  overflow: hidden;
+  color: #eef1f7;
+  font: 14px "Noto Sans SC-Medium", sans-serif;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.musicbot-filter-delete {
+  width: 30px;
+  height: 30px;
+  border: 0;
+  padding: 0;
+  border-radius: 4px;
+  background: transparent center / 28px 28px no-repeat;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 120ms ease, background-color 120ms ease;
+}
+
+.musicbot-filter-row:hover .musicbot-filter-delete,
+.musicbot-filter-delete:focus-visible {
+  opacity: 1;
+}
+
+.musicbot-filter-delete:hover {
+  background-color: rgba(255, 90, 90, 0.12);
+}
+
+.musicbot-filter-controls {
+  display: flex;
+  min-height: 70px;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 18px;
+  border-top: 1px solid #36414d;
+  background: #181d24;
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.musicbot-filter-controls .musicbot-control-input {
+  max-width: 420px;
+}
+
+.musicbot-filter-controls button {
+  min-width: 72px;
+  min-height: 32px;
+  border: 1px solid #364250;
+  padding: 0 14px;
+  border-radius: 4px;
+  background: #242c36;
+  color: #d9dfeb;
+  font: 13px "Noto Sans SC-Medium", sans-serif;
+  cursor: pointer;
+}
+
+.musicbot-filter-controls button.primary {
+  border-color: #2563eb;
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.musicbot-filter-controls button.danger {
+  margin-left: auto;
+  border-color: #713535;
+  color: #ff8080;
+}
+
+.musicbot-table-body-blacklist {
+  overflow: hidden;
+}
+
+.musicbot-blacklist-view {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  flex-direction: column;
+  background: #0d1116;
+}
+
+.musicbot-blacklist-columns,
+.musicbot-blacklist-row {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) 80px 140px 100px;
+  align-items: center;
+  padding: 0 64px 0 24px;
+}
+
+.musicbot-blacklist-columns {
+  min-height: 40px;
+  flex: 0 0 40px;
+  border-bottom: 1px solid #2c3540;
+  background: #1b222a;
+  color: #98a3b9;
+  font: 13px "Noto Sans SC-Medium", sans-serif;
+}
+
+.musicbot-blacklist-list {
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
+
+.musicbot-blacklist-row {
+  position: relative;
+  min-height: 60px;
+  border-bottom: 1px solid #202833;
+  color: #aab3c5;
+  font: 13px "Noto Sans SC-Regular", sans-serif;
+}
+
+.musicbot-blacklist-row:nth-child(even) {
+  background: #121820;
+}
+
+.musicbot-blacklist-row:hover {
+  background: #1a2430;
+}
+
+.musicbot-blacklist-song {
+  display: grid;
+  grid-template-columns: 3ch 38px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding-right: 16px;
+}
+
+.musicbot-blacklist-index {
+  color: #8e99af;
+  text-align: center;
+}
+
+.musicbot-blacklist-cover {
+  width: 38px;
+  height: 38px;
+  border-radius: 4px;
+  background: #1e2436 center / cover no-repeat;
+}
+
+.musicbot-blacklist-delete {
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  padding: 0;
+  border-radius: 4px;
+  opacity: 0;
+  background: transparent center / 28px 28px no-repeat;
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: opacity 120ms ease, background-color 120ms ease;
+}
+
+.musicbot-blacklist-row:hover .musicbot-blacklist-delete,
+.musicbot-blacklist-delete:focus-visible {
+  opacity: 1;
+}
+
+.musicbot-blacklist-delete:hover {
+  background-color: rgba(255, 90, 90, 0.12);
+}
+
+.musicbot-blacklist-controls {
+  display: flex;
+  min-height: 70px;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 18px;
+  border-top: 1px solid #36414d;
+  background: #181d24;
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.musicbot-blacklist-controls .musicbot-control-input {
+  max-width: 500px;
+}
+
+.musicbot-blacklist-controls button {
+  min-width: 72px;
+  min-height: 32px;
+  border: 1px solid #364250;
+  padding: 0 14px;
+  border-radius: 4px;
+  background: #242c36;
+  color: #d9dfeb;
+  font: 13px "Noto Sans SC-Medium", sans-serif;
+  cursor: pointer;
+}
+
+.musicbot-blacklist-controls button.primary {
+  border-color: #2563eb;
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.musicbot-blacklist-controls button.danger {
+  margin-left: auto;
+  border-color: #713535;
+  color: #ff8080;
+}
+
+.musicbot-table-body-points {
+  overflow: hidden;
+}
+
+.musicbot-points-view {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  flex-direction: column;
+  background: #0d1116;
+}
+
+.musicbot-points-columns,
+.musicbot-points-row {
+  display: grid;
+  grid-template-columns: 42px 56px minmax(100px, 1fr) 84px minmax(100px, 1fr) minmax(100px, 1fr) 112px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 18px;
+}
+
+.musicbot-points-columns {
+  min-height: 40px;
+  flex: 0 0 40px;
+  border-bottom: 1px solid #2c3540;
+  background: #1b222a;
+  color: #98a3b9;
+  font: 13px "Noto Sans SC-Medium", sans-serif;
+}
+
+.musicbot-points-list {
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow: auto;
+}
+
+.musicbot-points-row {
+  min-height: 60px;
+  border-bottom: 1px solid #202833;
+  color: #c4ccda;
+  font: 13px "Noto Sans SC-Regular", sans-serif;
+}
+
+.musicbot-points-row:nth-child(even) {
+  background: #121820;
+}
+
+.musicbot-points-row:hover,
+.musicbot-points-row.editing {
+  background: #1a2430;
+}
+
+.musicbot-points-select {
+  width: 15px;
+  height: 15px;
+  justify-self: center;
+  accent-color: #3b82f6;
+}
+
+.musicbot-user-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #25303c;
+}
+
+.musicbot-points-text {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.musicbot-points-value {
+  color: #f0f4fa;
+  font-weight: 600;
+}
+
+.musicbot-points-input {
+  width: 100%;
+  min-width: 0;
+  height: 32px;
+  border: 1px solid #3a4757;
+  border-radius: 4px;
+  padding: 0 8px;
+  outline: 0;
+  background: #10161d;
+  color: #eef2f8;
+}
+
+.musicbot-points-input:focus {
+  border-color: #3b82f6;
+}
+
+.musicbot-points-actions,
+.musicbot-points-controls {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.musicbot-points-actions button,
+.musicbot-points-controls button,
+.musicbot-data-actions button {
+  min-height: 30px;
+  border: 1px solid #364250;
+  border-radius: 4px;
+  padding: 0 11px;
+  background: #242c36;
+  color: #d9dfeb;
+  cursor: pointer;
+}
+
+.musicbot-points-actions button.primary,
+.musicbot-data-actions button.primary {
+  border-color: #2563eb;
+  background: #2563eb;
+  color: #fff;
+}
+
+.musicbot-points-actions button.danger,
+.musicbot-points-controls button.danger {
+  border-color: #713535;
+  color: #ff8080;
+}
+
+.musicbot-points-controls {
+  min-height: 70px;
+  flex: 0 0 70px;
+  justify-content: flex-end;
+  padding: 14px 18px;
+  border-top: 1px solid #36414d;
+  background: #181d24;
+  color: #98a3b9;
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.musicbot-points-controls span {
+  margin-right: auto;
+}
+
+.musicbot-points-controls button:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.musicbot-data-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.musicbot-table-body-idle {
+  overflow: hidden;
+}
+
+.musicbot-system {
+  display: grid;
+  gap: 7px;
+  width: 100%;
+  flex: 0 0 auto;
+  padding: 12px 16px;
+  border-top: 1px solid #303945;
+  background: #181d23;
+}
+
+.musicbot-system > div {
+  display: grid;
+  grid-template-columns: 82px minmax(0, 1fr);
+  gap: 8px;
+  color: #8e99af;
+  font: 12px "Noto Sans SC-Regular", sans-serif;
+}
+
+.musicbot-system strong {
+  overflow: hidden;
+  color: #e1e6ef;
+  font-weight: 400;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.musicbot-lyric-current {
+  color: transparent !important;
+  background: linear-gradient(90deg, #4f8ef7 var(--lyric-fill, 0%), #ffffff var(--lyric-fill, 0%));
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+.musicbot-word-line {
+  color: #ffffff !important;
+  background: none !important;
+}
+
+.musicbot-word-token {
+  position: relative;
+  display: inline-block;
+  color: #ffffff;
+  white-space: pre;
+}
+
+.musicbot-word-token::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--word-fill, 0%);
+  max-width: 100%;
+  overflow: hidden;
+  color: #4f8ef7;
+  white-space: pre;
+  transition: width 80ms linear;
+  pointer-events: none;
+}
+
+.musicbot-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(230px, 1fr) 72px 104px 96px 96px minmax(96px, 1fr);
+  align-items: center;
+  min-height: 60px;
+  padding: 0 24px;
+  border-bottom: 1px solid #202833;
+  color: #aab3c5;
+  font: 13px "Noto Sans SC-Regular", sans-serif;
+}
+
+.musicbot-row:nth-child(even) {
+  background: #121820;
+}
+
+.musicbot-row:hover {
+  background: #1a2430;
+}
+
+.musicbot-row-playing,
+.musicbot-row-playing:nth-child(even),
+.musicbot-row-playing:hover {
+  background: #17304a;
+  box-shadow: inset 3px 0 #4f8ef7;
+}
+
+.musicbot-song-cell {
+  display: grid;
+  grid-template-columns: 3ch 38px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  min-width: 0;
+}
+
+.musicbot-index {
+  display: inline-flex;
+  width: 3ch;
+  min-width: 3ch;
+  max-width: 3ch;
+  justify-content: center;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  color: #8e99af;
+}
+
+.musicbot-cover {
+  width: 38px;
+  height: 38px;
+  border-radius: 4px;
+  background: #1e2436 center / cover no-repeat;
+}
+
+.musicbot-song-copy {
+  min-width: 0;
+}
+
+.musicbot-song-title,
+.musicbot-song-artist {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.musicbot-song-title {
+  color: #f0f3f8;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.musicbot-song-artist {
+  margin-top: 3px;
+  color: #98a3b9;
+  font-size: 12px;
+}
+
+.musicbot-requester { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 7px; margin-top: 5px; min-width: 0; color: #7f90aa; font-size: 10px; line-height: 1.2; }
+.musicbot-requester-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.musicbot-requester-badges { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 3px; min-width: 0; }
+.musicbot-requester-badge { display: inline-flex; align-items: center; height: 20px; padding: 0; border: 0; background: transparent; overflow: visible; white-space: nowrap; }
+.musicbot-requester-badge img { display: block; width: auto; max-width: 84px; height: 20px; object-fit: contain; }
+.musicbot-star-guard-badge { --star-guard-scale: 1.4285714286; display: flex; align-items: center; box-sizing: content-box; min-width: 0; max-width: none; height: 20px; margin-left: 4px; border-style: solid; border-width: 0 medium; border-image-repeat: stretch; border-image-slice: 0% 34% 0% 63% fill; border-image-width: 0 calc(9px * var(--star-guard-scale)) 0 calc(18px * var(--star-guard-scale)); color: #fff; font-size: calc(8px * var(--star-guard-scale)); font-weight: 600; line-height: 20px; overflow: visible; flex: 0 0 auto; }
+.musicbot-star-guard-badge > span { display: block; max-width: none; margin-left: calc(12px * var(--star-guard-scale)); overflow: visible; text-overflow: clip; line-height: 20px; }
+.musicbot-star-guard-badge.musicbot-star-guard-badge-ranklist > span { margin-left: calc(14px * var(--star-guard-scale)); }
+
+.musicbot-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #aab3c5;
+}
+
+.musicbot-status.ready {
+  color: #22c55e;
+}
+
+.musicbot-status.loading,
+.musicbot-status.pending {
+  color: #f5b942;
+}
+
+.musicbot-status.failed {
+  color: #ff5a5a;
+}
+
+.musicbot-status.playing {
+  color: #4f8ef7;
+  font-weight: 500;
+}
+
+.musicbot-status.playing .musicbot-log-dot {
+  background: #4f8ef7;
+  box-shadow: 0 0 0 3px rgba(79, 142, 247, 0.16);
+}
+
+.musicbot-badge {
+  display: inline-flex;
+  width: fit-content;
+  max-width: 88px;
+  overflow: hidden;
+  padding: 3px 7px;
+  border-radius: 4px;
+  background: #1e3a5f;
+  color: #4f8ef7;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.musicbot-actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  width: 250px;
+  height: 100%;
+  padding: 0 16px 0 72px;
+  opacity: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, #1a2430 32%);
+  transition: opacity 120ms ease;
+}
+
+.musicbot-row:hover .musicbot-actions,
+.musicbot-idle-song-row:hover .musicbot-actions,
+.musicbot-actions:focus-within {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.musicbot-icon-button {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  padding: 0;
+  border-radius: 4px;
+  background: transparent center / 28px 28px no-repeat;
+  cursor: pointer;
+}
+
+.musicbot-icon-button:hover {
+  background-color: #25314a;
+}
+
+.musicbot-empty {
+  display: grid;
+  min-height: 180px;
+  place-items: center;
+  color: #98a3b9;
+  font: 14px "Noto Sans SC-Regular", sans-serif;
+}
+
+.musicbot-idle-view {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  flex-direction: column;
+  background: #0d1116;
+}
+
+.musicbot-idle-toolbar,
+.musicbot-idle-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 24px;
+  border-bottom: 1px solid #303945;
+  background: #181d24;
+  color: #d9dfeb;
+  font: 13px "Noto Sans SC-Regular", sans-serif;
+}
+
+.musicbot-idle-summary {
+  color: #96a1b7;
+}
+
+.musicbot-check-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+
+.musicbot-check-line input {
+  width: 14px;
+  height: 14px;
+  accent-color: #4f8ef7;
+}
+
+.musicbot-segmented {
+  display: inline-flex;
+  overflow: hidden;
+  border: 1px solid #2a3352;
+  border-radius: 5px;
+}
+
+.musicbot-segmented button,
+.musicbot-idle-control-row button {
+  min-height: 30px;
+  border: 1px solid #364250;
+  padding: 0 12px;
+  background: #242c36;
+  color: #d9dfeb;
+  font: 13px "Noto Sans SC-Medium", sans-serif;
+  cursor: pointer;
+}
+
+.musicbot-segmented button + button {
+  border-left: 0;
+}
+
+.musicbot-segmented button.active {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.musicbot-idle-columns,
+.musicbot-idle-song-row {
+  display: grid;
+  grid-template-columns: minmax(230px, 1fr) 72px 104px 96px 96px minmax(96px, 1fr);
+  align-items: center;
+}
+
+.musicbot-idle-columns {
+  position: relative;
+  z-index: 5;
+  min-height: 40px;
+  flex: 0 0 40px;
+  padding: 0 58px 0 62px;
+  border-bottom: 1px solid #2c3540;
+  background: #1b222a;
+  color: #98a3b9;
+  font: 13px "Noto Sans SC-Medium", sans-serif;
+}
+
+.musicbot-select-all {
+  position: absolute;
+  top: 6px;
+  right: 20px;
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.musicbot-select-all:hover {
+  background: #25314a;
+}
+
+.musicbot-select-all i {
+  position: relative;
+  width: 30px;
+  height: 16px;
+  border: 0;
+  border-radius: 8px;
+  background: #2a3352;
+  transition: background 150ms ease;
+}
+
+.musicbot-select-all i::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #c8cede;
+  transition: transform 150ms ease;
+}
+
+.musicbot-select-all.active i,
+.musicbot-select-all.partial i {
+  background: #2563eb;
+}
+
+.musicbot-select-all.active i::before {
+  transform: translateX(14px);
+  background: #fff;
+}
+
+.musicbot-select-all.partial i::after {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 7px;
+  width: 6px;
+  height: 2px;
+  border-radius: 1px;
+  background: #fff;
+}
+
+.musicbot-playlist-tree {
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  flex: 1 1 auto;
+  scrollbar-gutter: stable;
+}
+
+.musicbot-playlist-group {
+  border-bottom: 1px solid #252e38;
+}
+
+.musicbot-playlist-row {
+  position: sticky;
+  z-index: 3;
+  top: 0;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) 38px;
+  min-height: 54px;
+  align-items: center;
+  gap: 10px;
+  padding: 0 24px;
+  background: #171d24;
+  color: #e8ecf5;
+}
+
+.musicbot-playlist-row:hover {
+  background: #202a34;
+}
+
+.musicbot-playlist-expand {
+  display: none;
+}
+
+.musicbot-playlist-cover {
+  width: 34px;
+  height: 34px;
+  border-radius: 4px;
+  background: #1e2436 center / cover no-repeat;
+}
+
+.musicbot-playlist-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1 1 auto;
+  cursor: pointer;
+}
+
+.musicbot-playlist-actions {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  right: 66px;
+  display: flex;
+  width: 124px;
+  height: 100%;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  padding-left: 28px;
+  box-sizing: border-box;
+  opacity: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, #202a34 28%);
+  transition: opacity 120ms ease;
+}
+
+.musicbot-playlist-row:hover .musicbot-playlist-actions,
+.musicbot-playlist-actions:focus-within {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.musicbot-playlist-actions .musicbot-icon-button:active {
+  transform: scale(0.88);
+}
+
+.musicbot-playlist-switch {
+  display: inline-flex;
+  width: 30px;
+  height: 16px;
+  align-items: center;
+  justify-content: center;
+  justify-self: end;
+  cursor: pointer;
+}
+
+.musicbot-playlist-switch input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.musicbot-playlist-switch i {
+  position: relative;
+  display: block;
+  width: 30px;
+  height: 16px;
+  border-radius: 8px;
+  background: #2a3352;
+  transition: background 150ms ease;
+}
+
+.musicbot-playlist-switch i::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #c8cede;
+  transition: transform 150ms ease;
+}
+
+.musicbot-playlist-switch input:checked + i {
+  background: #2563eb;
+}
+
+.musicbot-playlist-switch input:checked + i::after {
+  transform: translateX(14px);
+  background: #fff;
+}
+
+.musicbot-playlist-copy strong,
+.musicbot-playlist-copy span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.musicbot-playlist-copy strong {
+  color: #f0f3f8;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.musicbot-playlist-copy span {
+  color: #98a3b9;
+  font-size: 12px;
+}
+
+.musicbot-playlist-songs[hidden] {
+  display: none;
+}
+
+.musicbot-idle-song-row {
+  position: relative;
+  min-height: 60px;
+  padding: 0 58px 0 62px;
+  border-top: 1px solid #202833;
+  background: #0f141a;
+  color: #aab3c5;
+  font: 13px "Noto Sans SC-Regular", sans-serif;
+}
+
+.musicbot-idle-song-row:hover {
+  background: #1a2430;
+}
+
+.musicbot-idle-song-row-playing,
+.musicbot-idle-song-row-playing:hover {
+  background: #163048;
+  box-shadow: inset 3px 0 #4f8ef7;
+}
+
+.musicbot-idle-song-row-playing .musicbot-song-title {
+  color: #79adff;
+}
+
+.musicbot-idle-song-row-playing .musicbot-actions {
+  background: linear-gradient(90deg, transparent, #163048 32%);
+}
+
+.musicbot-idle-song-cell {
+  display: grid;
+  grid-template-columns: 3ch 38px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.musicbot-playlist-empty {
+  min-height: 70px;
+  padding-left: 62px;
+  place-items: start center;
+}
+
+.musicbot-idle-controls {
+  min-height: 132px;
+  flex: 0 0 auto;
+  align-content: center;
+  padding: 12px 18px;
+  border-top: 1px solid #36414d;
+  border-bottom: 0;
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.musicbot-idle-control-row {
+  display: flex;
+  flex: 1 1 100%;
+  min-width: 0;
+  gap: 8px;
+}
+
+.musicbot-idle-control-main {
+  align-items: center;
+}
+
+.musicbot-idle-source-row {
+  display: grid;
+  grid-template-columns: minmax(190px, 0.75fr) minmax(390px, 1.25fr);
+  align-items: center;
+}
+
+.musicbot-source-group {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
+}
+
+.musicbot-source-group > button:not(.musicbot-folder-button) {
+  min-width: 104px;
+  flex: 0 0 auto;
+}
+
+.musicbot-source-group > button.primary {
+  border-color: #2563eb;
+  background: #2563eb;
+  color: #fff;
+}
+
+.musicbot-source-group > button.primary:hover {
+  background: #2f6ff1;
+}
+
+.musicbot-idle-control-secondary {
+  align-items: center;
+  justify-content: flex-end;
+  min-height: 34px;
+}
+
+.musicbot-idle-player-controls {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
+}
+
+.musicbot-idle-player-controls {
+  flex: 0 0 auto;
+  padding-right: 4px;
+}
+
+.musicbot-idle-control-row .musicbot-mode-button,
+.musicbot-idle-control-row .musicbot-folder-button {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  min-height: 34px;
+  flex: 0 0 34px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  color: #8b92a8;
+  cursor: pointer;
+  line-height: 0;
+}
+
+.musicbot-idle-control-row .musicbot-mode-button:hover,
+.musicbot-idle-control-row .musicbot-folder-button:hover,
+.musicbot-idle-control-row .musicbot-folder-button.loading {
+  border-color: #2a3352;
+  background: #1e2436;
+  color: #4f8ef7;
+}
+
+.musicbot-idle-control-row .musicbot-mode-button:active,
+.musicbot-idle-control-row .musicbot-folder-button:active {
+  transform: scale(0.88);
+}
+
+.musicbot-idle-control-row .musicbot-mode-button svg,
+.musicbot-idle-control-row .musicbot-folder-button svg {
+  display: block;
+  grid-area: 1 / 1;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.musicbot-root [id="2_81"],
+.musicbot-root [id="2_82"] {
+  color: #ffffff !important;
+}
+
+.musicbot-auto-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.musicbot-auto-toggle input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.musicbot-auto-toggle i {
+  position: relative;
+  width: 30px;
+  height: 16px;
+  border-radius: 8px;
+  background: #2a3352;
+  transition: background 150ms ease;
+}
+
+.musicbot-auto-toggle i::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #c8cede;
+  transition: transform 150ms ease;
+}
+
+.musicbot-auto-toggle input:checked + i {
+  background: #2563eb;
+}
+
+.musicbot-auto-toggle input:checked + i::after {
+  transform: translateX(14px);
+  background: #fff;
+}
+
+.musicbot-idle-control-spacer {
+  flex: 1 1 auto;
+}
+
+.musicbot-control-input {
+  min-width: 0;
+  height: 32px;
+  flex: 1 1 220px;
+  border: 1px solid #354250;
+  border-radius: 5px;
+  padding: 0 10px;
+  outline: 0;
+  background: #10161d;
+  color: #eef1f7;
+  font: 13px "Noto Sans SC-Regular", sans-serif;
+}
+
+.musicbot-control-input::placeholder {
+  color: #7f8aa3;
+  opacity: 1;
+}
+
+.musicbot-link-input {
+  flex: 1 1 220px;
+}
+
+.musicbot-local-path {
+  flex: 1 1 190px;
+}
+
+.musicbot-control-input.musicbot-name-input {
+  max-width: 140px;
+  flex: 1 1 120px;
+}
+
+.musicbot-idle-control-row button.danger {
+  border-color: #713535;
+  color: #ff8080;
+}
+
+.musicbot-settings {
+  display: grid;
+  gap: 16px;
+  max-width: 720px;
+  padding: 24px;
+  color: #c8cede;
+  font: 13px "Noto Sans SC-Regular", sans-serif;
+}
+
+.musicbot-settings-section {
+  display: grid;
+  gap: 10px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #1a1f2e;
+}
+
+.musicbot-settings-section h3 {
+  color: #e8ecf5;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.musicbot-settings-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.musicbot-settings-line input {
+  min-width: 260px;
+  flex: 1 1 260px;
+  height: 36px;
+  border: 1px solid #2a3352;
+  border-radius: 6px;
+  padding: 0 10px;
+  outline: 0;
+  background: #161b27;
+  color: #e8ecf5;
+}
+
+.musicbot-settings-line button {
+  min-height: 36px;
+  border: 1px solid #2a3352;
+  border-radius: 6px;
+  padding: 0 14px;
+  background: #1e2436;
+  color: #c8cede;
+  cursor: pointer;
+}
+
+.musicbot-settings-line button.primary {
+  border-color: #2563eb;
+  background: #2563eb;
+  color: white;
+}
+
+.musicbot-table-body-settings {
+  overflow: hidden;
+  background: #0d1116;
+}
+
+.musicbot-settings-shell {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  color: #dfe6f2;
+  font: 14px "Noto Sans SC-Regular", sans-serif;
+}
+
+.musicbot-settings-nav {
+  display: flex;
+  width: 132px;
+  flex: 0 0 132px;
+  flex-direction: column;
+  padding: 8px 0;
+  border-right: 1px solid #303b49;
+  background: #171e27;
+}
+
+.musicbot-settings-nav-button {
+  min-height: 48px;
+  border: 0;
+  border-left: 3px solid transparent;
+  padding: 0 16px;
+  background: transparent;
+  color: #aeb9c9;
+  font: 14px "Noto Sans SC-Medium", sans-serif;
+  text-align: left;
+  cursor: pointer;
+}
+
+.musicbot-settings-nav-button:hover {
+  background: #202a36;
+  color: #f3f6fb;
+}
+
+.musicbot-settings-nav-button.active {
+  border-left-color: #3b82f6;
+  background: #202a36;
+  color: #ffffff;
+}
+
+.musicbot-settings-content {
+  min-width: 0;
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow: auto;
+  background: #10161e;
+}
+
+.musicbot-setting-section {
+  display: grid;
+  gap: 14px;
+  padding: 18px 22px 22px;
+  border-bottom: 1px solid #293441;
+}
+
+.musicbot-setting-group-title {
+  min-height: 42px;
+  margin: -18px -22px 0;
+  padding: 0 14px;
+  background: #202936;
+  color: #f0f4fa;
+  font: 16px "Noto Sans SC-Medium", sans-serif;
+  line-height: 42px;
+}
+
+.musicbot-setting-grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 28px;
+}
+
+.musicbot-setting-role-list {
+  display: grid;
+  gap: 8px;
+}
+
+.musicbot-setting-role-row {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(200px, 1fr);
+  align-items: center;
+  gap: 12px 20px;
+  padding: 8px 10px;
+  border-left: 2px solid var(--musicbot-border, #263247);
+  background: rgba(255, 255, 255, 0.018);
+}
+
+.musicbot-setting-role-child {
+  padding-left: 18px;
+}
+
+.musicbot-setting-check {
+  position: relative;
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  gap: 8px;
+  color: #dce4f0;
+  cursor: pointer;
+  user-select: none;
+}
+
+.musicbot-setting-check input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.musicbot-setting-checkmark {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  border: 1px solid #657286;
+  border-radius: 3px;
+  background: #141b24;
+}
+
+.musicbot-setting-check.disabled,
+.musicbot-setting-number.disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.musicbot-setting-radio .musicbot-setting-checkmark {
+  border-radius: 50%;
+}
+
+.musicbot-setting-radio input:checked + .musicbot-setting-checkmark::after {
+  display: block;
+  width: 6px;
+  height: 6px;
+  margin: 4px;
+  border-radius: 50%;
+  background: #ffffff;
+  content: '';
+}
+
+.musicbot-setting-check input:checked + .musicbot-setting-checkmark {
+  border-color: #3b82f6;
+  background: #3b82f6;
+}
+
+.musicbot-setting-check:not(.musicbot-setting-switch):not(.musicbot-setting-radio) input:checked + .musicbot-setting-checkmark::after {
+  display: block;
+  width: 4px;
+  height: 8px;
+  margin: 2px 0 0 5px;
+  border-right: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
+  content: '';
+  transform: rotate(45deg);
+}
+
+.musicbot-setting-check input:focus-visible + .musicbot-setting-checkmark {
+  outline: 2px solid rgba(96, 165, 250, 0.55);
+  outline-offset: 2px;
+}
+
+.musicbot-setting-switch .musicbot-setting-checkmark {
+  width: 34px;
+  height: 18px;
+  flex-basis: 34px;
+  border: 0;
+  border-radius: 10px;
+  background: #465363;
+}
+
+.musicbot-setting-switch .musicbot-setting-checkmark::after {
+  display: block;
+  width: 14px;
+  height: 14px;
+  margin: 2px;
+  border-radius: 50%;
+  background: #dce4f0;
+  content: '';
+  transition: transform 150ms ease;
+}
+
+.musicbot-setting-switch input:checked + .musicbot-setting-checkmark {
+  background: #2563eb;
+}
+
+.musicbot-setting-switch input:checked + .musicbot-setting-checkmark::after {
+  transform: translateX(16px);
+  background: #ffffff;
+}
+
+.musicbot-setting-number,
+.musicbot-setting-inline {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  gap: 8px;
+  color: #cbd5e1;
+}
+
+.musicbot-setting-number input,
+.musicbot-setting-inline input {
+  width: 92px;
+  height: 34px;
+  border: 1px solid #364356;
+  border-radius: 4px;
+  padding: 0 9px;
+  background: #151d27;
+  color: #f1f5f9;
+  font: 14px "Noto Sans SC-Regular", sans-serif;
+}
+
+.musicbot-setting-inline input {
+  width: 190px;
+  color: #bac5d4;
+}
+
+.musicbot-setting-group-label {
+  margin-top: 12px;
+  color: #eef2f8;
+  font-size: 14px;
+}
+
+.musicbot-setting-hotkey {
+  display: grid;
+  grid-template-columns: 150px minmax(180px, 1fr) 58px;
+  min-height: 38px;
+  align-items: center;
+  gap: 10px;
+  color: #cbd5e1;
+}
+
+.musicbot-setting-hotkey input {
+  width: 100%;
+  height: 34px;
+  border: 1px solid #364356;
+  border-radius: 4px;
+  padding: 0 9px;
+  outline: 0;
+  background: #151d27;
+  color: #f1f5f9;
+  font: 14px "Noto Sans SC-Regular", sans-serif;
+}
+
+.musicbot-setting-hotkey button {
+  height: 34px;
+  border: 0;
+  border-radius: 4px;
+  background: #2563eb;
+  color: #fff;
+  cursor: pointer;
+}
+
+.musicbot-setting-hotkey button:hover {
+  background: #2f6ff1;
+}
+
+.musicbot-settings-login-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.musicbot-settings-login-row input {
+  min-width: 220px;
+  height: 36px;
+  flex: 1 1 260px;
+  border: 1px solid #364356;
+  border-radius: 4px;
+  padding: 0 10px;
+  outline: 0;
+  background: #151d27;
+  color: #f1f5f9;
+  font: 14px "Noto Sans SC-Regular", sans-serif;
+}
+
+.musicbot-settings-login-row button {
+  min-height: 36px;
+  border: 1px solid #3a485b;
+  border-radius: 4px;
+  padding: 0 13px;
+  background: #252f3c;
+  color: #dce4f0;
+  font: 13px "Noto Sans SC-Medium", sans-serif;
+  cursor: pointer;
+}
+
+.musicbot-settings-login-row button:hover {
+  background: #304055;
+}
+
+.musicbot-settings-login-row button.primary {
+  border-color: #2563eb;
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.musicbot-setting-status,
+.musicbot-setting-hint {
+  color: #91a0b5;
+  font-size: 13px;
+}
+
+.musicbot-qr {
+  width: 176px;
+  height: 176px;
+  padding: 7px;
+  border: 1px solid #516077;
+  background: #ffffff;
+}
+
+@media (max-width: 700px) {
+  .musicbot-settings-nav {
+    width: 104px;
+    flex-basis: 104px;
+  }
+
+  .musicbot-settings-nav-button {
+    padding: 0 10px;
+    font-size: 13px;
+  }
+
+  .musicbot-setting-section {
+    padding-right: 14px;
+    padding-left: 14px;
+  }
+
+  .musicbot-setting-group-title {
+    margin-right: -14px;
+    margin-left: -14px;
+  }
+
+  .musicbot-setting-role-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .musicbot-setting-role-child {
+    padding-left: 26px;
+  }
+
+  .musicbot-setting-hotkey {
+    grid-template-columns: minmax(110px, 1fr) minmax(130px, 1.5fr) 58px;
+  }
+}
+
+.musicbot-qr {
+  width: 160px;
+  height: 160px;
+  padding: 6px;
+  background: white;
+}
+
+.musicbot-log-list {
+  width: 100%;
+  min-height: 0;
+  overflow: auto;
+  flex: 1 1 auto;
+  background: #0e1319;
+  scroll-behavior: smooth;
+}
+
+.musicbot-log-item {
+  display: grid;
+  grid-template-columns: 6px minmax(0, 1fr);
+  gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #242c35;
+  background: #0e1319;
+}
+
+.musicbot-log-item:nth-child(even) {
+  background: #121820;
+}
+
+.musicbot-log-dot {
+  width: 6px;
+  height: 6px;
+  margin-top: 5px;
+  border-radius: 50%;
+  background: #4f8ef7;
+}
+
+.musicbot-log-item.success .musicbot-log-dot {
+  background: #4cc87a;
+}
+
+.musicbot-log-item.error .musicbot-log-dot {
+  background: #ff5a5a;
+}
+
+.musicbot-log-message {
+  color: #d9dfeb;
+  font: 13px "Noto Sans SC-Regular", sans-serif;
+  overflow-wrap: anywhere;
+}
+
+.musicbot-log-time {
+  margin-top: 3px;
+  color: #8e99af;
+  font: 12px "Inter-Regular", sans-serif;
+}
+
+.musicbot-toast {
+  position: fixed;
+  z-index: 100;
+  right: 20px;
+  bottom: 20px;
+  max-width: min(420px, calc(100vw - 40px));
+  padding: 10px 14px;
+  border: 1px solid #2a3352;
+  border-radius: 6px;
+  background: #161b27;
+  color: #e8ecf5;
+  font: 13px "Noto Sans SC-Regular", sans-serif;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+}
+
+.musicbot-toast.error {
+  border-color: #713535;
+  color: #ff8080;
+}
+
+.musicbot-tab-active {
+  background: #0f1117 !important;
+  color: #4f8ef7 !important;
+  box-shadow: inset 0 -3px #4f8ef7;
+}
+
+.musicbot-tab-active > div:first-child {
+  background: #0f1117 !important;
+}
+
+.musicbot-tab-active > div:last-child {
+  border-bottom-color: #4f8ef7 !important;
+}
+
+.musicbot-tab-active p {
+  color: #4f8ef7 !important;
+}
+
+.musicbot-tab-inactive {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.musicbot-tab-inactive > div:first-child {
+  background: transparent !important;
+}
+
+.musicbot-tab-inactive > div:last-child {
+  border-bottom-color: transparent !important;
+}
+
+.musicbot-tab-inactive p {
+  color: #aab3c5 !important;
+}
+
+.musicbot-content-pane [id="2_103"] p {
+  color: #98a3b9 !important;
+  font-size: 13px !important;
+}
+
+.musicbot-log-pane [id="2_209"] {
+  color: #f0f3f8 !important;
+  font-size: 15px !important;
+}
+
+.musicbot-log-pane [id="2_212"],
+.musicbot-log-pane [id="2_267"] {
+  color: #98a3b9 !important;
+  font-size: 12px !important;
+}
+
+.musicbot-log-clear {
+  width: auto !important;
+  height: auto !important;
+  flex-shrink: 0 !important;
+  cursor: pointer;
+}
+
+.musicbot-log-clear > div:first-child {
+  width: auto !important;
+  height: auto !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.musicbot-log-clear > div:first-child > div {
+  padding: 0 !important;
+}
+
+.musicbot-log-clear > div:last-child {
+  display: none;
+}
+
+.musicbot-log-clear:hover p {
+  color: #4f8ef7 !important;
+}
+
+@media (max-width: 1180px) {
+  .musicbot-root {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .musicbot-workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .musicbot-log-pane {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100%;
+  }
+
+  .musicbot-root [id="2_18"] {
+    height: auto !important;
+  }
+
+  .musicbot-content-pane [id="2_18"] > div:last-child > div {
+    flex-wrap: wrap;
+    gap: 0;
+  }
+
+  .musicbot-root [id="2_337"],
+  .musicbot-root [id="2_338"],
+  .musicbot-root [id="2_339"] {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: auto !important;
+    flex: 1 1 100% !important;
+  }
+
+  .musicbot-root [id="2_72"] > div {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 0;
+    padding-inline: 16px !important;
+  }
+
+  .musicbot-root [id="2_73"],
+  .musicbot-root [id="2_83"],
+  .musicbot-root [id="2_88"],
+  .musicbot-root [id="2_341"],
+  .musicbot-root [id="2_345"],
+  .musicbot-root [id="2_350"],
+  .musicbot-root [id="2_357"] {
+    flex: 0 0 auto;
+  }
+
+  .musicbot-root [id="2_95"] {
+    flex: 1 0 100% !important;
+    width: 100% !important;
+    height: 0 !important;
+    min-width: 0 !important;
+  }
+
+  .musicbot-root [id="2_96"] {
+    width: min(100%, 260px) !important;
+    margin-left: auto;
+  }
+
+  .musicbot-row {
+    grid-template-columns: minmax(180px, 1fr) 64px 92px 86px 78px 86px;
+    padding-inline: 14px;
+  }
+
+  .musicbot-content-pane [id="2_103"] > div {
+    grid-template-columns: minmax(180px, 1fr) 64px 92px 86px 78px 86px;
+    padding-inline: 14px !important;
+  }
+
+  .musicbot-idle-columns,
+  .musicbot-idle-song-row {
+    grid-template-columns: minmax(180px, 1fr) 64px 92px 86px 78px 86px;
+  }
+}
+
+@media (max-width: 900px) {
+  .musicbot-root [id="2_18"] {
+    height: auto !important;
+  }
+
+  .musicbot-root [id="2_18"] > div:last-child > div {
+    padding: 12px 14px !important;
+  }
+
+  .musicbot-root [id="2_72"] > div {
+    padding-inline: 12px !important;
+  }
+
+  .musicbot-root [id="2_96"] {
+    width: 100% !important;
+    margin-left: 0;
+    margin-top: 10px;
+  }
+
+  .musicbot-table {
+    min-width: 0;
+  }
+
+  .musicbot-row,
+  .musicbot-content-pane [id="2_103"] > div,
+  .musicbot-idle-columns,
+  .musicbot-idle-song-row {
+    grid-template-columns: minmax(150px, 1fr) 56px 78px 72px 66px 76px;
+  }
+}

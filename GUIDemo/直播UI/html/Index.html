@@ -1,0 +1,3111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LiveMngSys 直播UI</title>
+  <link rel="stylesheet" href="css/font.css">
+  <script>
+    if (new URLSearchParams(window.location.search).get('display') === '1') {
+      document.documentElement.classList.add('display-mode');
+    }
+  </script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --accent: #7b2fff;
+      --accent-2: #ff4d9e;
+      --panel: rgba(16, 13, 33, 0.82);
+      --panel-strong: rgba(28, 17, 58, 0.94);
+      --panel-soft: rgba(43, 29, 87, 0.62);
+      --line: rgba(154, 116, 255, 0.34);
+      --text: #f7f1ff;
+      --muted: #b8a9da;
+      --gold: #ffd76a;
+      --good: #36d675;
+      --danger: #ff4d6d;
+      --stage-corner: var(--panel-strong);
+      --main-frame-border: linear-gradient(135deg, #7b2fff, #ff4d9e);
+      --main-frame-glow-color: rgba(123, 47, 255, 0.58);
+      --main-frame-glow: 18;
+      font-family: "Alibaba PuHuiTi 2.0-55 Regular", "Microsoft YaHei", Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      overflow: hidden;
+      color: var(--text);
+      background: transparent;
+    }
+
+    body.theme-ocean {
+      --accent: #00b4d8;
+      --accent-2: #90e0ef;
+      --panel: rgba(4, 30, 50, 0.82);
+      --panel-strong: rgba(3, 45, 73, 0.94);
+      --panel-soft: rgba(0, 119, 182, 0.30);
+      --line: rgba(144, 224, 239, 0.34);
+    }
+
+    body.theme-sunset {
+      --accent: #ff6b6b;
+      --accent-2: #ffd93d;
+      --panel: rgba(44, 20, 30, 0.84);
+      --panel-strong: rgba(70, 32, 42, 0.94);
+      --panel-soft: rgba(255, 107, 107, 0.24);
+      --line: rgba(255, 217, 61, 0.32);
+    }
+
+    body.theme-glass {
+      --accent: #6fffe9;
+      --accent-2: #b8c0ff;
+      --panel: rgba(10, 22, 36, 0.58);
+      --panel-strong: rgba(12, 23, 39, 0.76);
+      --panel-soft: rgba(111, 255, 233, 0.18);
+      --line: rgba(184, 192, 255, 0.34);
+    }
+
+    body.theme-macaron-peach {
+      font-family: "Arial Rounded MT Bold", "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
+      --accent: #f19a9a;
+      --accent-2: #f6c28b;
+      --panel: rgba(91, 48, 56, 0.78);
+      --panel-strong: rgba(67, 35, 47, 0.92);
+      --panel-soft: rgba(241, 154, 154, 0.24);
+      --line: rgba(255, 210, 181, 0.48);
+      --text: #fff7f0;
+      --muted: #f0c9bd;
+      --gold: #ffe0a8;
+      --good: #a8dfb0;
+      --danger: #ee7f86;
+    }
+
+    body.theme-macaron-mint {
+      font-family: "Trebuchet MS", "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
+      --accent: #79cdbb;
+      --accent-2: #b8e0a5;
+      --panel: rgba(31, 76, 71, 0.78);
+      --panel-strong: rgba(22, 57, 57, 0.92);
+      --panel-soft: rgba(121, 205, 187, 0.24);
+      --line: rgba(190, 236, 204, 0.48);
+      --text: #f3fff8;
+      --muted: #b9ded0;
+      --gold: #f8e3a1;
+      --good: #b8e6a5;
+      --danger: #ef9a9a;
+    }
+
+    body.theme-macaron-lavender {
+      font-family: "Segoe UI", "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
+      --accent: #b99adf;
+      --accent-2: #f0b6d6;
+      --panel: rgba(72, 53, 92, 0.78);
+      --panel-strong: rgba(49, 38, 70, 0.92);
+      --panel-soft: rgba(185, 154, 223, 0.24);
+      --line: rgba(235, 207, 246, 0.48);
+      --text: #fff8ff;
+      --muted: #d9c6e5;
+      --gold: #ffe0a8;
+      --good: #b8e0b1;
+      --danger: #ed9dbb;
+    }
+
+    body.theme-macaron-sky {
+      font-family: "Calibri", "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
+      --accent: #83c9e8;
+      --accent-2: #f5c2d7;
+      --panel: rgba(42, 70, 99, 0.78);
+      --panel-strong: rgba(28, 50, 78, 0.92);
+      --panel-soft: rgba(131, 201, 232, 0.24);
+      --line: rgba(208, 235, 248, 0.50);
+      --text: #f5fbff;
+      --muted: #c3dbea;
+      --gold: #ffe2a8;
+      --good: #b4e5c1;
+      --danger: #ef9eaf;
+    }
+
+    body.theme-macaron-bright,
+    body.theme-macaron-candy,
+    body.theme-macaron-sun {
+      --panel: rgba(255, 255, 255, 0.72);
+      --panel-strong: rgba(255, 255, 255, 0.88);
+      --panel-soft: rgba(255, 255, 255, 0.48);
+      --stage-corner: #fbfaff;
+      --text: #263450;
+      --muted: #63718b;
+      --gold: #b87816;
+      --good: #238b63;
+      --danger: #d85b69;
+      --main-frame-glow-color: rgba(74, 110, 190, 0.28);
+      font-family: "Trebuchet MS", "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
+    }
+
+    body.theme-macaron-bright {
+      --accent: #6a8bd4;
+      --accent-2: #88cfdb;
+      --line: rgba(106, 139, 212, 0.42);
+      --panel: rgba(244, 248, 255, 0.76);
+      --panel-strong: rgba(255, 255, 255, 0.91);
+      --panel-soft: rgba(136, 162, 219, 0.22);
+      --stage-corner: #f8fbff;
+    }
+
+    body.theme-macaron-candy {
+      --accent: #35bbca;
+      --accent-2: #ffadad;
+      --line: rgba(53, 187, 202, 0.42);
+      --panel: rgba(255, 252, 247, 0.78);
+      --panel-strong: rgba(255, 255, 255, 0.92);
+      --panel-soft: rgba(255, 173, 173, 0.24);
+      --stage-corner: #fffafa;
+    }
+
+    body.theme-macaron-sun {
+      --accent: #0191b4;
+      --accent-2: #f8d90f;
+      --line: rgba(1, 145, 180, 0.40);
+      --panel: rgba(255, 254, 244, 0.80);
+      --panel-strong: rgba(255, 255, 255, 0.93);
+      --panel-soft: rgba(248, 217, 15, 0.22);
+      --stage-corner: #fffef7;
+    }
+
+    body.theme-macaron-bright .settings,
+    body.theme-macaron-candy .settings,
+    body.theme-macaron-sun .settings {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.84);
+      border-color: rgba(48, 74, 120, 0.16);
+    }
+
+    body.theme-macaron-bright .setting-card,
+    body.theme-macaron-candy .setting-card,
+    body.theme-macaron-sun .setting-card {
+      background: rgba(255, 255, 255, 0.62);
+      border-color: rgba(48, 74, 120, 0.14);
+    }
+
+    body.theme-macaron-bright .settings p,
+    body.theme-macaron-candy .settings p,
+    body.theme-macaron-sun .settings p,
+    body.theme-macaron-bright .field label,
+    body.theme-macaron-candy .field label,
+    body.theme-macaron-sun .field label {
+      color: #63718b;
+    }
+
+    body.theme-macaron-bright input,
+    body.theme-macaron-bright textarea,
+    body.theme-macaron-bright select,
+    body.theme-macaron-candy input,
+    body.theme-macaron-candy textarea,
+    body.theme-macaron-candy select,
+    body.theme-macaron-sun input,
+    body.theme-macaron-sun textarea,
+    body.theme-macaron-sun select {
+      color: #263450;
+      background: rgba(255, 255, 255, 0.82);
+      border-color: rgba(48, 74, 120, 0.18);
+    }
+
+    body.theme-macaron-bright .panel-card,
+    body.theme-macaron-candy .panel-card,
+    body.theme-macaron-sun .panel-card {
+      color: var(--text);
+      box-shadow: 0 10px 28px rgba(67, 94, 145, 0.12);
+    }
+
+    .app {
+      width: 100vw;
+      height: 100vh;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 380px;
+      gap: 18px;
+      padding: 18px;
+    }
+
+    .display-mode,
+    .display-mode body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--stage-corner);
+    }
+
+    .display-mode {
+      --stage-corner: transparent;
+    }
+
+    .display-mode body,
+    .display-mode .app,
+    .display-mode .preview-shell,
+    .display-mode .stage {
+      background: transparent;
+    }
+
+    .display-mode .app {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .display-mode .settings {
+      display: none;
+    }
+
+    .display-mode .preview-shell {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+      overflow: hidden;
+    }
+
+    .display-mode .stage {
+      flex: 0 0 1920px;
+      width: 1920px;
+      height: 1080px;
+      aspect-ratio: auto;
+    }
+
+    .preview-shell {
+      min-width: 0;
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      border-radius: 12px;
+      background: transparent;
+      overflow: hidden;
+      box-shadow: 0 18px 44px rgba(0, 0, 0, 0.28);
+    }
+
+    .stage {
+      width: min(100%, calc((100vh - 36px) * 16 / 9));
+      aspect-ratio: 16 / 9;
+      container-type: inline-size;
+      position: relative;
+      overflow: hidden;
+      background: transparent;
+      transform: translateZ(0);
+    }
+
+    .stage::before,
+    .stage::after {
+      content: "";
+      position: absolute;
+      pointer-events: none;
+      border-radius: 999px;
+      filter: blur(1px);
+      display: none;
+    }
+
+    .stage::before {
+      width: 33%;
+      height: 18%;
+      left: 18%;
+      top: -8%;
+      background: radial-gradient(circle, rgba(123, 47, 255, 0.20), transparent 70%);
+    }
+
+    .stage::after {
+      width: 24%;
+      height: 36%;
+      right: -8%;
+      top: 28%;
+      background: radial-gradient(circle, rgba(255, 77, 158, 0.16), transparent 70%);
+    }
+
+    .top-strip,
+    .bottom-strip,
+    .left-rail,
+    .right-board,
+    .panel-card {
+      backdrop-filter: blur(18px) saturate(150%);
+      -webkit-backdrop-filter: blur(18px) saturate(150%);
+      background: var(--panel);
+      border-color: var(--line);
+    }
+
+    .top-strip {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 72.395833%;
+      height: 6.481481%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, var(--panel-strong), var(--panel));
+    }
+
+    .headline-unit {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5vw;
+      padding: 0 1.04vw;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .headline-unit img {
+      width: 1.25vw;
+      height: 1.25vw;
+      flex: 0 0 auto;
+    }
+
+    .eyebrow {
+      color: var(--muted);
+      font-size: 0.74vw;
+    }
+
+    .headline-main {
+      color: var(--gold);
+      font-family: "Alibaba PuHuiTi 2.0-85 Bold", "Microsoft YaHei", sans-serif;
+      font-size: 0.98vw;
+      font-weight: 800;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .headline-notice {
+      color: #e8d0ff;
+      font-size: 0.84vw;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .left-rail {
+      position: absolute;
+      left: 0;
+      top: 6.481481%;
+      width: 3.125%;
+      height: 86.574074%;
+      border-right: 1px solid var(--line);
+      background: linear-gradient(180deg, var(--panel), rgba(12, 18, 40, 0.84));
+    }
+
+    .rail-label {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.15vw;
+      color: var(--accent-2);
+      font-size: 0.78vw;
+      font-family: "Alibaba PuHuiTi 2.0-85 Bold", "Microsoft YaHei", sans-serif;
+      letter-spacing: 0;
+    }
+
+    .stream-sample {
+      position: absolute;
+      left: 3.125%;
+      top: 6.481481%;
+      width: 69.270833%;
+      height: 86.574074%;
+      z-index: 0;
+      display: block;
+      object-fit: fill;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .main-card {
+      position: absolute;
+      left: 3.125%;
+      top: 6.481481%;
+      width: 69.270833%;
+      height: 86.574074%;
+      z-index: 1;
+      background: transparent;
+      border-radius: 15px;
+      overflow: visible;
+    }
+
+    .main-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      padding: 5px;
+      border-radius: inherit;
+      background: var(--main-frame-border);
+      -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .main-card::after {
+      content: "";
+      position: absolute;
+      inset: 5px;
+      border-radius: 10px;
+      box-shadow:
+        inset 0 0 calc(var(--main-frame-glow) * 0.8px) var(--main-frame-glow-color);
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .frame-corner-mask {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background:
+        radial-gradient(circle at 15px 15px, transparent 0 8px, color-mix(in srgb, var(--stage-corner) 45%, transparent) 12px, var(--stage-corner) 15px) top left / 15px 15px no-repeat,
+        radial-gradient(circle at 0 15px, transparent 0 8px, color-mix(in srgb, var(--stage-corner) 45%, transparent) 12px, var(--stage-corner) 15px) top right / 15px 15px no-repeat,
+        radial-gradient(circle at 15px 0, transparent 0 8px, color-mix(in srgb, var(--stage-corner) 45%, transparent) 12px, var(--stage-corner) 15px) bottom left / 15px 15px no-repeat,
+        radial-gradient(circle at 0 0, transparent 0 8px, color-mix(in srgb, var(--stage-corner) 45%, transparent) 12px, var(--stage-corner) 15px) bottom right / 15px 15px no-repeat;
+      pointer-events: none;
+    }
+
+    .scene-label {
+      position: absolute;
+      left: 2.1vw;
+      bottom: 2.1vw;
+      z-index: 4;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35vw;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.55);
+    }
+
+    .scene-label strong {
+      font-family: "Alibaba PuHuiTi 2.0-85 Bold", "Microsoft YaHei", sans-serif;
+      font-size: 1.65vw;
+      letter-spacing: 0;
+    }
+
+    .scene-label span {
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 0.84vw;
+    }
+
+    .bottom-strip {
+      --caption-font-family: "Alibaba PuHuiTi 2.0-85 Bold", "Microsoft YaHei", sans-serif;
+      --caption-font-size: 24px;
+      --caption-color: #f0e5ff;
+      --caption-stroke-color: #20112f;
+      --caption-stroke-width: 0px;
+      --caption-shadow: none;
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 72.395833%;
+      height: 6.944444%;
+      display: flex;
+      align-items: center;
+      gap: 0.78vw;
+      padding: 0 1.15vw;
+      border-top: 1px solid var(--line);
+      background: linear-gradient(180deg, var(--panel), var(--panel-strong));
+      overflow: hidden;
+    }
+
+    .bottom-caption-icon {
+      width: 1.45vw;
+      height: 1.45vw;
+      flex: 0 0 auto;
+    }
+
+    .ticker-shell {
+      min-width: 0;
+      flex: 1;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      padding-left: 2px;
+    }
+
+    .ticker-track {
+      display: inline-flex;
+      align-items: center;
+      gap: 4.5vw;
+      min-width: max-content;
+      color: var(--caption-color);
+      font-family: var(--caption-font-family);
+      font-size: var(--caption-font-size);
+      line-height: 1;
+      font-weight: 800;
+      letter-spacing: 0;
+      white-space: nowrap;
+      -webkit-text-stroke: var(--caption-stroke-width) var(--caption-stroke-color);
+      text-shadow: var(--caption-shadow);
+      animation: ticker-scroll var(--ticker-duration, 24s) linear infinite;
+      will-change: transform;
+    }
+
+    .ticker-track.is-static {
+      animation: none;
+      transform: translateX(0);
+    }
+
+    .ticker-track.is-notice {
+      color: #fff7d6;
+      text-shadow:
+        0 0 0.6vw rgba(255, 215, 106, 0.42),
+        0 0.18vw 0.8vw rgba(0, 0, 0, 0.45);
+    }
+
+    .ticker-copy {
+      flex: 0 0 auto;
+    }
+
+    .ticker-track.is-caption {
+      width: 100%;
+      min-width: 0;
+      max-width: 100%;
+      gap: 0;
+      white-space: nowrap;
+    }
+
+    .ticker-track.is-caption .ticker-copy:first-child {
+      display: block;
+      overflow: hidden;
+      max-width: 100%;
+      text-overflow: clip;
+    }
+
+    .bottom-strip.is-empty .bottom-caption-icon,
+    .bottom-strip.is-empty .ticker-shell {
+      visibility: hidden;
+    }
+
+    @keyframes ticker-scroll {
+      from {
+        transform: translateX(0);
+      }
+      to {
+        transform: translateX(calc(-50% - 2.25vw));
+      }
+    }
+
+    .right-board {
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 27.604167%;
+      height: 100%;
+      border-left: 1px solid var(--line);
+      background: linear-gradient(180deg, var(--panel-strong), rgba(10, 16, 32, 0.92));
+      padding: 0;
+    }
+
+    .live-title {
+      position: absolute;
+      left: 2.830189%;
+      top: 0;
+      width: 94.339623%;
+      height: 5.555556%;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.52vw;
+      padding: 0 0.26vw;
+    }
+
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.7vw;
+      height: 1.15vw;
+      border-radius: 0.26vw;
+      background: var(--danger);
+      color: #fff;
+      font-size: 0.58vw;
+      font-family: "Alibaba PuHuiTi 2.0-85 Bold", sans-serif;
+      letter-spacing: 0;
+    }
+
+    .live-title h1 {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 0.98vw;
+      color: #f0ddff;
+      font-family: "Alibaba PuHuiTi 2.0-85 Bold", "Microsoft YaHei", sans-serif;
+    }
+
+    .panel-card {
+      position: absolute;
+      left: 2.830189%;
+      width: 94.339623%;
+      min-height: 0;
+      border: 1px solid var(--line);
+      border-radius: 0.625cqw;
+      background: var(--panel);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .queue-panel {
+      top: 6.481481%;
+      height: 52.777778%;
+    }
+
+    .song-panel {
+      top: 61.111111%;
+      height: 37.037037%;
+    }
+
+    /* Keep card internals on the 1920px design grid, independent of the browser window. */
+    .right-board .panel-head {
+      gap: 0.416667cqw;
+      padding: 0 0.833333cqw;
+    }
+
+    .queue-panel .panel-head {
+      height: 2.083333cqw;
+    }
+
+    .song-panel .panel-head {
+      height: 3.75cqw;
+    }
+
+    .right-board .panel-head img {
+      width: 1.041667cqw;
+      height: 1.041667cqw;
+    }
+
+    .right-board .panel-head strong {
+      font-size: 0.78125cqw;
+    }
+
+    .right-board .count-pill {
+      margin-left: 0.3125cqw;
+      padding: 0.15625cqw 0.520833cqw;
+      font-size: 0.572917cqw;
+    }
+
+    .right-board .online-dot {
+      width: 0.416667cqw;
+      height: 0.416667cqw;
+      box-shadow: 0 0 0.5cqw var(--good);
+    }
+
+    .right-board .queue-list {
+      gap: 0.260417cqw;
+      padding: 0.260417cqw 0.520833cqw 0;
+    }
+
+    .right-board .queue-item {
+      min-height: 3.75cqw;
+      height: 3.75cqw;
+      flex: 0 0 3.75cqw;
+      gap: 0.416667cqw;
+      padding: 0.416667cqw;
+      border-radius: 0.416667cqw;
+    }
+
+    .right-board .rank {
+      width: 2.604167cqw;
+      height: 2.604167cqw;
+      font-size: 0.677083cqw;
+    }
+
+    .right-board .person {
+      gap: 0.15625cqw;
+    }
+
+    .right-board .person strong,
+    .right-board .song-main strong {
+      font-size: 0.729167cqw;
+    }
+
+    .right-board .person span,
+    .right-board .song-main span,
+    .right-board .song-user {
+      font-size: 0.625cqw;
+    }
+
+    .right-board .queue-tag {
+      padding: 0.208333cqw 0.46875cqw;
+      border-radius: 0.416667cqw;
+      font-size: 0.572917cqw;
+    }
+
+    .queue-panel .tip-row {
+      height: 3.385417cqw;
+      min-height: 3.385417cqw;
+      flex: 0 0 3.385417cqw;
+      gap: 0.416667cqw;
+      padding: 0 0.833333cqw;
+      font-size: 0.677083cqw;
+    }
+
+    .right-board .song-list {
+      gap: 0;
+      padding: 0;
+    }
+
+    .right-board .song-item {
+      min-height: 3.125cqw;
+      height: 3.125cqw;
+      flex: 0 0 3.125cqw;
+      gap: 0.416667cqw;
+      padding: 0 0.520833cqw;
+    }
+
+    .right-board .song-status {
+      width: 2.916667cqw;
+      height: 1.875cqw;
+      border-radius: 0.416667cqw;
+      font-size: 0.520833cqw;
+    }
+
+    .right-board .song-rank {
+      font-size: 0.729167cqw;
+    }
+
+    .song-item .cover {
+      width: 2.395833cqw;
+      height: 2.395833cqw;
+      border-radius: 0.416667cqw;
+    }
+
+    .right-board .song-main {
+      gap: 0.208333cqw;
+    }
+
+    .song-panel .tip-row {
+      height: 4.583333cqw;
+      min-height: 4.583333cqw;
+      flex: 0 0 4.583333cqw;
+      gap: 0.416667cqw;
+      padding: 0 0.833333cqw;
+      font-size: 0.677083cqw;
+    }
+
+    .right-board .tip-row img {
+      width: 1.041667cqw;
+      height: 1.041667cqw;
+    }
+
+    .right-board .scroll-indicator {
+      right: 0.208333cqw;
+      width: 0.15625cqw;
+      box-shadow: 0 0 0.416667cqw color-mix(in srgb, var(--accent) 72%, transparent);
+    }
+
+    .panel-head {
+      height: 2.3vw;
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 0.42vw;
+      padding: 0 0.84vw;
+      background: linear-gradient(180deg, var(--panel-soft), rgba(26, 32, 80, 0.55));
+      border-bottom: 1px solid rgba(154, 116, 255, 0.22);
+    }
+
+    .panel-head img {
+      width: 1.04vw;
+      height: 1.04vw;
+    }
+
+    .panel-head strong {
+      font-family: "Alibaba PuHuiTi 2.0-85 Bold", "Microsoft YaHei", sans-serif;
+      font-size: 0.78vw;
+      color: #ead8ff;
+    }
+
+    .count-pill {
+      margin-left: 0.3vw;
+      padding: 0.16vw 0.52vw;
+      border-radius: 999px;
+      font-size: 0.58vw;
+      color: #f1e5ff;
+      background: rgba(123, 47, 255, 0.42);
+    }
+
+    .online-dot {
+      width: 0.42vw;
+      height: 0.42vw;
+      margin-left: auto;
+      border-radius: 999px;
+      background: var(--good);
+      box-shadow: 0 0 0.5vw var(--good);
+    }
+
+    .queue-list,
+    .song-list {
+      min-height: 0;
+      flex: 1 1 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.52vw;
+      padding: 0.52vw;
+      overflow-x: hidden;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .queue-list::-webkit-scrollbar,
+    .song-list::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
+
+    .scroll-indicator {
+      position: absolute;
+      right: 0.24vw;
+      z-index: 6;
+      width: 0.16vw;
+      min-width: 2px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, var(--accent-2), var(--accent));
+      box-shadow: 0 0 0.42vw color-mix(in srgb, var(--accent) 72%, transparent);
+      opacity: 0;
+      transform: scaleX(0.72);
+      transform-origin: right center;
+      transition: opacity 0.18s ease, transform 0.18s ease;
+      pointer-events: none;
+    }
+
+    .scroll-indicator.is-visible {
+      opacity: 0.9;
+      transform: scaleX(1);
+    }
+
+    .queue-item {
+      min-height: 3.45vw;
+      display: grid;
+      grid-template-columns: 1.9vw minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 0.52vw;
+      padding: 0.52vw;
+      border-radius: 0.52vw;
+      background: linear-gradient(180deg, rgba(55, 38, 99, 0.72), rgba(28, 32, 64, 0.68));
+      border: 1px solid rgba(154, 116, 255, 0.20);
+    }
+
+    .queue-item.is-priority {
+      background: linear-gradient(180deg, rgba(105, 51, 130, 0.88), rgba(43, 45, 99, 0.76));
+      border-color: rgba(255, 215, 106, 0.30);
+      box-shadow: inset 0 0 0 1px rgba(255, 215, 106, 0.10);
+    }
+
+    .rank {
+      width: 1.9vw;
+      height: 1.9vw;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 0.68vw;
+      font-family: "Alibaba PuHuiTi 2.0-85 Bold", sans-serif;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    }
+
+    .person {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.18vw;
+    }
+
+    .person strong,
+    .song-main strong {
+      color: #fbf7ff;
+      font-size: 0.76vw;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .person span,
+    .song-main span {
+      color: var(--muted);
+      font-size: 0.62vw;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .queue-tag {
+      padding: 0.22vw 0.48vw;
+      border-radius: 0.42vw;
+      font-size: 0.58vw;
+      color: #fff;
+      background: rgba(255, 77, 109, 0.88);
+      white-space: nowrap;
+    }
+
+    .tip-row {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      gap: 0.42vw;
+      min-height: 2.3vw;
+      padding: 0 0.84vw;
+      color: var(--muted);
+      font-size: 0.66vw;
+      border-top: 1px solid rgba(154, 116, 255, 0.18);
+      background: rgba(18, 15, 38, 0.40);
+    }
+
+    .tip-row img {
+      width: 1.04vw;
+      height: 1.04vw;
+      flex: 0 0 auto;
+    }
+
+    .song-item {
+      min-height: 3vw;
+      display: grid;
+      grid-template-columns: auto 2.7vw minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 0.52vw;
+      padding: 0.32vw 0.52vw;
+      border-bottom: 1px solid rgba(154, 116, 255, 0.18);
+    }
+
+    .song-status {
+      width: 2.9vw;
+      height: 1.85vw;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0.42vw;
+      color: #fff;
+      background: var(--danger);
+      font-size: 0.52vw;
+      font-family: "Alibaba PuHuiTi 2.0-85 Bold", sans-serif;
+    }
+
+    .song-rank {
+      color: #8c77c9;
+      font-size: 0.72vw;
+      text-align: center;
+      font-family: "Alibaba PuHuiTi 2.0-75 SemiBold", sans-serif;
+    }
+
+    .cover {
+      width: 2.6vw;
+      height: 2.6vw;
+      border-radius: 0.42vw;
+      background-size: cover;
+      background-position: center;
+      box-shadow: 0 0.35vw 0.75vw rgba(0, 0, 0, 0.20);
+    }
+
+    .song-main {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2vw;
+    }
+
+    .song-user {
+      color: #ff9fd0;
+      font-size: 0.62vw;
+      white-space: nowrap;
+    }
+
+    .left-rail .rail-label {
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      transform: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.041667cqw 0;
+      overflow: hidden;
+      color: var(--accent-2);
+      font-size: 1.145833cqw;
+      line-height: 1.15;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      text-shadow: 0 0 0.625cqw color-mix(in srgb, var(--accent) 54%, transparent);
+    }
+
+    .right-board .queue-list {
+      gap: 0.260417cqw;
+      padding: 0.260417cqw 0.520833cqw 0;
+    }
+
+    .right-board .queue-item {
+      min-height: 3.75cqw;
+      height: 3.75cqw;
+      flex: 0 0 3.75cqw;
+      display: grid;
+      grid-template-columns: 2.1875cqw 2.916667cqw minmax(0, 1fr) 6.25cqw 3.75cqw;
+      align-items: center;
+      gap: 0.208333cqw;
+      padding: 0;
+      border-radius: 0.416667cqw;
+      overflow: hidden;
+    }
+
+    .right-board .rank {
+      width: 2.1875cqw;
+      height: 2.1875cqw;
+      margin-left: 0;
+      font-size: 1.145833cqw;
+      font-style: italic;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+      color: color-mix(in srgb, var(--accent-2) 88%, white 12%);
+    }
+
+    .queue-avatar {
+      width: 2.916667cqw;
+      height: 2.916667cqw;
+      overflow: hidden;
+      border-radius: 50%;
+      border: 0.104167cqw solid color-mix(in srgb, var(--accent-2) 66%, white 12%);
+      background: var(--panel-soft);
+      box-shadow: 0 0 0.520833cqw color-mix(in srgb, var(--accent) 30%, transparent);
+    }
+
+    .queue-avatar img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .right-board .person {
+      min-width: 0;
+      height: 2.916667cqw;
+      display: grid;
+      grid-template-rows: 1.875cqw 1.041667cqw;
+      gap: 0;
+      align-self: center;
+    }
+
+    .right-board .person .queue-name {
+      min-width: 0;
+      color: #fbf7ff;
+      font-size: 1.458333cqw;
+      line-height: 1.875cqw;
+      font-weight: 800;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .queue-contribution {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.15625cqw;
+      color: color-mix(in srgb, var(--gold) 88%, white 12%);
+      font-size: 0.677083cqw;
+      line-height: 1.041667cqw;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .queue-badges {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.052083cqw;
+      flex: 0 0 auto;
+    }
+
+    .queue-badges img {
+      width: 0.729167cqw;
+      height: 0.729167cqw;
+      display: block;
+      object-fit: contain;
+      filter: drop-shadow(0 0 0.208333cqw color-mix(in srgb, var(--accent-2) 48%, transparent));
+    }
+
+    .queue-cycle {
+      position: relative;
+      width: 6.25cqw;
+      height: 2.916667cqw;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      color: var(--gold);
+      font-family: "Alibaba PuHuiTi 2.0-85 Bold", "Microsoft YaHei", sans-serif;
+      font-size: 1.5625cqw;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .queue-cycle span {
+      grid-area: 1 / 1;
+      width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      transition: opacity 0.28s ease, transform 0.28s ease;
+    }
+
+    .queue-hint {
+      opacity: 0;
+      transform: translateY(38%);
+    }
+
+    .queue-list.show-hints .queue-rounds {
+      opacity: 0;
+      transform: translateY(-38%);
+    }
+
+    .queue-list.show-hints .queue-hint {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .queue-time {
+      width: 3.75cqw;
+      color: color-mix(in srgb, var(--accent-2) 60%, var(--muted));
+      font-size: 1.041667cqw;
+      font-weight: 800;
+      font-style: italic;
+      text-align: center;
+      opacity: 0.72;
+      white-space: nowrap;
+    }
+
+    .right-board .song-list {
+      gap: 0;
+      padding: 0;
+    }
+
+    .right-board .song-item {
+      position: relative;
+      isolation: isolate;
+      min-height: 3.125cqw;
+      height: 3.125cqw;
+      flex: 0 0 3.125cqw;
+      display: grid;
+      grid-template-columns: 3.75cqw 3.541667cqw minmax(0, 1fr) 7.291667cqw;
+      align-items: center;
+      column-gap: 0.260417cqw;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .right-board .song-item.is-current {
+      min-height: 3.75cqw;
+      height: 3.75cqw;
+      flex-basis: 3.75cqw;
+      border-color: color-mix(in srgb, var(--accent-2) 42%, transparent);
+    }
+
+    .song-item > * {
+      position: relative;
+      z-index: 2;
+    }
+
+    .song-item.is-current::before {
+      content: "";
+      position: absolute;
+      z-index: 0;
+      inset: -45%;
+      background:
+        linear-gradient(112deg, transparent 16%, var(--nebula-a) 42%, transparent 66%),
+        linear-gradient(28deg, var(--nebula-b) 4%, transparent 36%, var(--nebula-c) 72%, transparent 94%),
+        color-mix(in srgb, var(--panel-strong) 84%, black 16%);
+      background-size: 170% 170%, 145% 145%, auto;
+      opacity: 0.78;
+      filter: saturate(128%) blur(0.15625cqw);
+      transform: rotate(-5deg) scale(1.06);
+      animation: song-nebula 9s ease-in-out infinite alternate;
+      animation-delay: var(--nebula-delay);
+    }
+
+    .song-item.is-current:not(.is-playing)::before {
+      animation-play-state: paused;
+    }
+
+    @keyframes song-nebula {
+      0% {
+        background-position: 0% 20%, 100% 70%, 0 0;
+        transform: rotate(-5deg) scale(1.06);
+      }
+      100% {
+        background-position: 100% 80%, 0% 25%, 0 0;
+        transform: rotate(5deg) scale(1.14);
+      }
+    }
+
+    .song-state {
+      width: 3.75cqw;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.208333cqw;
+      color: color-mix(in srgb, var(--accent-2) 88%, white 12%);
+      font-size: 0.625cqw;
+      font-weight: 800;
+    }
+
+    .song-state .song-rank {
+      font-size: 1.145833cqw;
+    }
+
+    .playing-bars {
+      height: 0.78125cqw;
+      display: flex;
+      align-items: end;
+      gap: 0.104167cqw;
+    }
+
+    .playing-bars i {
+      width: 0.15625cqw;
+      height: 35%;
+      border-radius: 999px;
+      background: currentColor;
+      animation: playing-bar 0.72s ease-in-out infinite alternate;
+    }
+
+    .playing-bars i:nth-child(2) {
+      height: 100%;
+      animation-delay: -0.24s;
+    }
+
+    .playing-bars i:nth-child(3) {
+      height: 62%;
+      animation-delay: -0.48s;
+    }
+
+    .song-item:not(.is-playing) .playing-bars i {
+      animation-play-state: paused;
+    }
+
+    @keyframes playing-bar {
+      from { height: 28%; }
+      to { height: 100%; }
+    }
+
+    .song-cover-cell {
+      width: 3.541667cqw;
+      height: 100%;
+      display: grid;
+      place-items: center;
+    }
+
+    .song-item .cover {
+      width: 2.291667cqw;
+      height: 2.291667cqw;
+      overflow: hidden;
+      border-radius: 50%;
+      border: 0.104167cqw solid color-mix(in srgb, var(--accent-2) 44%, white 8%);
+      background: var(--panel-soft);
+      box-shadow: 0 0.3125cqw 0.729167cqw rgba(0, 0, 0, 0.24);
+    }
+
+    .song-item.is-current .cover {
+      width: 2.916667cqw;
+      height: 2.916667cqw;
+    }
+
+    .song-item.is-current.is-playing .cover {
+      animation: album-spin 9s linear infinite;
+    }
+
+    .cover img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    @keyframes album-spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .song-main {
+      min-width: 0;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .song-marquee-shell {
+      width: 100%;
+      min-width: 0;
+      overflow: hidden;
+      mask-image: linear-gradient(90deg, #000 0, #000 94%, transparent 100%);
+      -webkit-mask-image: linear-gradient(90deg, #000 0, #000 94%, transparent 100%);
+    }
+
+    .right-board .song-main .song-marquee {
+      display: inline-block;
+      min-width: max-content;
+      color: #fbf7ff;
+      font-size: 1.458333cqw;
+      line-height: 1.1;
+      font-weight: 800;
+      white-space: nowrap;
+      will-change: transform;
+    }
+
+    .song-marquee-shell.is-overflowing .song-marquee {
+      animation: song-marquee var(--marquee-duration, 8s) ease-in-out 1s infinite alternate;
+    }
+
+    @keyframes song-marquee {
+      0%, 12% { transform: translateX(0); }
+      88%, 100% { transform: translateX(var(--marquee-distance)); }
+    }
+
+    .right-board .song-user {
+      min-width: 0;
+      width: 7.291667cqw;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      padding: 0 0.260417cqw;
+      overflow: hidden;
+      color: color-mix(in srgb, var(--accent-2) 78%, white 22%);
+      font-size: 0.989583cqw;
+      white-space: nowrap;
+    }
+
+    .song-user small {
+      color: var(--muted);
+      font-size: 0.625cqw;
+      flex: 0 0 auto;
+    }
+
+    .right-board .song-user strong {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 0.989583cqw;
+    }
+
+    .top-strip .headline-unit:first-child {
+      justify-content: flex-start;
+      text-align: left;
+    }
+
+    .top-strip .headline-unit:nth-child(2) {
+      justify-content: flex-end;
+      text-align: right;
+    }
+
+    .right-board .panel-head strong {
+      font-size: 0.989583cqw;
+    }
+
+    .right-board .song-panel .panel-head {
+      height: 2.083333cqw;
+    }
+
+    .right-board .song-panel .tip-row {
+      height: 3.385417cqw;
+      min-height: 3.385417cqw;
+      flex-basis: 3.385417cqw;
+    }
+
+    .right-board .count-pill {
+      padding: 0.208333cqw 0.625cqw;
+      font-size: 0.729167cqw;
+      font-weight: 800;
+    }
+
+    .right-board .online-dot {
+      width: 0.520833cqw;
+      height: 0.520833cqw;
+    }
+
+    .right-board .online-dot.is-full {
+      background: var(--danger);
+      box-shadow: 0 0 0.625cqw var(--danger);
+    }
+
+    .song-request-status {
+      width: 0.520833cqw;
+      height: 0.520833cqw;
+      margin-left: auto;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: #3b82f6;
+      box-shadow: 0 0 0.625cqw rgba(59, 130, 246, 0.92);
+      transition: background 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .song-request-status.is-free {
+      background: var(--good);
+      box-shadow: 0 0 0.625cqw var(--good);
+    }
+
+    .song-request-status.is-closed {
+      background: var(--danger);
+      box-shadow: 0 0 0.625cqw var(--danger);
+    }
+
+    .right-board .tip-row {
+      overflow: hidden;
+    }
+
+    .tip-marquee-shell {
+      min-width: 0;
+      flex: 1 1 auto;
+      overflow: hidden;
+      mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent);
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent);
+    }
+
+    .tip-marquee-track {
+      display: inline-flex;
+      align-items: center;
+      gap: 4.166667cqw;
+      width: max-content;
+      min-width: max-content;
+      color: color-mix(in srgb, var(--text) 86%, var(--accent-2));
+      font-size: 0.989583cqw;
+      line-height: 1.35;
+      white-space: nowrap;
+      animation: tip-marquee 28s linear infinite;
+    }
+
+    .tip-marquee-copy {
+      flex: 0 0 auto;
+    }
+
+    @keyframes tip-marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(calc(-50% - 2.083333cqw)); }
+    }
+
+    .left-rail .rail-label {
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 4.583334cqw;
+      padding: 0.260417cqw 0 0;
+      writing-mode: horizontal-tb;
+      overflow: hidden;
+    }
+
+    .lyric-line {
+      width: 2.291667cqw;
+      max-width: 2.291667cqw;
+      align-self: center;
+      min-height: 0;
+      overflow: hidden;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      color: color-mix(in srgb, var(--accent-2) 72%, white 28%);
+      font-size: 2.291667cqw;
+      line-height: 1;
+      font-weight: 800;
+      text-align: center;
+      white-space: nowrap;
+      text-overflow: clip;
+      text-shadow: 0 0 0.625cqw color-mix(in srgb, var(--accent) 52%, transparent);
+    }
+
+    .lyric-line.current {
+      flex: 0 0 auto;
+      height: auto;
+      overflow: visible;
+    }
+
+    .lyric-line.next {
+      display: block;
+      flex: 1 1 0;
+      height: auto;
+      text-overflow: ellipsis;
+      color: color-mix(in srgb, var(--text) 72%, var(--accent-2));
+      font-size: 2.291667cqw;
+      opacity: 0.9;
+    }
+
+    .lyric-line.current.line-progress {
+      background: linear-gradient(180deg, color-mix(in srgb, var(--accent-2) 68%, white 32%) 0 var(--line-fill, 0%), color-mix(in srgb, var(--text) 72%, var(--accent-2) 28%) var(--line-fill, 0%) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .lyric-word {
+      color: color-mix(in srgb, var(--text) 72%, var(--accent-2) 28%);
+      background: linear-gradient(180deg, color-mix(in srgb, var(--accent-2) 68%, white 32%) 0 var(--word-fill, 0%), color-mix(in srgb, var(--text) 72%, var(--accent-2) 28%) var(--word-fill, 0%) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .settings {
+      min-width: 0;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow: auto;
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      border-radius: 12px;
+      padding: 16px;
+      background: rgba(12, 15, 25, 0.78);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .settings h2 {
+      font-size: 18px;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .settings p {
+      color: #aeb6c8;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .setting-card {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .setting-card h3 {
+      font-size: 13px;
+      color: #f8f3ff;
+      letter-spacing: 0;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field label {
+      color: #c9d2e6;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      min-height: 34px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      padding: 8px 10px;
+      color: #f7f9ff;
+      background: rgba(5, 8, 18, 0.58);
+      font: inherit;
+      font-size: 12.5px;
+      outline: none;
+    }
+
+    textarea {
+      min-height: 74px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+    }
+
+    .preset-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .skin-btn {
+      min-height: 48px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      cursor: pointer;
+      color: #fff;
+      background: var(--skin-bg);
+      display: flex;
+      align-items: end;
+      justify-content: flex-start;
+      padding: 8px;
+      font-size: 12px;
+      font-weight: 800;
+      transition: transform 0.18s, border-color 0.18s, box-shadow 0.18s;
+    }
+
+    .skin-btn:hover,
+    .skin-btn.active {
+      transform: translateY(-1px);
+      border-color: rgba(255, 255, 255, 0.42);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .token-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .token {
+      padding: 4px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #dce5ff;
+      background: rgba(255, 255, 255, 0.06);
+      font-family: Consolas, Monaco, monospace;
+      font-size: 11px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      position: sticky;
+      bottom: -16px;
+      padding: 12px 0 0;
+      background: linear-gradient(180deg, transparent, rgba(12, 15, 25, 0.95) 35%);
+    }
+
+    .action-btn {
+      min-height: 34px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      padding: 8px 12px;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+      cursor: pointer;
+      font-weight: 800;
+      transition: transform 0.18s, background 0.18s, border-color 0.18s;
+    }
+
+    .action-btn.primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border-color: rgba(255, 255, 255, 0.16);
+    }
+
+    .action-btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(255, 255, 255, 0.30);
+    }
+
+    @media (max-width: 1180px) {
+      body {
+        overflow: auto;
+      }
+
+      .app {
+        height: auto;
+        min-height: 100vh;
+        grid-template-columns: 1fr;
+      }
+
+      .settings {
+        max-height: none;
+      }
+    }
+  </style>
+</head>
+<body class="theme-neon">
+  <main class="app">
+    <section class="preview-shell" aria-label="直播UI预览">
+      <div class="stage" id="stage">
+        <div class="top-strip">
+          <div class="headline-unit">
+            <img src="./image/crown.svg" alt="">
+            <span class="eyebrow" data-bind="topPrefix"></span>
+            <strong class="headline-main" data-bind="topName"></strong>
+          </div>
+          <div class="headline-unit">
+            <img src="./image/heart.svg" alt="">
+            <span class="headline-notice" data-bind="thanksText"></span>
+          </div>
+        </div>
+
+        <aside class="left-rail" aria-label="当前歌词">
+          <div class="rail-label" id="railLabel" aria-live="polite">
+            <span class="lyric-line current" id="lyricCurrent">歌词</span>
+            <span class="lyric-line next" id="lyricNext"></span>
+          </div>
+        </aside>
+
+        <img
+          class="stream-sample"
+          src="../../assets/stream-sample.png"
+          alt=""
+          aria-hidden="true"
+          onerror="this.hidden=true"
+        >
+
+        <section class="main-card">
+          <div class="frame-corner-mask" aria-hidden="true"></div>
+          <div class="scene-label">
+            <strong data-bind="sceneTitle"></strong>
+            <span data-bind="sceneSubTitle"></span>
+          </div>
+        </section>
+
+        <div class="bottom-strip" id="bottomStrip">
+          <img class="bottom-caption-icon" src="./image/megaphone.svg" alt="">
+          <div class="ticker-shell" id="tickerShell">
+            <div class="ticker-track" id="tickerTrack">
+              <span class="ticker-copy" id="tickerText"></span>
+              <span class="ticker-copy" id="tickerGhost" aria-hidden="true"></span>
+            </div>
+          </div>
+        </div>
+
+        <aside class="right-board">
+          <header class="live-title">
+            <span class="live-badge">LIVE</span>
+            <h1 data-bind="liveTitle"></h1>
+          </header>
+
+          <section class="panel-card queue-panel">
+            <div class="panel-head">
+              <img src="./image/users.svg" alt="">
+              <strong data-bind="queueTitle"></strong>
+              <span class="count-pill" id="queueCount"></span>
+              <span class="online-dot"></span>
+            </div>
+            <div class="queue-list" id="queueList"></div>
+            <span class="scroll-indicator" id="queueScrollIndicator" aria-hidden="true"></span>
+            <div class="tip-row">
+              <img src="./image/megaphone.svg" alt="">
+              <span class="tip-marquee-shell">
+                <span class="tip-marquee-track">
+                  <span class="tip-marquee-copy" data-bind="boardingTip"></span>
+                  <span class="tip-marquee-copy" data-bind="boardingTip" aria-hidden="true"></span>
+                </span>
+              </span>
+            </div>
+          </section>
+
+          <section class="panel-card song-panel">
+            <div class="panel-head">
+              <img src="./image/music2.svg" alt="">
+              <strong data-bind="songTitle"></strong>
+              <span class="count-pill" id="songCount"></span>
+              <span class="song-request-status" id="songRequestStatus" role="status" aria-label="点歌已开启" title="点歌已开启"></span>
+            </div>
+            <div class="song-list" id="songList"></div>
+            <span class="scroll-indicator" id="songScrollIndicator" aria-hidden="true"></span>
+            <div class="tip-row">
+              <img src="./image/music.svg" alt="">
+              <span class="tip-marquee-shell">
+                <span class="tip-marquee-track">
+                  <span class="tip-marquee-copy" data-bind="songTip"></span>
+                  <span class="tip-marquee-copy" data-bind="songTip" aria-hidden="true"></span>
+                </span>
+              </span>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </section>
+
+    <aside class="settings">
+      <div>
+        <h2>直播UI配置</h2>
+        <p>修改会立即写入本地浏览器记忆；OBS/直播姬使用此页面地址即可读取同一套演示配置。</p>
+      </div>
+
+      <section class="setting-card">
+        <h3>卡片样式</h3>
+        <div class="preset-grid" id="skinButtons"></div>
+        <div class="field">
+          <label for="frameMode">主画面内描边模式</label>
+          <select id="frameMode" data-config="frameMode">
+            <option value="theme">跟随主题</option>
+            <option value="solid">纯色</option>
+            <option value="gradient">渐变色</option>
+          </select>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="frameColor">边框颜色 A</label>
+            <input id="frameColor" data-config="frameColor" type="color">
+          </div>
+          <div class="field">
+            <label for="frameColor2">边框颜色 B</label>
+            <input id="frameColor2" data-config="frameColor2" type="color">
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="frameGradientAngle">渐变角度</label>
+            <input id="frameGradientAngle" data-config="frameGradientAngle" type="range" min="0" max="360">
+          </div>
+          <div class="field">
+            <label for="frameGlow">发光度</label>
+            <input id="frameGlow" data-config="frameGlow" type="range" min="0" max="48">
+          </div>
+        </div>
+      </section>
+
+      <section class="setting-card">
+        <h3>顶部与主画面文字</h3>
+        <div class="row">
+          <div class="field">
+            <label for="topPrefix">榜单前缀</label>
+            <input id="topPrefix" data-config="topPrefix" type="text">
+          </div>
+          <div class="field">
+            <label for="topName">榜单昵称</label>
+            <input id="topName" data-config="topName" type="text">
+          </div>
+        </div>
+        <div class="field">
+          <label for="thanksText">感谢文字</label>
+          <input id="thanksText" data-config="thanksText" type="text">
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="sceneTitle">主画面标题</label>
+            <input id="sceneTitle" data-config="sceneTitle" type="text">
+          </div>
+          <div class="field">
+            <label for="sceneSubTitle">主画面副标题</label>
+            <input id="sceneSubTitle" data-config="sceneSubTitle" type="text">
+          </div>
+        </div>
+      </section>
+
+      <section class="setting-card">
+        <h3>上车文字构成</h3>
+        <div class="row">
+          <div class="field">
+            <label for="joinCommand">上车指令</label>
+            <input id="joinCommand" data-config="joinCommand" type="text">
+          </div>
+          <div class="field">
+            <label for="leaveCommand">下车指令</label>
+            <input id="leaveCommand" data-config="leaveCommand" type="text">
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="seatCost">基础上车贡献</label>
+            <input id="seatCost" data-config="seatCost" type="number" min="0">
+          </div>
+          <div class="field">
+            <label for="maxSeats">队列上限</label>
+            <input id="maxSeats" data-config="maxSeats" type="number" min="1">
+          </div>
+        </div>
+        <div class="field">
+          <label for="boardingTemplate">上车提示模板</label>
+          <textarea id="boardingTemplate" data-config="boardingTemplate"></textarea>
+        </div>
+        <div class="token-list">
+          <span class="token">{joinCommand}</span>
+          <span class="token">{leaveCommand}</span>
+          <span class="token">{cost}</span>
+          <span class="token">{maxSeats}</span>
+          <span class="token">{priorityCommand}</span>
+        </div>
+      </section>
+
+      <section class="setting-card">
+        <h3>点歌文字</h3>
+        <div class="row">
+          <div class="field">
+            <label for="songCommand">点歌指令</label>
+            <input id="songCommand" data-config="songCommand" type="text">
+          </div>
+          <div class="field">
+            <label for="cancelSongCommand">取消点歌指令</label>
+            <input id="cancelSongCommand" data-config="cancelSongCommand" type="text">
+          </div>
+        </div>
+        <div class="field">
+          <label for="nowPlaying">底栏播放文字</label>
+          <input id="nowPlaying" data-config="nowPlaying" type="text">
+        </div>
+      </section>
+
+      <section class="setting-card">
+        <h3>实时字幕</h3>
+        <div class="row">
+          <div class="field">
+            <label for="captionFontFamily">字体</label>
+            <select id="captionFontFamily" data-config="captionFontFamily">
+              <option value='"Alibaba PuHuiTi 2.0-85 Bold", "Microsoft YaHei", sans-serif'>阿里巴巴普惠体</option>
+              <option value='"Microsoft YaHei", sans-serif'>微软雅黑</option>
+              <option value='SimSun, serif'>宋体</option>
+              <option value='Arial, sans-serif'>Arial</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="captionFontSize">大小（px）</label>
+            <input id="captionFontSize" data-config="captionFontSize" type="number" min="12" max="72" step="1">
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="captionColor">文字颜色</label>
+            <input id="captionColor" data-config="captionColor" type="color">
+          </div>
+          <div class="field">
+            <label for="captionStrokeWidth">描边宽度</label>
+            <input id="captionStrokeWidth" data-config="captionStrokeWidth" type="number" min="0" max="4" step="0.5">
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="captionStrokeColor">描边颜色</label>
+            <input id="captionStrokeColor" data-config="captionStrokeColor" type="color">
+          </div>
+          <div class="field">
+            <label for="captionShadowBlur">阴影模糊</label>
+            <input id="captionShadowBlur" data-config="captionShadowBlur" type="range" min="0" max="24" step="1">
+          </div>
+        </div>
+        <div class="field">
+          <label for="captionShadowColor">阴影颜色</label>
+          <input id="captionShadowColor" data-config="captionShadowColor" type="color">
+        </div>
+        <div class="field">
+          <label for="captionIdleText">空闲文字（字幕关闭时显示）</label>
+          <input id="captionIdleText" data-config="captionIdleText" type="text">
+        </div>
+        <div class="field">
+          <label for="captionIdleDuration">空闲文字滚动时长（秒/圈）</label>
+          <input id="captionIdleDuration" data-config="captionIdleDuration" type="number" min="8" max="80" step="1">
+        </div>
+      </section>
+
+      <div class="actions">
+        <button class="action-btn primary" id="saveButton" type="button">保存配置</button>
+        <button class="action-btn" id="sampleButton" type="button">填入示例</button>
+        <button class="action-btn" id="resetButton" type="button">恢复默认</button>
+      </div>
+    </aside>
+  </main>
+
+  <script>
+    const storageKey = 'LiveMngSys.LiveUiDemo.Config.v1';
+    const sharedConfigUrl = '/api/livemngsys/live-ui/config';
+
+    const defaultConfig = {
+      skin: 'neon',
+      frameMode: 'theme',
+      frameColor: '#7b2fff',
+      frameColor2: '#ff4d9e',
+      frameGradientAngle: '135',
+      frameGlow: '18',
+      topPrefix: '榜一大户：',
+      topName: '小饭团',
+      thanksText: '感谢 清水清清 续费星守护',
+      sceneTitle: '高能排队中',
+      sceneSubTitle: '弹幕互动 / 上车队列 / 点歌浮层',
+      railText: '歌词',
+      liveTitle: '疯狂乱斗带粉上车',
+      queueTitle: '上车列表',
+      songTitle: '点歌列表',
+      joinCommand: '上车',
+      leaveCommand: '下车',
+      priorityCommand: '超车2局',
+      seatCost: '99',
+      maxSeats: '12',
+      boardingTemplate: '发送「{joinCommand}」进入队列，非会员消耗 {cost} 贡献；发送「{leaveCommand}」退出，发送「{priorityCommand}」进入置顶区。',
+      songCommand: '点歌',
+      cancelSongCommand: '取消点歌',
+      nowPlaying: '正在播放：天空之城 - 久石让',
+      captionFontFamily: '"Alibaba PuHuiTi 2.0-85 Bold", "Microsoft YaHei", sans-serif',
+      captionFontSize: '24',
+      captionColor: '#f0e5ff',
+      captionStrokeColor: '#20112f',
+      captionStrokeWidth: '0',
+      captionShadowColor: '#000000',
+      captionShadowBlur: '0',
+      captionIdleText: '实时字幕未开启',
+      captionIdleDuration: '24'
+    };
+
+    const sampleConfig = {
+      topPrefix: '本场守护：',
+      topName: '星河守望者',
+      thanksText: '感谢 月下追风 送出梦幻城堡 x1',
+      sceneTitle: '车队准备发车',
+      sceneSubTitle: '主队列 6 局上限 / 超车区优先',
+      liveTitle: '星守护专场上车',
+      joinCommand: '上车',
+      leaveCommand: '取消上车',
+      priorityCommand: '超车4局',
+      seatCost: '99',
+      maxSeats: '12',
+      boardingTemplate: '弹幕「{joinCommand}」申请基础车位，当前上限 {maxSeats} 人；余额不足 {cost} 贡献会被拒绝，可发送「{priorityCommand}」进入置顶批次。'
+    };
+
+    const skins = [
+      { id: 'neon', label: '霓虹紫', cssClass: 'theme-neon', preview: 'linear-gradient(135deg, #1a0a2e, #12305d)' },
+      { id: 'ocean', label: '深海蓝', cssClass: 'theme-ocean', preview: 'linear-gradient(135deg, #03045e, #00b4d8)' },
+      { id: 'sunset', label: '暖场橙', cssClass: 'theme-sunset', preview: 'linear-gradient(135deg, #301934, #ffd166)' },
+      { id: 'glass', label: '冷玻璃', cssClass: 'theme-glass', preview: 'linear-gradient(135deg, #0b132b, #5bc0be)' },
+      { id: 'macaron-peach', label: '马卡龙蜜桃', cssClass: 'theme-macaron-peach', preview: 'linear-gradient(135deg, #6b3d4c, #f6c28b)' },
+      { id: 'macaron-mint', label: '马卡龙薄荷', cssClass: 'theme-macaron-mint', preview: 'linear-gradient(135deg, #1f4c47, #b8e0a5)' },
+      { id: 'macaron-lavender', label: '马卡龙薰衣草', cssClass: 'theme-macaron-lavender', preview: 'linear-gradient(135deg, #493b68, #f0b6d6)' },
+      { id: 'macaron-sky', label: '马卡龙晴空', cssClass: 'theme-macaron-sky', preview: 'linear-gradient(135deg, #2a4663, #f5c2d7)' },
+      { id: 'macaron-bright', label: '马卡龙晴蓝', cssClass: 'theme-macaron-bright', preview: 'linear-gradient(135deg, #6a8bd4, #b3ffb3)' },
+      { id: 'macaron-candy', label: '马卡龙糖果', cssClass: 'theme-macaron-candy', preview: 'linear-gradient(135deg, #35bbca, #ffadad)' },
+      { id: 'macaron-sun', label: '马卡龙阳光', cssClass: 'theme-macaron-sun', preview: 'linear-gradient(135deg, #0191b4, #f8d90f, #fe7a15)' }
+    ];
+
+    let queueItems = [
+      { name: '小饭团', avatar: './image/Frame_9_6691.png', badges: ['./image/crown.svg'], contribution: 12860, rounds: '1/2', hint: '请准备', time: '12:21', priority: true },
+      { name: '贵宾大富翁', avatar: './image/Frame_9_6698.png', badges: ['./image/crown.svg', './image/heart.svg'], contribution: 9620, rounds: '2/6', hint: '对局中', time: '12:24', priority: true },
+      { name: '清水清清', avatar: './image/Frame_9_6705.png', badges: ['./image/heart.svg'], contribution: 7350, rounds: '1/4', hint: '请准备', time: '12:26', priority: false },
+      { name: '月下追风侠', avatar: './image/Frame_9_6712.png', badges: ['./image/heart.svg'], contribution: 5280, rounds: '0/2', hint: '排队中', time: '12:31', priority: false },
+      { name: '紫霞仙子粉', avatar: './image/Frame_9_6719.png', badges: [], contribution: 3690, rounds: '0/2', hint: '候补中', time: '12:35', priority: false },
+      { name: '夜航员', avatar: './image/Frame_9_6726.png', badges: [], contribution: 2180, rounds: '0/2', hint: '排队中', time: '12:39', priority: false },
+      { name: '云端旅客', avatar: './image/Frame_9_6698.png', badges: [], contribution: 1660, rounds: '0/2', hint: '排队中', time: '12:42', priority: false },
+      { name: '柚子汽水', avatar: './image/Frame_9_6705.png', badges: [], contribution: 990, rounds: '0/2', hint: '候补中', time: '12:46', priority: false },
+      { name: '星尘旅人', avatar: './image/Frame_9_6712.png', badges: ['./image/heart.svg'], contribution: 820, rounds: '0/2', hint: '排队中', time: '12:50', priority: false },
+      { name: '晚风入梦', avatar: './image/Frame_9_6719.png', badges: [], contribution: 760, rounds: '0/2', hint: '排队中', time: '12:54', priority: false },
+      { name: '蓝莓不喜欢喝汽水', avatar: './image/Frame_9_6726.png', badges: [], contribution: 620, rounds: '0/2', hint: '排队中', time: '12:58', priority: false },
+      { name: '春日信使', avatar: './image/Frame_9_6691.png', badges: [], contribution: 480, rounds: '0/2', hint: '候补中', time: '13:02', priority: false }
+    ];
+
+    const fallbackSongItems = [
+      { current: true, playing: true, cover: './image/Frame_9_6745.png', title: '天空之城', artist: '久石让', user: '小饭团', uid: 'demo-current' },
+      { rank: '2', cover: './image/Frame_9_6751.png', title: '夜曲', artist: '周杰伦', user: '星河守望者' },
+      { rank: '3', cover: './image/Frame_9_6757.png', title: '稻香', artist: '周杰伦', user: '月下追风侠' },
+      { rank: '4', cover: './image/Frame_9_6763.png', title: '晴天', artist: '周杰伦', user: '紫霞仙子粉' },
+      { rank: '5', cover: './image/Frame_9_6751.png', title: '一路向北', artist: '周杰伦', user: '夜航员' },
+      { rank: '6', cover: './image/Frame_9_6757.png', title: '花海', artist: '周杰伦', user: '云端旅客' },
+      { rank: '7', cover: './image/Frame_9_6763.png', title: '蒲公英的约定', artist: '周杰伦', user: '柚子汽水' }
+    ];
+
+    let config = loadConfig();
+    let activeNoticeTimer = null;
+    let lastMusicBotNotice = '';
+    let lastBroadcastId = '';
+    let lastMusicBotSongUid = '';
+    let musicBotState = null;
+    let musicBotClockOffsetMs = 0;
+    let musicBotStateRevision = -1;
+    let musicBotStateBootId = '';
+    let liveCaptionState = null;
+    let liveCaptionRevision = -1;
+    let tickerSourceKey = '';
+    const captionSegmentState = {
+      source: '',
+      segments: [],
+      index: 0,
+      timer: null,
+      lastChangedAt: 0
+    };
+    let lastSongRenderKey = '';
+    let lyricCacheKey = '';
+    let lyricLines = [];
+    let lyricRenderKey = '';
+    let lyricWordElements = [];
+    let sharedConfigRevision = -1;
+    let sharedConfigSaveTimer = null;
+
+    function loadConfig() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(storageKey) || '{}');
+        const merged = { ...defaultConfig, ...saved };
+        if (merged.railText === '等候') merged.railText = '歌词';
+        return merged;
+      } catch (error) {
+        return { ...defaultConfig };
+      }
+    }
+
+    function saveConfig() {
+      localStorage.setItem(storageKey, JSON.stringify(config));
+      clearTimeout(sharedConfigSaveTimer);
+      sharedConfigSaveTimer = setTimeout(saveSharedConfig, 250);
+    }
+
+    async function saveSharedConfig() {
+      try {
+        const response = await fetch(sharedConfigUrl, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ config })
+        });
+        const result = await response.json();
+        if (response.ok && result.ok) sharedConfigRevision = Number(result.revision) || sharedConfigRevision;
+      } catch (error) {
+        // Local storage remains available when the gateway is temporarily unavailable.
+      }
+    }
+
+    async function refreshSharedConfig() {
+      try {
+        const response = await fetch(sharedConfigUrl, { cache: 'no-store' });
+        const result = await response.json();
+        const revision = Number(result.revision) || 0;
+        if (!response.ok || !result.ok || revision === sharedConfigRevision) return;
+        if (revision === 0 && (!result.config || Object.keys(result.config).length === 0)) {
+          sharedConfigRevision = 0;
+          saveSharedConfig();
+          return;
+        }
+        sharedConfigRevision = revision;
+        if (result.config && typeof result.config === 'object' && !Array.isArray(result.config)) {
+          config = { ...defaultConfig, ...result.config };
+          localStorage.setItem(storageKey, JSON.stringify(config));
+          renderAll();
+        }
+      } catch (error) {
+        // Keep the active rendering unchanged while the gateway is unavailable.
+      }
+    }
+
+    function applyTemplate(template) {
+      return String(template || '').replace(/\{(\w+)\}/g, (match, key) => {
+        const values = {
+          joinCommand: config.joinCommand,
+          leaveCommand: config.leaveCommand,
+          cost: config.seatCost,
+          maxSeats: config.maxSeats,
+          priorityCommand: config.priorityCommand
+        };
+        return values[key] ?? match;
+      });
+    }
+
+    function baseAnnouncement() {
+      const current = musicBotState?.current;
+      const nowPlaying = current
+        ? `正在播放：${current.title || '未知歌曲'} - ${current.artist || '未知歌手'}`
+        : config.nowPlaying;
+      return `${nowPlaying}  |  ${applyTemplate(config.boardingTemplate)}`;
+    }
+
+    function clearCaptionSegments(resetSource = true) {
+      clearTimeout(captionSegmentState.timer);
+      captionSegmentState.timer = null;
+      captionSegmentState.segments = [];
+      captionSegmentState.index = 0;
+      if (resetSource) captionSegmentState.source = '';
+    }
+
+    function splitCaptionToFit(text) {
+      const primary = document.getElementById('tickerText');
+      const shell = document.getElementById('tickerShell');
+      if (!primary || !shell || !text) return text ? [text] : [];
+
+      const shellStyle = getComputedStyle(shell);
+      const horizontalPadding = parseFloat(shellStyle.paddingLeft || '0') + parseFloat(shellStyle.paddingRight || '0');
+      const limit = Math.max(40, shell.clientWidth - horizontalPadding - 4);
+      const original = primary.textContent;
+      const segments = [];
+      let cursor = 0;
+
+      while (cursor < text.length) {
+        let best = '';
+        let candidate = '';
+        for (let index = cursor; index < text.length; index += 1) {
+          candidate += text[index];
+          primary.textContent = candidate;
+          if (primary.scrollWidth <= limit) {
+            best = candidate;
+            continue;
+          }
+          break;
+        }
+        if (!best) best = text[cursor];
+        segments.push(best);
+        cursor += best.length;
+      }
+
+      primary.textContent = original;
+      return segments.length ? segments : [text];
+    }
+
+    function showCaptionSegment() {
+      const strip = document.getElementById('bottomStrip');
+      const track = document.getElementById('tickerTrack');
+      const primary = document.getElementById('tickerText');
+      const ghost = document.getElementById('tickerGhost');
+      const text = captionSegmentState.segments[captionSegmentState.index] || captionSegmentState.source;
+
+      primary.textContent = text;
+      ghost.textContent = '';
+      ghost.style.display = 'none';
+      strip.classList.toggle('is-empty', !text);
+      track.classList.add('is-caption', 'is-static');
+      track.classList.remove('is-notice');
+      track.style.animation = 'none';
+    }
+
+    function showNextCaptionSegment() {
+      if (captionSegmentState.index >= captionSegmentState.segments.length - 1) {
+        captionSegmentState.timer = null;
+        return;
+      }
+      captionSegmentState.index += 1;
+      showCaptionSegment();
+      if (captionSegmentState.index < captionSegmentState.segments.length - 1) {
+        captionSegmentState.timer = setTimeout(showNextCaptionSegment, 900);
+      }
+    }
+
+    function rebuildCaptionSegments(text, previous = '', force = false) {
+      clearTimeout(captionSegmentState.timer);
+      captionSegmentState.timer = null;
+      const oldIndex = captionSegmentState.index;
+      const oldLength = captionSegmentState.segments.length;
+      const isGrowing = !force && previous && text.startsWith(previous);
+      captionSegmentState.segments = splitCaptionToFit(text);
+
+      if (isGrowing) {
+        const changedRecently = performance.now() - captionSegmentState.lastChangedAt < 1400;
+        captionSegmentState.index = Math.min(
+          Math.max(oldIndex, changedRecently ? captionSegmentState.segments.length - 1 : oldIndex),
+          captionSegmentState.segments.length - 1
+        );
+        if (captionSegmentState.segments.length > oldLength && oldIndex >= oldLength - 1) {
+          captionSegmentState.index = captionSegmentState.segments.length - 1;
+        }
+      } else {
+        captionSegmentState.index = 0;
+      }
+
+      captionSegmentState.lastChangedAt = performance.now();
+      showCaptionSegment();
+      if (!isGrowing && captionSegmentState.segments.length > 1) {
+        captionSegmentState.timer = setTimeout(showNextCaptionSegment, 900);
+      } else if (isGrowing && captionSegmentState.index < captionSegmentState.segments.length - 1) {
+        captionSegmentState.timer = setTimeout(showNextCaptionSegment, 450);
+      }
+    }
+
+    function setCaptionMessage(text) {
+      const previous = captionSegmentState.source;
+      if (previous === text) return;
+      captionSegmentState.source = text;
+      rebuildCaptionSegments(text, previous);
+    }
+
+    function refreshCaptionSegmentLayout() {
+      if (!captionSegmentState.source) return;
+      clearTimeout(captionSegmentState.timer);
+      captionSegmentState.timer = null;
+      const oldIndex = captionSegmentState.index;
+      captionSegmentState.segments = splitCaptionToFit(captionSegmentState.source);
+      captionSegmentState.index = Math.min(oldIndex, Math.max(0, captionSegmentState.segments.length - 1));
+      showCaptionSegment();
+    }
+
+    function setTickerMessage(message, options = {}) {
+      const text = String(message || '').trim();
+      const strip = document.getElementById('bottomStrip');
+      const track = document.getElementById('tickerTrack');
+      const primary = document.getElementById('tickerText');
+      const ghost = document.getElementById('tickerGhost');
+      const shell = document.getElementById('tickerShell');
+
+      if (options.caption === true) {
+        strip.classList.toggle('is-empty', !text);
+        track.classList.remove('is-notice');
+        track.classList.add('is-caption', 'is-static');
+        ghost.style.display = 'none';
+        track.style.animation = 'none';
+        setCaptionMessage(text);
+        return;
+      }
+
+      clearCaptionSegments();
+      primary.textContent = text;
+      ghost.textContent = text;
+      strip.classList.toggle('is-empty', !text);
+      track.classList.toggle('is-notice', options.notice === true);
+      track.classList.remove('is-caption');
+      track.style.animation = 'none';
+
+      if (!text) {
+        track.classList.add('is-static');
+        ghost.style.display = 'none';
+        return;
+      }
+
+      requestAnimationFrame(() => {
+        const textWidth = primary.scrollWidth;
+        const shellWidth = shell.clientWidth;
+        const shouldScroll = textWidth > shellWidth * 0.92;
+        const duration = options.idle
+          ? Math.max(8, Math.min(80, Number(config.captionIdleDuration || 24)))
+          : Math.max(12, Math.min(42, Math.round(text.length * 0.32)));
+
+        track.classList.toggle('is-static', !shouldScroll);
+        ghost.style.display = shouldScroll ? '' : 'none';
+        track.style.setProperty('--ticker-duration', `${duration}s`);
+        track.style.animation = '';
+      });
+    }
+
+    function isCaptionTickerManaged() {
+      return Boolean(liveCaptionState?.enabled && liveCaptionState?.outputToLiveUi);
+    }
+
+    function getTickerSource() {
+      const idleText = String(config.captionIdleText || '').trim();
+      if (!isCaptionTickerManaged()) return { key: `idle:${idleText}`, text: idleText, idle: true };
+
+      const caption = String(liveCaptionState?.text || '').trim();
+      const updatedAt = Number(liveCaptionState?.updatedAt || 0);
+      const timeout = Math.max(5, Number(liveCaptionState?.fallbackTimeoutSeconds || 300)) * 1000;
+      const isFresh = Boolean(caption && updatedAt && Date.now() - updatedAt <= timeout);
+      if (isFresh) return { key: `caption:${liveCaptionState.revision}:${caption}`, text: caption, idle: false, caption: true };
+      if (liveCaptionState?.fallbackEnabled) {
+        if (liveCaptionState?.showIdleOnTimeout) return { key: `timeout-idle:${idleText}`, text: idleText, idle: true };
+        return { key: `timeout-caption:${caption}`, text: caption, idle: false, caption: true };
+      }
+      return { key: 'timeout-empty', text: '', idle: false };
+    }
+
+    function renderTickerSource(force = false) {
+      const source = getTickerSource();
+      if (!force && source.key === tickerSourceKey) return;
+      tickerSourceKey = source.key;
+      clearTimeout(activeNoticeTimer);
+      activeNoticeTimer = null;
+      setTickerMessage(source.text, { notice: false, idle: source.idle, caption: source.caption === true, force });
+    }
+
+    let captionPollInFlight = false;
+    function refreshLiveCaption() {
+      if (captionPollInFlight) return;
+      captionPollInFlight = true;
+      fetch('/api/livemngsys/live/captions', { cache: 'no-store' })
+        .then((response) => response.ok ? response.json() : null)
+        .then((next) => {
+          if (!next || typeof next !== 'object') return;
+          liveCaptionRevision = Number(next.revision || 0);
+          liveCaptionState = next;
+          renderTickerSource();
+        })
+        .catch(() => {})
+        .finally(() => { captionPollInFlight = false; });
+    }
+
+    function showNotice(message) {
+      const text = String(message || '').trim();
+      if (!text || isCaptionTickerManaged()) return;
+
+      clearTimeout(activeNoticeTimer);
+      setTickerMessage(text, { notice: true });
+      activeNoticeTimer = setTimeout(() => {
+        activeNoticeTimer = null;
+        renderTickerSource();
+      }, 10000);
+    }
+
+    function getMusicBotBaseUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const explicitUrl = params.get('musicbotUrl');
+      if (explicitUrl) return explicitUrl.replace(/\/$/, '');
+      const explicitHost = params.get('musicbotHost');
+      if (explicitHost) {
+        const port = params.get('musicbotPort') || '7001';
+        const protocol = window.location.protocol === 'https:' ? 'https:' : 'http:';
+        return `${protocol}//${explicitHost}:${port}`;
+      }
+      if (!window.location.host) return 'http://127.0.0.1:7001';
+      const protocol = window.location.protocol === 'https:' ? 'https:' : 'http:';
+      return `${protocol}//${window.location.host}`;
+    }
+
+    function handleMusicBotState(state) {
+      if (!state || typeof state !== 'object') return;
+      const sync = state.sync;
+      if (sync && typeof sync === 'object') {
+        const incomingBootId = String(sync.bootId || '');
+        const incomingRevision = Number(sync.revision);
+        if (incomingBootId && incomingBootId === musicBotStateBootId && Number.isFinite(incomingRevision) && incomingRevision < musicBotStateRevision) return;
+        if (incomingBootId && incomingBootId !== musicBotStateBootId) {
+          musicBotStateBootId = incomingBootId;
+          musicBotStateRevision = -1;
+        }
+        if (Number.isFinite(incomingRevision)) musicBotStateRevision = Math.max(musicBotStateRevision, incomingRevision);
+        const serverTime = Number(sync.serverTime);
+        if (Number.isFinite(serverTime) && serverTime > 0) musicBotClockOffsetMs = serverTime - Date.now();
+      }
+
+      const previousCurrent = musicBotState?.current;
+      const incomingCurrent = state.current;
+      const incomingSongUid = incomingCurrent?.uid || (incomingCurrent ? `${incomingCurrent.title || ''}:${incomingCurrent.artist || ''}` : '');
+      const songChanged = incomingSongUid !== lastMusicBotSongUid;
+      let mergedCurrent = incomingCurrent;
+      if (previousCurrent && incomingCurrent && previousCurrent.uid === incomingCurrent.uid) {
+        mergedCurrent = { ...previousCurrent, ...incomingCurrent };
+        if (!incomingCurrent.lyric && previousCurrent.lyric) mergedCurrent.lyric = previousCurrent.lyric;
+        if ((!Array.isArray(incomingCurrent.wordLyrics) || !incomingCurrent.wordLyrics.length) && previousCurrent.wordLyrics?.length) {
+          mergedCurrent.wordLyrics = previousCurrent.wordLyrics;
+        }
+        if ((!incomingCurrent.lyricMode || incomingCurrent.lyricMode === 'none') && previousCurrent.lyricMode) {
+          mergedCurrent.lyricMode = previousCurrent.lyricMode;
+        }
+      }
+
+      musicBotState = {
+        ...(musicBotState || {}),
+        ...state,
+        current: mergedCurrent,
+        playback: { ...(musicBotState?.playback || {}), ...(state.playback || {}) }
+      };
+      renderSongs();
+      renderCurrentLyric();
+      if (!activeNoticeTimer && songChanged) {
+        lastMusicBotSongUid = incomingSongUid;
+        renderTickerSource();
+      }
+
+      const message = String(state?.overlay?.message || '').trim();
+      const noticeKey = `${message}:${state?.overlay?.expiresAt || ''}`;
+      if (message && noticeKey !== lastMusicBotNotice) {
+        lastMusicBotNotice = noticeKey;
+        showNotice(message);
+      }
+    }
+
+    function handleMusicBotBroadcast(broadcast) {
+      if (!broadcast) return;
+      const id = String(broadcast.id || `${broadcast.createdAt || ''}:${broadcast.message || ''}`);
+      const message = String(broadcast.message || '').trim();
+      if (message && id !== lastBroadcastId) {
+        lastBroadcastId = id;
+        showNotice(message);
+      }
+    }
+
+    function parseLiveLrc(text) {
+      return String(text || '')
+        .split(/\r?\n/)
+        .map((line) => {
+          const match = line.match(/\[(\d+):(\d+(?:\.\d+)?)\](.*)/);
+          return match ? { time: Number(match[1]) * 60 + Number(match[2]), text: match[3].trim() } : null;
+        })
+        .filter((line) => line && line.text)
+        .sort((a, b) => a.time - b.time);
+    }
+
+    function currentMusicBotPosition() {
+      const playback = musicBotState?.playback;
+      if (!playback) return 0;
+      const base = Number(playback.position || 0);
+      if (playback.status !== 'playing') return base;
+      const updatedAt = Number(playback.updatedAt || 0);
+      const elapsed = updatedAt ? Math.max(0, (Date.now() + musicBotClockOffsetMs - updatedAt) / 1000) : 0;
+      const duration = Number(playback.duration || musicBotState?.current?.duration || 0);
+      const position = base + elapsed;
+      return duration ? Math.min(duration, position) : position;
+    }
+
+    const LYRIC_WORD_SECONDS = 0.26;
+    const LYRIC_SPACE_PAUSE_SECONDS = 0.08;
+    const LYRIC_PUNCT_PAUSE_SECONDS = 0.16;
+    const LYRIC_SENTENCE_PAUSE_SECONDS = 0.28;
+
+    function getLyricTokens(text) {
+      const value = String(text || '').trim();
+      const tokens = value.match(/\s+|[A-Za-z0-9]+(?:['-][A-Za-z0-9]+)*|[\u3400-\u9fff\uf900-\ufaff\u3040-\u30ff\uac00-\ud7af]|./g) || [];
+      return tokens.map((token) => {
+        if (/^\s+$/.test(token)) {
+          return { type: 'space', duration: token.length * LYRIC_SPACE_PAUSE_SECONDS, width: token.length };
+        }
+        const punctuation = /^[^\sA-Za-z0-9\u3400-\u9fff\uf900-\ufaff\u3040-\u30ff\uac00-\ud7af]+$/.test(token);
+        const punctuationDuration = /[。！？.!?]/.test(token)
+          ? LYRIC_SENTENCE_PAUSE_SECONDS
+          : (/[，、,;；:：]/.test(token) ? LYRIC_PUNCT_PAUSE_SECONDS : 0);
+        return {
+          type: punctuation ? 'punctuation' : 'unit',
+          duration: punctuation ? punctuationDuration : LYRIC_WORD_SECONDS,
+          width: token.length
+        };
+      });
+    }
+
+    function getLyricFillPercent(text, lineDuration, elapsed) {
+      if (!text || lineDuration <= 0 || elapsed <= 0) return 0;
+      if (elapsed >= lineDuration) return 100;
+      const tokens = getLyricTokens(text);
+      const totalDuration = tokens.reduce((sum, token) => sum + token.duration, 0);
+      const totalWidth = tokens.reduce((sum, token) => sum + token.width, 0) || text.length || 1;
+      const scale = totalDuration > 0 ? lineDuration / totalDuration : 1;
+      let remaining = elapsed;
+      let filledWidth = 0;
+      for (const token of tokens) {
+        const duration = token.duration * scale;
+        if (token.type === 'space') {
+          if (remaining < duration) break;
+          remaining -= duration;
+          filledWidth += token.width;
+          continue;
+        }
+        if (duration <= 0) {
+          filledWidth += token.width;
+          continue;
+        }
+        if (remaining < duration) {
+          filledWidth += token.width * (remaining / duration);
+          return Math.min(100, Math.max(0, filledWidth / totalWidth * 100));
+        }
+        remaining -= duration;
+        filledWidth += token.width;
+      }
+      return Math.min(100, Math.max(0, filledWidth / totalWidth * 100));
+    }
+
+    function getWordFill(word, position) {
+      const start = Number(word?.start || 0);
+      const duration = Math.max(0, Number(word?.duration || 0));
+      if (position <= start || duration <= 0) return position >= start && duration <= 0 ? 100 : 0;
+      return Math.min(100, Math.max(0, ((position - start) / duration) * 100));
+    }
+
+    function renderLyricMarkup(line, active, position) {
+      if (!line) return '';
+      if (!active || !Array.isArray(line.words) || !line.words.length) return escapeHtml(line.text || '');
+      return line.words.map((word) => `<span class="lyric-word" data-start="${Number(word.start || 0)}" data-duration="${Number(word.duration || 0)}" style="--word-fill:${getWordFill(word, position)}%">${escapeHtml(word.text || '')}</span>`).join('');
+    }
+
+    function updateLyricWordFill(position) {
+      lyricWordElements.forEach((element) => {
+        element.style.setProperty('--word-fill', `${getWordFill({
+          start: Number(element.dataset.start || 0),
+          duration: Number(element.dataset.duration || 0)
+        }, position)}%`);
+      });
+    }
+
+    function layoutCurrentLyric(element) {
+      if (!element) return;
+      element.style.fontSize = '';
+      element.style.height = 'auto';
+      const contentHeight = element.scrollHeight;
+      if (contentHeight > 0) element.style.height = `${contentHeight}px`;
+    }
+
+    function renderCurrentLyric() {
+      const currentEl = document.getElementById('lyricCurrent');
+      const nextEl = document.getElementById('lyricNext');
+      const song = musicBotState?.current;
+      if (!currentEl || !nextEl || !song) {
+        if (currentEl) currentEl.textContent = config.railText || '歌词';
+        currentEl?.classList.remove('line-progress');
+        if (nextEl) nextEl.textContent = '';
+        lyricWordElements = [];
+        lyricRenderKey = '';
+        return;
+      }
+
+      const wordLines = Array.isArray(song.wordLyrics) ? song.wordLyrics : [];
+      const key = `${song.uid || song.title}:${song.lyric || ''}:${wordLines.length}`;
+      if (key !== lyricCacheKey) {
+        lyricCacheKey = key;
+        lyricLines = song.lyricMode === 'word' && wordLines.length
+          ? wordLines.map((line) => ({
+            time: Number(line.time || 0),
+            text: String(line.text || '').trim(),
+            words: Array.isArray(line.words) ? line.words : []
+          })).filter((line) => line.text)
+          : parseLiveLrc(song.lyric);
+        lyricRenderKey = '';
+      }
+
+      const position = currentMusicBotPosition();
+      let active = -1;
+      lyricLines.forEach((line, index) => {
+        if (line.time <= position) active = index;
+      });
+      if (active < 0 && lyricLines.length) active = 0;
+
+      const current = active >= 0 ? lyricLines[active] : null;
+      const next = active >= 0 ? lyricLines[active + 1] : null;
+      const renderKey = `${lyricCacheKey}:${active}:${next?.time || ''}`;
+      if (renderKey !== lyricRenderKey) {
+        currentEl.innerHTML = renderLyricMarkup(current, song.lyricMode === 'word', position) || '暂无歌词';
+        nextEl.innerHTML = renderLyricMarkup(next, false, position);
+        currentEl.classList.toggle('line-progress', song.lyricMode !== 'word' && Boolean(current));
+        lyricWordElements = Array.from(currentEl.querySelectorAll('.lyric-word'));
+        lyricRenderKey = renderKey;
+        layoutCurrentLyric(currentEl);
+      }
+      updateLyricWordFill(position);
+      if (current && song.lyricMode !== 'word') {
+        const lineEnd = next?.time ?? current.time;
+        const fill = lineEnd > current.time
+          ? getLyricFillPercent(current.text, lineEnd - current.time, position - current.time)
+          : 100;
+        currentEl.style.setProperty('--line-fill', `${fill}%`);
+      }
+    }
+
+    function connectMusicBotNotifications() {
+      const baseUrl = getMusicBotBaseUrl();
+
+      fetch(`${baseUrl}/api/state`, { cache: 'no-store' })
+        .then((response) => response.ok ? response.json() : null)
+        .then((state) => handleMusicBotState(state))
+        .catch(() => {});
+
+      const wsProtocol = baseUrl.startsWith('https:') ? 'wss:' : 'ws:';
+      const wsUrl = baseUrl.replace(/^https?:/, wsProtocol) + '/ws';
+      let socket;
+
+      try {
+        socket = new WebSocket(wsUrl);
+      } catch (error) {
+        return;
+      }
+
+      socket.onmessage = (event) => {
+        try {
+          const payload = JSON.parse(event.data);
+          if (payload.type === 'state') handleMusicBotState(payload.state);
+          if (payload.type === 'live-broadcast') handleMusicBotBroadcast(payload.broadcast);
+        } catch (error) {}
+      };
+
+      socket.onclose = () => {
+        setTimeout(connectMusicBotNotifications, 3000);
+      };
+    }
+
+    function setBoundText(key, value) {
+      document.querySelectorAll(`[data-bind="${key}"]`).forEach((node) => {
+        node.textContent = value;
+      });
+    }
+
+    function formatContribution(value) {
+      const number = Number(value);
+      return Number.isFinite(number) ? number.toLocaleString('zh-CN') : String(value || '0');
+    }
+
+    function formatQueueTime(value) {
+      if (!value) return '--:--';
+      if (typeof value === 'string' && /^\d{1,2}:\d{2}$/.test(value.trim())) return value.trim();
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return String(value);
+      return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+    }
+
+    function normalizeBoardingItem(item = {}, index = 0) {
+      const fallbackAvatars = [
+        './image/Frame_9_6691.png', './image/Frame_9_6698.png', './image/Frame_9_6705.png',
+        './image/Frame_9_6712.png', './image/Frame_9_6719.png', './image/Frame_9_6726.png'
+      ];
+      const badgeInput = Array.isArray(item.badges) ? item.badges : [];
+      const badges = badgeInput.map((badge) => {
+        if (typeof badge === 'string') return { image: badge, title: '' };
+        return {
+          image: badge?.image || badge?.imageUrl || badge?.url || '',
+          title: badge?.title || badge?.name || ''
+        };
+      }).filter((badge) => badge.image);
+      const rawRounds = item.rounds ?? item.gameCount ?? item.matches ?? '0/2';
+
+      return {
+        id: item.id || `queue-${index}`,
+        name: item.name || item.nickname || item.userName || '匿名观众',
+        avatar: item.avatar || item.avatarUrl || item.face || fallbackAvatars[index % fallbackAvatars.length],
+        badges,
+        contribution: item.contribution ?? item.contributionValue ?? item.score ?? 0,
+        rounds: typeof rawRounds === 'number' ? `${rawRounds}局` : String(rawRounds),
+        hint: item.hint || item.tip || item.statusText || '请准备',
+        time: formatQueueTime(item.time || item.joinedAt || item.createdAt),
+        priority: Boolean(item.priority || item.isPriority)
+      };
+    }
+
+    function renderQueue() {
+      document.getElementById('queueCount').textContent = `${queueItems.length}/${config.maxSeats}`;
+      document.querySelector('.queue-panel .online-dot')?.classList.toggle('is-full', queueItems.length >= Number(config.maxSeats));
+      document.getElementById('queueList').innerHTML = queueItems.map(normalizeBoardingItem).map((item, index) => `
+        <div class="queue-item ${item.priority ? 'is-priority' : ''}">
+          <span class="rank">${index + 1}</span>
+          <span class="queue-avatar"><img src="${escapeHtml(item.avatar)}" alt=""></span>
+          <div class="person">
+            <strong class="queue-name">${escapeHtml(item.name)}</strong>
+            <span class="queue-contribution">
+              <span class="queue-badges">${item.badges.map((badge) => `<img src="${escapeHtml(badge.image)}" alt="" title="${escapeHtml(badge.title)}">`).join('')}</span>
+              <span>贡献 ${escapeHtml(formatContribution(item.contribution))}</span>
+            </span>
+          </div>
+          <span class="queue-cycle">
+            <span class="queue-rounds">${escapeHtml(item.rounds)}</span>
+            <span class="queue-hint">${escapeHtml(item.hint)}</span>
+          </span>
+          <time class="queue-time">${escapeHtml(item.time)}</time>
+        </div>
+      `).join('');
+      requestAnimationFrame(() => setupScrollIndicator('queueList', 'queueScrollIndicator'));
+    }
+
+    function getVisibleSongs() {
+      if (!musicBotState) return fallbackSongItems;
+      const current = musicBotState.current;
+      const queue = Array.isArray(musicBotState.queue) ? musicBotState.queue : [];
+      const status = musicBotState.playback?.status || 'stopped';
+      const songs = [];
+
+      if (current) {
+        songs.push({
+          ...current,
+          current: true,
+          playing: status === 'playing',
+          user: current.requestedBy?.name || '系统'
+        });
+      }
+
+      queue.forEach((song) => {
+        if (current && song.uid && song.uid === current.uid) return;
+        songs.push({ ...song, user: song.requestedBy?.name || song.user || '观众' });
+      });
+      return songs;
+    }
+
+    function hashString(value) {
+      let hash = 0;
+      for (const char of String(value || '')) hash = ((hash << 5) - hash + char.charCodeAt(0)) | 0;
+      return Math.abs(hash);
+    }
+
+    function nebulaStyle(item) {
+      const palettes = [
+        ['rgba(130, 76, 255, .82)', 'rgba(255, 63, 171, .58)', 'rgba(29, 208, 255, .48)'],
+        ['rgba(0, 180, 216, .82)', 'rgba(72, 70, 255, .58)', 'rgba(144, 224, 239, .46)'],
+        ['rgba(255, 84, 112, .78)', 'rgba(255, 196, 61, .52)', 'rgba(121, 60, 255, .48)'],
+        ['rgba(24, 210, 168, .76)', 'rgba(41, 120, 255, .58)', 'rgba(215, 74, 255, .46)']
+      ];
+      const hash = hashString(item.uid || `${item.title}:${item.artist}`);
+      const colors = palettes[hash % palettes.length];
+      return `--nebula-a:${colors[0]};--nebula-b:${colors[1]};--nebula-c:${colors[2]};--nebula-delay:-${hash % 9}s`;
+    }
+
+    function renderSongRequestStatus() {
+      const indicator = document.getElementById('songRequestStatus');
+      if (!indicator) return;
+      const permissions = musicBotState?.config?.permissions;
+      const requestCost = Number(musicBotState?.config?.points?.requestCost || 0);
+      const closed = permissions?.requestEnabled === false;
+      const free = !closed && (permissions?.freeRequest === true || (permissions && requestCost <= 0));
+      const label = closed ? '点歌已关闭' : (free ? '点歌免费' : '点歌已开启');
+
+      indicator.classList.toggle('is-free', free);
+      indicator.classList.toggle('is-closed', closed);
+      indicator.setAttribute('aria-label', label);
+      indicator.title = label;
+    }
+
+    function renderSongs() {
+      const songs = getVisibleSongs();
+      document.getElementById('songCount').textContent = `${songs.length}首`;
+      renderSongRequestStatus();
+      const renderKey = JSON.stringify(songs.map((item) => [
+        item.uid, item.title, item.artist, item.coverUrl || item.cover, item.user, item.current, item.playing
+      ]));
+      if (renderKey === lastSongRenderKey) return;
+      lastSongRenderKey = renderKey;
+
+      const list = document.getElementById('songList');
+      if (!songs.length) {
+        list.innerHTML = '<div class="song-item"><span class="song-state">--</span><span></span><span class="song-main"><span class="song-marquee">暂无点播</span></span></div>';
+        return;
+      }
+
+      list.innerHTML = songs.map((item, index) => {
+        const isCurrent = Boolean(item.current);
+        const isPlaying = Boolean(item.playing);
+        const cover = item.coverUrl || item.cover || './image/Frame_9_6751.png';
+        const stateLabel = isCurrent ? (isPlaying ? '播放中' : '已暂停') : '';
+        return `
+          <div class="song-item ${isCurrent ? 'is-current' : ''} ${isPlaying ? 'is-playing' : ''}" style="${nebulaStyle(item)}">
+            <span class="song-state">
+              ${isCurrent ? '<span class="playing-bars"><i></i><i></i><i></i></span>' : `<span class="song-rank">${index + 1}</span>`}
+              ${stateLabel ? `<span>${stateLabel}</span>` : ''}
+            </span>
+            <span class="song-cover-cell"><span class="cover"><img src="${escapeHtml(cover)}" alt=""></span></span>
+            <span class="song-main">
+              <span class="song-marquee-shell"><span class="song-marquee">${escapeHtml(item.title || '未知歌曲')} · ${escapeHtml(item.artist || '未知歌手')}</span></span>
+            </span>
+            <span class="song-user"><strong>${escapeHtml(item.user || '观众')}</strong></span>
+          </div>
+        `;
+      }).join('');
+
+      requestAnimationFrame(() => {
+        list.querySelectorAll('.song-marquee-shell').forEach((shell) => {
+          const text = shell.querySelector('.song-marquee');
+          const overflow = text.scrollWidth - shell.clientWidth;
+          shell.classList.toggle('is-overflowing', overflow > 3);
+          if (overflow > 3) {
+            shell.style.setProperty('--marquee-distance', `${-(overflow + 12)}px`);
+            shell.style.setProperty('--marquee-duration', `${Math.max(6, Math.min(16, overflow / 18 + 5))}s`);
+          }
+        });
+        setupScrollIndicator('songList', 'songScrollIndicator');
+      });
+    }
+
+    function setupScrollIndicator(listId, indicatorId) {
+      const list = document.getElementById(listId);
+      const indicator = document.getElementById(indicatorId);
+      if (!list || !indicator) return;
+
+      const syncIndicator = () => {
+        const maxScroll = list.scrollHeight - list.clientHeight;
+        if (maxScroll <= 1) {
+          indicator.classList.remove('is-visible');
+          return;
+        }
+
+        const panelRect = list.closest('.panel-card').getBoundingClientRect();
+        const listRect = list.getBoundingClientRect();
+        const thumbHeight = Math.max(18, Math.round(list.clientHeight * list.clientHeight / list.scrollHeight));
+        const travel = Math.max(0, list.clientHeight - thumbHeight);
+        const thumbOffset = travel * (list.scrollTop / maxScroll);
+
+        indicator.style.height = `${thumbHeight}px`;
+        indicator.style.top = `${listRect.top - panelRect.top + thumbOffset}px`;
+      };
+
+      if (list.dataset.scrollIndicatorReady !== 'true') {
+        let hideTimer;
+        list.dataset.scrollIndicatorReady = 'true';
+        list.addEventListener('scroll', () => {
+          syncIndicator();
+          indicator.classList.add('is-visible');
+          clearTimeout(hideTimer);
+          hideTimer = setTimeout(() => indicator.classList.remove('is-visible'), 650);
+        }, { passive: true });
+        list.addEventListener('pointerleave', () => {
+          clearTimeout(hideTimer);
+          indicator.classList.remove('is-visible');
+        }, { passive: true });
+        window.addEventListener('resize', syncIndicator, { passive: true });
+      }
+
+      requestAnimationFrame(syncIndicator);
+    }
+
+    function setupScrollIndicators() {
+      setupScrollIndicator('queueList', 'queueScrollIndicator');
+      setupScrollIndicator('songList', 'songScrollIndicator');
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, (char) => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      }[char]));
+    }
+
+    function applySkin() {
+      const skin = skins.find((item) => item.id === config.skin) || skins[0];
+      document.body.className = skin.cssClass;
+      document.querySelectorAll('.skin-btn').forEach((button) => {
+        button.classList.toggle('active', button.dataset.skin === skin.id);
+      });
+      applyFrameStyle();
+    }
+
+    function hexToRgba(hex, alpha) {
+      const value = String(hex || '#7b2fff').replace('#', '').slice(0, 6).padEnd(6, '0');
+      const r = parseInt(value.slice(0, 2), 16);
+      const g = parseInt(value.slice(2, 4), 16);
+      const b = parseInt(value.slice(4, 6), 16);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+
+    function applyFrameStyle() {
+      const stage = document.getElementById('stage');
+      const mode = config.frameMode || 'theme';
+      const colorA = config.frameColor || '#7b2fff';
+      const colorB = config.frameColor2 || '#ff4d9e';
+      const angle = Number(config.frameGradientAngle || 135);
+      const glow = Math.max(0, Math.min(48, Number(config.frameGlow || 0)));
+
+      if (mode === 'solid') {
+        stage.style.setProperty('--main-frame-border', colorA);
+        stage.style.setProperty('--main-frame-glow-color', hexToRgba(colorA, 0.58));
+      } else if (mode === 'gradient') {
+        stage.style.setProperty('--main-frame-border', `linear-gradient(${angle}deg, ${colorA}, ${colorB})`);
+        stage.style.setProperty('--main-frame-glow-color', hexToRgba(colorA, 0.52));
+      } else {
+        stage.style.setProperty('--main-frame-border', `linear-gradient(135deg, var(--accent), var(--accent-2))`);
+        stage.style.setProperty('--main-frame-glow-color', 'color-mix(in srgb, var(--accent) 58%, transparent)');
+      }
+
+      stage.style.setProperty('--main-frame-glow', String(glow));
+    }
+
+    function applyCaptionStyle() {
+      const strip = document.getElementById('bottomStrip');
+      const shadowBlur = Math.max(0, Math.min(24, Number(config.captionShadowBlur || 0)));
+      strip.style.setProperty('--caption-font-family', config.captionFontFamily || defaultConfig.captionFontFamily);
+      strip.style.setProperty('--caption-font-size', `${Math.max(12, Math.min(72, Number(config.captionFontSize || 24)))}px`);
+      strip.style.setProperty('--caption-color', config.captionColor || defaultConfig.captionColor);
+      strip.style.setProperty('--caption-stroke-color', config.captionStrokeColor || defaultConfig.captionStrokeColor);
+      strip.style.setProperty('--caption-stroke-width', `${Math.max(0, Math.min(4, Number(config.captionStrokeWidth || 0)))}px`);
+      strip.style.setProperty('--caption-shadow', shadowBlur ? `0 2px ${shadowBlur}px ${config.captionShadowColor || '#000000'}` : 'none');
+      refreshCaptionSegmentLayout();
+    }
+
+    function renderConfigInputs() {
+      document.querySelectorAll('[data-config]').forEach((input) => {
+        input.value = config[input.dataset.config] ?? '';
+      });
+    }
+
+    function renderTexts() {
+      setBoundText('topPrefix', config.topPrefix);
+      setBoundText('topName', config.topName);
+      setBoundText('thanksText', config.thanksText);
+      setBoundText('sceneTitle', config.sceneTitle);
+      setBoundText('sceneSubTitle', config.sceneSubTitle);
+      setBoundText('liveTitle', config.liveTitle);
+      setBoundText('queueTitle', config.queueTitle);
+      setBoundText('songTitle', config.songTitle);
+      renderTickerSource(true);
+      setBoundText('boardingTip', applyTemplate(config.boardingTemplate));
+      setBoundText('songTip', `发送「${config.songCommand} 歌名」即可点歌，发送「${config.cancelSongCommand}」退出点歌队列`);
+      if (!musicBotState?.current) {
+        document.getElementById('lyricCurrent').textContent = config.railText || '歌词';
+        document.getElementById('lyricNext').textContent = '';
+      }
+    }
+
+    function renderSkinButtons() {
+      document.getElementById('skinButtons').innerHTML = skins.map((skin) => `
+        <button class="skin-btn" type="button" data-skin="${skin.id}" style="--skin-bg: ${skin.preview}">
+          ${skin.label}
+        </button>
+      `).join('');
+      document.querySelectorAll('.skin-btn').forEach((button) => {
+        button.addEventListener('click', () => {
+          config.skin = button.dataset.skin;
+          saveConfig();
+          applySkin();
+        });
+      });
+    }
+
+    function renderAll() {
+      renderConfigInputs();
+      applyCaptionStyle();
+      renderTexts();
+      renderQueue();
+      renderSongs();
+      setupScrollIndicators();
+      applySkin();
+    }
+
+    document.querySelectorAll('[data-config]').forEach((input) => {
+      input.addEventListener('input', () => {
+        config[input.dataset.config] = input.value;
+        saveConfig();
+        applyCaptionStyle();
+        renderTexts();
+        renderQueue();
+        applySkin();
+      });
+    });
+
+    document.getElementById('saveButton').addEventListener('click', () => {
+      saveConfig();
+      renderAll();
+    });
+
+    document.getElementById('sampleButton').addEventListener('click', () => {
+      config = { ...config, ...sampleConfig };
+      saveConfig();
+      renderAll();
+    });
+
+    document.getElementById('resetButton').addEventListener('click', () => {
+      config = { ...defaultConfig };
+      saveConfig();
+      renderAll();
+    });
+
+    window.LiveMngSysLiveUI = {
+      setBoardingQueue(items) {
+        queueItems = Array.isArray(items) ? items.map(normalizeBoardingItem) : [];
+        renderQueue();
+      },
+      getBoardingQueue() {
+        return queueItems.map(normalizeBoardingItem);
+      }
+    };
+
+    window.addEventListener('livemngsys:boarding-queue', (event) => {
+      window.LiveMngSysLiveUI.setBoardingQueue(event.detail);
+    });
+
+    let captionLayoutFrame = null;
+    window.addEventListener('resize', () => {
+      if (!captionSegmentState.source) return;
+      cancelAnimationFrame(captionLayoutFrame);
+      captionLayoutFrame = requestAnimationFrame(() => {
+        captionLayoutFrame = null;
+        refreshCaptionSegmentLayout();
+      });
+    }, { passive: true });
+
+    setInterval(() => {
+      document.getElementById('queueList')?.classList.toggle('show-hints');
+    }, 3600);
+
+    function animateCurrentLyric() {
+      renderCurrentLyric();
+      requestAnimationFrame(animateCurrentLyric);
+    }
+
+    requestAnimationFrame(animateCurrentLyric);
+
+    renderSkinButtons();
+    renderAll();
+    refreshSharedConfig();
+    setInterval(refreshSharedConfig, 2000);
+    connectMusicBotNotifications();
+    refreshLiveCaption();
+    setInterval(refreshLiveCaption, 150);
+  </script>
+</body>
+</html>

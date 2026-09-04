@@ -1,0 +1,87 @@
+# Operating system and editors
+.DS_Store
+Thumbs.db
+Desktop.ini
+.idea/
+.vscode/
+*.swp
+*.tmp
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+*.p12
+**/credentials*.json
+**/cookies*.json
+**/cookie*.json
+
+# Python generated files
+**/__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+
+# Node generated files
+**/node_modules/
+**/.npm/
+**/.pnpm-store/
+**/dist/
+**/build/
+*.tsbuildinfo
+
+# Runtime logs, databases and process state
+*.log
+*.pid
+*.sqlite
+*.sqlite3
+*.sqlite3-*
+*.db
+*.db-*
+*.db-journal
+*.db-wal
+*.db-shm
+
+# LiveMngSys runtime data and authenticated browser profiles
+DouyinListener/data/
+DouyinListener/Doubao/browser_profile/
+DouyinListener/Doubao/chat_profile/
+DouyinListener/DouyinListener/Doubao/browser_profile/
+DouyinListener/DouyinListener/Doubao/chat_profile/
+DouyinListener/Doubao/client/cookies.json
+MusicBot/Cache/
+MusicBot/cache/
+MusicBot/**/data/
+
+# Temporary and historical local material (not main source)
+Archive/
+tmp/
+**/tmp/
+**/temp/
+Docs/DouyinWebSourceCode/
+
+# Large generated/downloaded media and archives
+*.mp3
+*.flac
+*.wav
+*.m4a
+*.aac
+*.ogg
+*.mp4
+*.mkv
+*.webm
+*.zip
+*.7z
+*.rar
+*.dmp
+
+# Local launch shortcuts
+*.lnk

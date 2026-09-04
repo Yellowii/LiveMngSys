@@ -1,0 +1,737 @@
+syntax = "proto3";
+
+package Doubao;
+
+option java_package = "com.doubao.live.proto";
+option csharp_namespace = "Doubao.Live.Proto";
+
+import "douyin_live.proto";
+
+// ============================================================
+// 扩展消息：星守护榜单、全字段榜单、特效横幅、游戏、PK扩展等
+// 与 douyin_live.proto 配套使用（不重复定义相同消息名）
+// ============================================================
+
+// ------------------------------------------------------------
+// 星守护（常驻嘉宾 / Resident Guest / Star Guard）
+// ------------------------------------------------------------
+
+// WebcastResidentGuestMessage —— 星守护榜单更新（rawproto 实测结构）
+message WebcastResidentGuestMessage {
+    Common common           = 1;
+    uint64 guestNum         = 2;   // 守护人数
+    repeated ResidentGuestUser guestUserList = 3;  // 守护用户列表（前N名）
+    uint64 latestGuestSeq   = 4;   // 最新一位守护序号
+    repeated ResidentGuestUser latestGuestUser = 5; // 最新守护用户
+    uint64 roomId           = 6;
+    uint64 anchorId         = 7;
+    uint64 updateType       = 8;   // 1=加入 2=续费 3=过期
+    uint64 timestamp        = 9;
+    map<string, string> extra = 10;
+}
+
+message ResidentGuestUser {
+    User    user            = 1;
+    uint64  guestLevel      = 2;   // 守护等级 1-6（青铜/白银/黄金/铂金/钻石/星耀）
+    uint64  guestDays       = 3;   // 守护天数
+    uint64  expireTimestamp = 4;   // 过期时间戳
+    uint64  totalCoin       = 5;   // 累计贡献
+    uint64  rank            = 6;   // 榜单位次
+    Image   levelIcon       = 7;   // 等级图标
+    Image   badge           = 8;   // 守护徽章
+    Text    privilegeText   = 9;   // 特权文字
+    uint64  lightUpStatus   = 10;  // 点亮状态
+    Image   lightUpBadge    = 11;  // 点亮徽章
+    uint64  guardType       = 12;  // 守护类型 1周守护/2月守护/3季守护
+    uint64  continueWeeks   = 13;  // 连续守护周数
+    uint64  residentCount   = 14;  // 当前守护累计周/月数
+    string  guestTitle      = 15;  // 守护称号（如"钻石守护"）
+    repeated Image honorBadges = 16; // 荣誉徽章列表
+}
+
+// ------------------------------------------------------------
+// 礼物特效 / Banner
+// ------------------------------------------------------------
+
+message WebcastGiftPlayEventMessage {
+    Common common            = 1;
+    uint64 eventType         = 2;  // 事件类型（连击/暴击/特效）
+    uint64 playTime          = 3;  // 播放时长（秒）
+    GiftStruct gift          = 4;
+    User user                = 5;
+    uint64 count             = 6;
+    uint64 comboCount        = 7;
+    string dynamicText       = 8;
+    Image dynamicImage       = 9;
+    Image effectImage        = 10;
+    uint64 giftId            = 11;
+    Text displayText         = 12;
+    bool isMp4Effect         = 13;
+    string mp4Url            = 14;
+}
+
+message WebcastInRoomBannerMessage {
+    Common common            = 1;
+    uint64 bannerType        = 2;
+    string bannerId          = 3;
+    string title             = 4;
+    string content           = 5;
+    Image bannerImage        = 6;
+    Image backgroundImage    = 7;
+    uint64 duration          = 8;
+    uint64 position          = 9;
+    uint64 startTime         = 10;
+    uint64 endTime           = 11;
+    string schemaUrl         = 12;
+    map<string, string> extra = 13;
+    Text displayText         = 14;
+    Image icon               = 15;
+    uint64 priority          = 16;
+    uint64 roomId            = 17;
+    uint64 anchorId          = 18;
+    string bannerPosition    = 19;
+}
+
+// ------------------------------------------------------------
+// 榜单（全字段）
+// ------------------------------------------------------------
+
+message WebcastRanklistMessage {
+    Common common            = 1;
+    string title             = 2;
+    string subTitle          = 3;
+    uint64 rankType          = 4;  // 1=小时榜 2=日榜 3=周榜
+    uint64 rankScope         = 5;  // 1=全站 2=品类 3=地区
+    repeated RanklistItemInfo items = 6;
+    RanklistUserInfo myInfo  = 7;
+    uint64 totalCount        = 8;
+    uint64 period            = 9;
+    uint64 anchorId          = 10;
+    Image backgroundImage    = 11;
+    Image badge              = 12;
+    uint64 refreshInterval   = 13;
+    string ruleUrl           = 14;
+    Text displayText         = 15;
+    uint64 updateTime        = 16;
+    uint64 startTimestamp    = 17;
+    uint64 endTimestamp      = 18;
+    bool hasMore             = 19;
+    uint64 nextOffset        = 20;
+    repeated TopUserInfo topUsers = 21;
+    map<string, string> extra = 22;
+}
+
+message RanklistItemInfo {
+    uint64 rank              = 1;
+    User user                = 2;
+    uint64 score             = 3;
+    string scoreDescription  = 4;
+    Image rankIcon           = 5;
+    Image badge              = 6;
+    bool isHighlight         = 7;
+    Text displayText         = 8;
+    uint64 gapScore          = 9;
+    uint64 rankChange        = 10;
+    Image avatarBorder       = 11;
+    Image medal              = 12;
+    repeated Image decorations = 13;
+    string scoreTrend        = 14;
+    uint64 anchorId          = 15;
+    uint64 gapRank           = 16;
+}
+
+message RanklistUserInfo {
+    uint64 rank              = 1;
+    uint64 score             = 2;
+    string scoreDescription  = 3;
+    User user                = 4;
+    Image rankIcon           = 5;
+    uint64 gapScore          = 6;
+    bool isInList            = 7;
+    Text displayText         = 8;
+}
+
+message TopUserInfo {
+    uint64 rank              = 1;
+    User user                = 2;
+    uint64 score             = 3;
+    Image crown              = 4;
+    Image avatarBorder       = 5;
+    Image medal              = 6;
+    repeated Image decorations = 7;
+}
+
+// ------------------------------------------------------------
+// PK / 团战扩展（多队伍/多成员版）
+// ------------------------------------------------------------
+
+// 团战队伍轻量状态消息（实测仅含以下字段，无完整 teams 数组）
+message WebcastTeamPlayTeamInfoMessage {
+    Common common            = 1;
+    // 4: battle_id 字符串（如 "7657118859429680171"）
+    string battleIdStr       = 4;
+    // 5: 状态/阶段
+    uint64 status            = 5;
+    // 9: 时间戳
+    uint64 timestamp         = 9;
+    // 10: room_id
+    uint64 roomId            = 10;
+    // 11: sec 标识（如 cgmocn000000000007107799）
+    string secId             = 11;
+}
+
+message TeamPlayTeam {
+    uint64 teamId            = 1;
+    uint64 anchorId          = 2;
+    string teamName          = 3;
+    Image teamIcon           = 4;
+    uint64 score             = 5;
+    uint64 rank              = 6;
+    repeated TeamPlayMember members = 7;
+    uint64 supportCount      = 8;
+    Image teamBadge          = 9;
+    Image teamBanner         = 10;
+    bool isWin               = 11;
+    uint64 pkStatus          = 12;
+    string teamSeoName       = 13;
+}
+
+message TeamPlayMember {
+    User user                = 1;
+    uint64 score             = 2;
+    uint64 role              = 3;  // 1=队长 2=队员
+    uint64 giftCount         = 4;
+    Image avatarBorder       = 5;
+    uint64 micPosition       = 6;
+    uint64 status            = 7;
+}
+
+// ------------------------------------------------------------
+// 游戏扩展
+// ------------------------------------------------------------
+
+message WebcastGameIntroduceMessage {
+    Common common            = 1;
+    uint64 gameId            = 2;
+    string gameName          = 3;
+    string gameDesc          = 4;
+    Image gameIcon           = 5;
+    Image gameCover          = 6;
+    string schemaUrl         = 7;
+    string gameRule          = 8;
+    uint64 gameType          = 9;
+    uint64 startTime         = 10;
+    uint64 endTime           = 11;
+    repeated GamePrize prizes = 12;
+    map<string, string> extra = 13;
+}
+
+message GamePrize {
+    uint64 prizeId           = 1;
+    string prizeName         = 2;
+    Image prizeIcon          = 3;
+    uint64 quantity          = 4;
+    uint64 rank              = 5;
+}
+
+message WebcastGameCPBaseMessage {
+    Common common            = 1;
+    uint64 gameId            = 2;
+    uint64 cpType            = 3;
+    bytes  cpData            = 4;  // 嵌套 protobuf
+    string cpSchema          = 5;
+    uint64 timestamp         = 6;
+    map<string, string> extra = 7;
+}
+
+message WebcastLowPcuGuideMessage {
+    Common common            = 1;
+    uint64 guideType         = 2;
+    string title             = 3;
+    string content           = 4;
+    Image icon               = 5;
+    Image backgroundImage    = 6;
+    string jumpUrl           = 7;
+    uint64 triggerCondition  = 8;
+    bool    isClosable       = 9;
+    uint64 priority          = 10;
+    map<string, string> extra = 11;
+}
+
+// ------------------------------------------------------------
+// 会员 / VIP / 订阅 / 贵族（从 douyin_live.proto 同步，补齐 METHOD_DISPATCH 引用）
+// ------------------------------------------------------------
+
+message WebcastStarGuardInfoMessage {
+    Common common            = 1;
+    User user                = 2;
+    uint64 guardLevel        = 3;
+    bool   isGuard           = 4;
+    Text   welcomeText       = 5;
+    Image  guardBadge        = 6;
+    uint64 anchorId          = 7;
+    string guardName         = 8;
+    uint64 action            = 9;
+}
+
+message WebcastMemberSpecialTipMessage {
+    Common common            = 1;
+    User user                = 2;
+    uint64 memberLevel       = 3;
+    uint64 memberType        = 4;  // 1=VIP 2=高级会员 3=贵族 4=守护
+    string memberName        = 5;
+    Image  memberBadge       = 6;
+    Text   displayText       = 7;
+    repeated Image tags      = 8;
+    uint64 anchorId          = 9;
+}
+
+message WebcastVipEnterMessage {
+    Common common            = 1;
+    User user                = 2;
+    uint64 vipLevel          = 3;
+    Image  vipIcon           = 4;
+    uint64 nobleLevel        = 5;
+    Image  nobleIcon         = 6;
+    Text   displayText       = 7;
+    Image  seatBadge         = 8;
+    uint64 anchorId          = 9;
+}
+
+message WebcastNobleEnterMessage {
+    Common common            = 1;
+    User user                = 2;
+    uint64 nobleLevel        = 3;
+    string nobleName         = 4;
+    string seatName          = 5;
+    Image  seatBadge         = 6;
+    Image  nobleBadge        = 7;
+    Image  nobleIcon         = 8;
+    Text   displayText       = 9;
+    uint64 anchorId          = 10;
+}
+
+message WebcastContributionMessage {
+    Common common            = 1;
+    uint64 rankType          = 2;  // 1=日贡献 2=周贡献 3=月贡献
+    repeated RanklistItemInfo items = 3;
+    RanklistUserInfo ownRank = 4;
+    string title             = 5;
+    uint64 anchorId          = 6;
+    Text   displayText       = 7;
+}
+
+message WebcastFansclubMessage {
+    Common common            = 1;
+    User user                = 2;
+    uint64 action            = 3;
+    uint64 level             = 4;
+    string content           = 5;
+    Text   displayText       = 6;
+    uint64 clubId            = 7;
+    string clubName          = 8;
+    uint64 anchorId          = 9;
+}
+
+message WebcastGiftBannerMessage {
+    Common common            = 1;
+    uint64 bannerType        = 2;
+    string title             = 3;
+    Image  bannerImage       = 4;
+    User user                = 5;
+    GiftStruct gift          = 6;
+    uint64 count             = 7;
+    uint64 comboCount        = 8;
+    Text   displayText       = 9;
+    uint64 roomId            = 10;
+    uint64 anchorId          = 11;
+    uint64 duration          = 12;
+}
+
+// ------------------------------------------------------------
+// 房间观众排名（WebcastRoomRankMessage，与 WebcastRoomUserSeqMessage 对应）
+// ------------------------------------------------------------
+
+message WebcastRoomRankMessage {
+    Common common                    = 1;
+    repeated RoomRankEntry ranks     = 2;  // 在线观众排名列表
+    repeated RoomRankEntry audienceRanks = 3; // 观众榜
+    uint64 rankType                  = 4;
+    uint64 anchorId                  = 5;
+    Text   displayText               = 6;
+}
+
+message RoomRankEntry {
+    User   user                      = 1;
+    uint64 score                     = 2;
+    uint64 rank                      = 3;
+    string scoreDescription          = 4;
+    bool   isHidden                  = 5;
+    string exactlyScore              = 6;
+    Image  rankIcon                  = 7;
+}
+
+// ------------------------------------------------------------
+// 弹幕点赞批量推送（聚合多条点赞，区别于普通 LikeMessage）
+// ------------------------------------------------------------
+
+message WebcastChatLikeMessage {
+    Common common                    = 1;
+    repeated ChatLikeEntry likes     = 2;
+}
+
+message ChatLikeEntry {
+    uint64 userId                    = 1;
+    ChatLikeMeta meta                = 2;
+}
+
+message ChatLikeMeta {
+    uint64 count                     = 1;
+    int64  timestamp                 = 2;
+}
+
+// ------------------------------------------------------------
+// 房间数据同步（抽奖/Fortune/活动等同步数据）
+// ------------------------------------------------------------
+
+message WebcastRoomDataSyncMessage {
+    Common common                    = 1;
+    uint64 roomId                    = 2;
+    string dataType                  = 3;  // "LotteryInfoSyncData" 等
+    int64  timestamp                 = 4;
+    bytes  data                      = 5;  // 嵌套子消息（按 dataType 解析）
+    string extra                     = 6;
+}
+
+// ------------------------------------------------------------
+// 任务中心入口（人气票/福袋等活动任务，JSON 承载）
+// ------------------------------------------------------------
+
+message LotteryCondition {
+    int32 type                       = 1;
+    string content                   = 2;
+    uint64 needDiamondCount          = 3;
+    uint64 minFansLevel              = 4;
+    string remarks                   = 5;
+    string bizInfo                   = 6;
+}
+
+message WebcastLotteryEventNewMessage {
+    Common common                    = 1;
+    uint64 lotteryId                 = 2;
+    int32  lotteryStatus             = 3;
+    uint64 lotteryStartTime          = 4;
+    uint64 lotteryDrawTime           = 5;
+    uint64 lotteryCurrentTime        = 6;
+    string rulePageScheme            = 7;
+    uint64 prizeType                 = 8;
+    string lotteryAuditFailureReason = 9;
+    repeated int32 conditions        = 10;
+    map<string, string> extra        = 11;
+    bool useNewDrawInteraction       = 12;
+    uint64 prizeCount                = 13;
+    uint64 luckyCount                = 14;
+    string clientBizData             = 15;
+    string serverBizData             = 16;
+    string uiConfig                  = 17;
+    string awardName                 = 18;
+    string awardDescription          = 19;
+    uint64 maxRandomDelayDurationByMs = 20;
+    repeated LotteryCondition conditionsDetail = 21;
+    string extraAwardClientBizData   = 22;
+    string extraAwardServerBizData   = 23;
+    string extraAwardUiConfig        = 24;
+}
+
+message WebcastLotteryCandidateEventMessage {
+    Common common                    = 1;
+    uint64 lotteryId                 = 2;
+    uint64 userId                    = 3;
+    bool participateSuccess          = 4;
+    uint64 version                   = 5;
+    string userOpenid                = 5000;
+}
+
+message WebcastLotteryDrawResultEventMessage {
+    Common common                    = 1;
+    uint64 lotteryId                 = 2;
+    repeated uint64 userIds          = 3;
+    string extra                     = 4;
+    repeated string userOpenids      = 5000;
+}
+
+message WebcastTaskCenterEntranceMessage {
+    Common common                    = 1;
+    uint64 taskId                    = 2;
+    uint64 taskType                  = 3;
+    string jsonPayload               = 4;  // 完整任务配置 JSON
+    Text   displayText               = 5;
+    uint64 anchorId                  = 6;
+}
+
+// ------------------------------------------------------------
+// 通知特效（等级提升/升级等全屏通知特效）
+// ------------------------------------------------------------
+
+message WebcastNotifyEffectMessage {
+    Common common                    = 1;
+    Image  defaultImage              = 4;
+    NotifyEffectDuration duration    = 5;
+    NotifyEffectPayload payload      = 6;
+    NotifyEffectTemplate template    = 10;
+    repeated NotifyEffectKV vars     = 20;
+}
+
+message NotifyEffectDuration {
+    uint64 showDuration              = 1;  // 展示时长(ms)
+    uint64 animDuration              = 2;  // 动画时长(ms)
+    uint64 animType                  = 3;
+}
+
+message NotifyEffectPayload {
+    NotifyEffectTemplateData templateData = 1;
+    string schemaUrl                 = 10;
+}
+
+message NotifyEffectTemplateData {
+    uint64 templateType              = 1;
+    NotifyEffectContent content      = 51;
+}
+
+message NotifyEffectContent {
+    // field 1 is a complex sub-message (user/template data), not a simple string
+    bytes  contentData               = 1;
+    string defaultPattern            = 2;
+    NotifyEffectTextStyle defaultStyle = 3;
+    repeated NotifyEffectTextPiece textPieces = 4;
+}
+
+message NotifyEffectTextStyle {
+    string color                     = 1;
+    uint64 fontSize                  = 2;
+    bool   bold                      = 3;
+}
+
+message NotifyEffectTextPiece {
+    string stringValue               = 1;
+    User   userValue                 = 2;
+    NotifyEffectTextStyle style      = 3;
+}
+
+message NotifyEffectTemplate {
+    string key                       = 1;
+    uint64 priority                  = 2;
+    uint64 cooldownSeconds           = 7;
+    uint64 flags                     = 4;
+}
+
+message NotifyEffectKV {
+    string key                       = 1;
+    string value                     = 2;
+}
+
+// ============================================================
+// WebcastLuckyBoxEndMessage - 福袋开奖结束
+// ============================================================
+message WebcastLuckyBoxEndMessage {
+    Common common                    = 1;
+    uint64 luckyBoxId                = 2;
+    string luckyBoxIdStr             = 3;
+}
+
+// 福袋详情（发送时推送）
+message WebcastLuckyBoxMessage {
+    Common common                    = 1;
+    uint32 luckyBoxType              = 2;
+    uint64 luckyBoxId                = 3;
+    uint64 sendTime                  = 4;
+    uint32 duration                  = 5;
+    uint32 count                     = 6;
+    string title                     = 7;
+    User   sender                    = 12;
+    Image  icon                      = 13;
+    uint32 diamondCount              = 15;
+    uint64 reshareAmount             = 21;
+    string luckyBoxIdStr             = 24;
+    uint32 giftCount                 = 30;
+}
+
+// 福袋状态更新（倒计时）
+message WebcastLuckyBoxTempStatusMessage {
+    Common common                    = 1;
+}
+
+// 福袋开奖结果
+message WebcastLuckyBoxRewardMessage {
+    Common common                    = 1;
+    uint64 luckyBoxId                = 2;
+    string luckyBoxIdStr             = 3;
+    repeated string winnerUserIds    = 4;
+    repeated string rewardedDetails  = 5;
+    uint64 rewardMessageType         = 6;
+    string relatedItemId             = 7;
+}
+
+message WebcastXGLotteryMessage {
+    Common common                    = 1;
+    LotteryInfo lotteryInfo          = 2;
+}
+
+message LotteryInfo {
+    uint64 lotteryId                 = 1;
+    uint32 status                    = 6;
+    uint64 prizeCount                = 9;
+    uint64 luckyCount                = 10;
+    uint64 startTime                 = 12;
+    uint64 drawTime                  = 13;
+    repeated LotteryLuckyUser luckyUsers = 19;
+    uint64 candidateNum              = 21;
+    string lotteryIdStr              = 22;
+}
+
+message LotteryLuckyUser {
+    uint64 luckyId                   = 1;
+    uint64 lotteryId                 = 2;
+    uint64 roomId                    = 3;
+    uint64 userId                    = 4;
+    string userName                  = 5;
+    string avatarUrl                 = 6;
+    uint64 grantCount                = 7;
+    string secUserId                 = 10;
+    string prizeName                 = 12;
+    string userIdStr                 = 40;
+}
+
+// ============================================================
+// WebcastExhibitionChatMessage - 冠名/展览弹幕（礼物冠名）
+// 模板: "{0:user} 成功冠名了{1:string}{2:image}"
+// ============================================================
+message WebcastExhibitionChatMessage {
+    Common common                    = 1;
+    Text   displayText               = 2;  // 展示文本（含用户、冠名名、图标）
+    uint64 exhibitionType            = 3;
+    uint32 duration                  = 4;  // 冠名持续秒数
+    uint64 count                     = 5;  // 冠名次数
+    uint64 comboCount                = 6;
+    uint64 giftId                    = 7;  // 礼物ID
+    string giftName                  = 11; // 礼物名(从pieces解析)
+}
+
+// ============================================================
+// WebcastAudioChatMessage - 语音弹幕
+// ============================================================
+message WebcastAudioChatMessage {
+    Common common                    = 1;
+    User   user                      = 2;  // 发送用户
+    string content                   = 3;  // 语音转文字内容
+    string audioUrl                  = 4;  // 语音文件URL
+    uint64 durationMs                = 5;  // 语音时长(毫秒)
+    Image  background                = 6;  // 语音条背景图标
+}
+
+// ============================================================
+// WebcastPrizeNoticeMessage - 中奖通知
+// ============================================================
+message WebcastPrizeNoticeMessage {
+    Common common                    = 1;
+    User   winner                    = 2;  // 中奖用户
+    uint64 prizeId                   = 3;
+    string prizeName                 = 4;
+    Image  prizeIcon                 = 5;
+    uint64 prizeCount                = 6;
+    uint64 lotteryId                 = 7;
+    Text   displayText               = 8;
+}
+
+// ============================================================
+// WebcastRoomIntroMessage - 房间介绍/引导
+// ============================================================
+message WebcastRoomIntroMessage {
+    Common common                    = 1;
+    string intro                     = 2;  // 介绍文本
+    Image  cover                     = 3;  // 封面图
+    uint64 duration                  = 4;  // 展示时长
+    Text   displayText               = 5;
+    string schemaUrl                 = 6;  // 跳转链接
+}
+
+// ============================================================
+// WebcastPreviewCjRpMessage - 超级红包预览/发放中
+// ============================================================
+message WebcastPreviewCjRpMessage {
+    Common common                    = 2;
+    CjRpInfo info                    = 1;  // 红包信息
+}
+
+message CjRpInfo {
+    string rpId                      = 1;  // 红包ID
+    uint64 startTime                 = 2;  // 开始时间(unix秒)
+    uint64 endTime                   = 3;  // 结束时间
+    uint32 rpType                    = 4;  // 红包类型
+    uint32 status                    = 5;  // 状态
+    string currency                  = 6;  // 货币类型(Diamond等)
+    string iconUrl                   = 7;  // 图标URL
+    string title                     = 8;  // 标题文案(如"红包发放中")
+    uint32 totalCount                = 9;
+    uint32 remainCount               = 10;
+    uint32 claimedCount              = 11;
+    uint32 diamondCount              = 12;
+}
+
+// ============================================================
+// WebcastProfitInteractionMessage - 加分/收益互动消息
+// ============================================================
+message WebcastProfitInteractionMessage {
+    Common common                    = 1;
+    uint64 userId                    = 2;
+    uint64 anchorId                  = 3;
+    int64  profitScore              = 4;
+    int64  totalScore               = 5;
+    uint64 interactionType          = 6;
+    string interactionName          = 7;
+    Text   displayText              = 8;
+    uint64 roomId                   = 9;
+}
+
+// ------------------------------------------------------------
+// 互动特效消息
+// ------------------------------------------------------------
+
+message WebcastEffectInteractMessage {
+    Common common                    = 1;
+    uint64 effectId                  = 2;
+    uint64 effectType                = 3;
+    User user                        = 4;
+    Text   displayText               = 5;
+    Image  effectImage               = 6;
+    uint64 duration                  = 7;
+}
+
+// Activity emoji groups used by the Douyin web "合成表情" picker.
+message ActivityEmoji {
+    uint64 id = 1;
+    string idStr = 2;
+    string name = 3;
+    Image emoji = 4;
+}
+
+message ActivityEmojiGroup {
+    uint64 id = 1;
+    string idStr = 2;
+    string name = 3;
+    Image tagIcon = 4;
+    string desc = 5;
+    repeated ActivityEmoji emojiList = 6;
+    uint64 insertEmojiNum = 7;
+}
+
+message EffectiveActivityEmojiGroup {
+    ActivityEmojiGroup emojiGroup = 1;
+    uint64 startTime = 2;
+    uint64 endTime = 3;
+}
+
+message ActivityEmojiGroupsMessage {
+    Common common = 1;
+    repeated EffectiveActivityEmojiGroup activityEmojiGroups = 2;
+}

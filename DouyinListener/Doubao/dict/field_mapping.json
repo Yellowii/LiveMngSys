@@ -1,0 +1,976 @@
+{
+  "_meta": {
+    "name": "Doubao 抖音直播 protobuf 字段映射字典",
+    "version": "1.0.0",
+    "proto": ["douyin_live.proto", "douyin_extra.proto"],
+    "focus": ["星守护(ResidentGuest/StarGuard)", "会员(VIP/Noble/Subscription)", "礼物榜单(Gift/Ranklist/Contribution)"],
+    "conventions": {
+      "id": "int64 snowflake id",
+      "count": "uint64 累计次数",
+      "score": "uint64 榜单分值/音浪/钻石",
+      "timestamp": "uint64 秒级 unix ts",
+      "displayText": "Text 富文本（key/string_piece/default_pattern 拼接模板）"
+    }
+  },
+
+  "Common": {
+    "_doc": "消息公共头，所有 Push 消息携带",
+    "fields": {
+      "method":            { "type": "string", "desc": "消息方法名，等同于外层 method，如 WebcastChatMessage" },
+      "msgId":             { "type": "uint64", "desc": "消息唯一 ID（snowflake）" },
+      "roomId":            { "type": "uint64", "desc": "直播间 ID" },
+      "anchorId":          { "type": "uint64", "desc": "主播 ID（=room owner）" },
+      "createTime":        { "type": "uint64", "desc": "服务器创建时间（秒）" },
+      "sendTime":          { "type": "uint64", "desc": "发送时间（秒）" },
+      "isShowMsg":         { "type": "bool",   "desc": "是否前端展示" },
+      "isBackground":      { "type": "bool",   "desc": "是否后台/静默消息" },
+      "priority":          { "type": "uint32", "desc": "前端展示优先级（数字越大越优先）" },
+      "identify":          { "type": "string", "desc": "客户端侧标识" },
+      "filter":            { "type": "MessageFilter", "desc": "过滤信息" },
+      "describe":          { "type": "string", "desc": "描述文案/系统提示" },
+      "displayText":       { "type": "Text",   "desc": "标准展示文案（含模板/pieces）" },
+      "foldType":          { "type": "uint32", "desc": "折叠类型 0=不折叠 1=连续合并" },
+      "foldCount":         { "type": "uint32", "desc": "合并条数" }
+    }
+  },
+
+  "User": {
+    "_doc": "用户对象，贯穿所有消息",
+    "fields": {
+      "id":               { "type": "int64",  "desc": "用户 ID" },
+      "shortId":          { "type": "int64",  "desc": "抖音号（短 ID）" },
+      "nickName":         { "type": "string", "desc": "昵称" },
+      "gender":           { "type": "uint32", "desc": "性别 0未知 1男 2女", "enum": {"0":"未知","1":"男","2":"女"} },
+      "signature":        { "type": "string", "desc": "个性签名" },
+      "level":            { "type": "uint32", "desc": "抖音等级（财富/消费等级）" },
+      "birthday":         { "type": "uint64", "desc": "生日时间戳" },
+      "telephone":        { "type": "string", "desc": "手机号（脱敏）" },
+      "avatarThumb":      { "type": "Image",  "desc": "头像缩略图" },
+      "avatarMedium":     { "type": "Image",  "desc": "头像中图" },
+      "avatarLarge":      { "type": "Image",  "desc": "头像大图" },
+      "verified":         { "type": "bool",   "desc": "是否官方认证" },
+      "experience":       { "type": "uint32", "desc": "经验值" },
+      "city":             { "type": "string", "desc": "城市" },
+      "status":           { "type": "uint32", "desc": "用户状态" },
+      "createTime":       { "type": "uint64", "desc": "账号创建时间" },
+      "modifyTime":       { "type": "uint64", "desc": "资料修改时间" },
+      "secret":           { "type": "uint32", "desc": "隐私级别" },
+      "shareQrcodeUri":   { "type": "string", "desc": "个人名片二维码" },
+      "payGrade":         { "type": "PayGradeBadge", "desc": "消费等级（付费等级徽章）" },
+      "fansClub":         { "type": "FansClub",     "desc": "粉丝团信息" },
+      "specialId":        { "type": "string", "desc": "自定义抖音号" },
+      "payScore":         { "type": "uint64", "desc": "消费积分" },
+      "ticketCount":      { "type": "uint64", "desc": "送出音浪总数" },
+      "anchorRoomId":     { "type": "int64",  "desc": "如为主播则其直播间 ID" },
+      "userAttr":         { "type": "UserAttr",     "desc": "用户属性（管理员/禁言等）" },
+      "ownRoom":          { "type": "Room",         "desc": "自己直播间信息" },
+      "badgeImageList":   { "type": "repeated Image", "desc": "佩戴徽章列表" },
+      "followInfo":       { "type": "FollowInfo",   "desc": "关注关系" },
+      "isNew":            { "type": "bool",   "desc": "是否新用户" }
+    }
+  },
+
+  "Text": {
+    "_doc": "富文本结构，由 key 模板 + 多段 string_piece 构成；key 前缀在 default_pattern 中查找拼接待展示文字",
+    "fields": {
+      "key":           { "type": "string", "desc": "模板 key（如 live_chat_message_enter_room）" },
+      "defaultPattern":{ "type": "string", "desc": "默认展示模板（含 %s 占位）" },
+      "defaultContent":{ "type": "string", "desc": "默认已渲染文本（多数情况直接使用）" },
+      "pieces":        { "type": "repeated StringPiece", "desc": "占位内容段" }
+    }
+  },
+
+  "Gift": {
+    "_doc": "礼物对象，礼物消息/GiftMessage 与榜单通用",
+    "fields": {
+      "id":             { "type": "uint64", "desc": "礼物 ID" },
+      "name":           { "type": "string", "desc": "礼物名称（玫瑰、嘉年华、宇宙之心等）" },
+      "describe":       { "type": "string", "desc": "礼物描述" },
+      "diamondCount":   { "type": "uint32", "desc": "单价（钻石数，1 钻石=1 抖币=0.1 元人民币）" },
+      "type":           { "type": "uint32", "desc": "礼物类型 1=普通 2=特效 3=粉丝团 4=浪漫 5=专属 6=幸运",
+        "enum": {"1":"普通","2":"特效","3":"粉丝团","4":"浪漫","5":"专属","6":"幸运"} },
+      "combo":          { "type": "bool",   "desc": "是否支持连击" },
+      "icon":           { "type": "Image",  "desc": "礼物图标（列表）" },
+      "image":          { "type": "Image",  "desc": "礼物静态大图" },
+      "dynamicImage":   { "type": "Image",  "desc": "动态图（WebP/GIF）" },
+      "animateEffect":  { "type": "Image",  "desc": "全屏特效动画 SVGA/MP4" },
+      "trueGoldImage":  { "type": "Image",  "desc": "真金礼物大图" },
+      "primaryEffectId":{ "type": "uint64", "desc": "主特效 ID（关联 WebcastGiftPlayEventMessage.effectId）" },
+      "isBoxGift":      { "type": "bool",   "desc": "是否盲盒礼物" },
+      "isShowPanel":    { "type": "bool",   "desc": "是否展示礼物面板标记" },
+      "isBroadcastGift":{ "type": "bool",   "desc": "是否全站广播礼物（跨直播间横幅）" },
+      "isEffect":       { "type": "bool",   "desc": "是否特效礼物" },
+      "giftRankScore":  { "type": "uint64", "desc": "送此礼后榜单分值（通常=diamondCount*count）" },
+      "notifyAll":      { "type": "bool",   "desc": "是否全屏通知（嘉年华/火箭/宇宙之心）" },
+      "region":         { "type": "string", "desc": "地区限定" },
+      "recommend":      { "type": "bool",   "desc": "是否推荐位礼物" },
+      "tag":            { "type": "string", "desc": "礼物标签（热门/整蛊/豪华等）" },
+      "colors":         { "type": "string", "desc": "特效色调" }
+    },
+    "_value_notes": {
+      "diamondCount_to_rmb": "1 钻石 ≈ 0.1 元；1 抖币 ≈ 0.1 元；主播分成约 50%",
+      "famous_ids": {
+        "533":  "小心心",
+        "1":    "玫瑰",
+        "2":    "棒棒糖",
+        "9":    "Thuglife",
+        "23":   "粉丝团灯牌（需加入粉丝团）",
+        "539":  "比心兔兔",
+        "596":  "爱的纸飞机",
+        "104":  "保时捷",
+        "248":  "私人飞机",
+        "409":  "火箭",
+        "484":  "嘉年华（约 3000 元）",
+        "906":  "抖音1号（约 10001 元）",
+        "762":  "宇宙之心（约 9999 元，需粉丝团 16 级）",
+        "1200": "神秘商店礼盒",
+        "951":  "点亮粉丝团灯牌"
+      }
+    }
+  },
+
+  "GiftIMPriority": {
+    "_doc": "礼物 IM 展示优先级队列",
+    "fields": {
+      "normalPositionList":   { "type": "repeated uint64", "desc": "普通礼物位置优先级（ID 从小到大）" },
+      "priorityPositionList": { "type": "repeated uint64", "desc": "高优礼物位置（大礼物/特效）" },
+      "priorityQueueSize":    { "type": "uint64", "desc": "优先级队列长度" },
+      "normalQueueSize":      { "type": "uint64", "desc": "普通队列长度" },
+      "lastPriorityInterval": { "type": "uint64", "desc": "高优礼物最小间隔(ms)" },
+      "lastNormalInterval":   { "type": "uint64", "desc": "普通礼物最小间隔(ms)" }
+    }
+  },
+
+  "PayGradeBadge": {
+    "_doc": "消费等级徽章（直播间右上角显示）",
+    "fields": {
+      "level":       { "type": "uint64", "desc": "消费等级 1-75" },
+      "diamondCount":{ "type": "uint64", "desc": "累计消费钻石数" },
+      "curScore":    { "type": "uint64", "desc": "当前等级积分" },
+      "levelScore":  { "type": "uint64", "desc": "下一级所需积分" },
+      "totalScore":  { "type": "uint64", "desc": "总积分" },
+      "gradeName":   { "type": "string", "desc": "等级名（L1/L2/.../L75）" },
+      "icon":        { "type": "repeated Image", "desc": "徽章图标" },
+      "upgradeIcon": { "type": "repeated Image", "desc": "升级徽章" },
+      "background":  { "type": "Image",  "desc": "等级背景条" },
+      "newIcon":     { "type": "Image",  "desc": "新版等级图标" }
+    },
+    "_value_notes": {
+      "level_mapping": "60级≈2000万元 65级≈5000万元 70级≈1亿元 75级≈5亿元（约数）"
+    }
+  },
+
+  "FansClub": {
+    "_doc": "粉丝团/灯牌信息",
+    "fields": {
+      "clubName":       { "type": "string", "desc": "粉丝团名称（如 XXX 的粉丝团）" },
+      "level":          { "type": "uint32", "desc": "灯牌等级 1-20（亲密度等级）" },
+      "score":          { "type": "uint64", "desc": "当前亲密度" },
+      "requireScore":   { "type": "uint64", "desc": "升级所需亲密度" },
+      "userFansClubId": { "type": "uint64", "desc": "粉丝团成员 ID" },
+      "badge":          { "type": "Image",  "desc": "粉丝团徽章/灯牌" },
+      "anchorId":       { "type": "uint64", "desc": "粉丝团对应主播 ID" },
+      "type":           { "type": "uint32", "desc": "粉丝团类型 1=普通 2=专属 3=会员团" },
+      "lightUp":        { "type": "bool",   "desc": "今天是否点亮灯牌" },
+      "lightUpDays":    { "type": "uint64", "desc": "连续点亮天数" }
+    }
+  },
+
+  "UserAttr": {
+    "_doc": "用户在直播间的属性",
+    "fields": {
+      "isAdmin":       { "type": "bool",   "desc": "是否房管" },
+      "isSuperAdmin":  { "type": "bool",   "desc": "是否超管" },
+      "isMute":        { "type": "bool",   "desc": "是否被禁言" },
+      "isFollower":    { "type": "bool",   "desc": "是否关注主播" },
+      "isSubscriber":  { "type": "bool",   "desc": "是否订阅会员" },
+      "isNew":         { "type": "bool",   "desc": "是否新关注" }
+    }
+  },
+
+  "FollowInfo": {
+    "_doc": "关注状态",
+    "fields": {
+      "followingCount":  { "type": "uint64", "desc": "关注数" },
+      "followerCount":   { "type": "uint64", "desc": "粉丝数" },
+      "followStatus":    { "type": "uint32", "desc": "0=未关注 1=已关注 2=互关", "enum": {"0":"未关注","1":"已关注","2":"互关"} },
+      "pushStatus":      { "type": "uint32", "desc": "开播提醒状态" }
+    }
+  },
+
+  "PublicAreaCommon": {
+    "_doc": "公域频道/流量入口信息",
+    "fields": {
+      "enterFrom":     { "type": "string", "desc": "进入来源 live_strip/recommend/following/hot" },
+      "enterMethod":   { "type": "string", "desc": "进入方式 click/auto/slide" },
+      "channelId":     { "type": "uint64", "desc": "频道 ID" },
+      "trafficSource": { "type": "string", "desc": "流量来源标签" }
+    }
+  },
+
+  "CommentQualityScore": {
+    "_doc": "弹幕质量评分（用于反垃圾与高价值弹幕高亮）",
+    "fields": {
+      "score":         { "type": "uint32", "desc": "0-100 分" },
+      "isHighQuality": { "type": "bool",   "desc": "是否高质量弹幕" },
+      "tag":           { "type": "string", "desc": "标签" }
+    }
+  },
+
+  "Room": {
+    "_doc": "直播间基础信息",
+    "fields": {
+      "id":            { "type": "uint64", "desc": "直播间 ID" },
+      "title":         { "type": "string", "desc": "标题" },
+      "ownerUserId":   { "type": "uint64", "desc": "主播 ID" },
+      "status":        { "type": "uint32", "desc": "2=直播中 4=已结束" },
+      "cover":         { "type": "Image",  "desc": "封面" }
+    }
+  },
+
+  "Image": {
+    "_doc": "图片/资源对象，含多种分辨率 URL",
+    "fields": {
+      "urlList":   { "type": "repeated string", "desc": "URL 列表（CDN 多源）" },
+      "uri":       { "type": "string", "desc": "tos 资源 URI（webcast-xxx 前缀）" },
+      "height":    { "type": "uint64", "desc": "高度" },
+      "width":     { "type": "uint64", "desc": "宽度" },
+      "avgColor":  { "type": "string", "desc": "主色调（如 #FFAA00）" },
+      "imageType": { "type": "uint32", "desc": "图片类型 1=png 2=jpg 3=webp 4=gif 5=mp4 6=svga" },
+      "openWebUrl":{ "type": "string", "desc": "打开网页 URL" },
+      "isAnimated":{ "type": "bool",   "desc": "是否动图" }
+    }
+  },
+
+  "StringPiece": {
+    "_doc": "富文本段，支持用户/文字/链接",
+    "fields": {
+      "type":      { "type": "uint32", "desc": "1=纯文本 2=用户 4=积分/数字 5=链接 7=图标",
+        "enum": {"1":"text","2":"user","4":"number","5":"link","7":"icon"} },
+      "stringValue": { "type": "string", "desc": "文字内容" },
+      "userValue":   { "type": "User",   "desc": "用户引用" },
+      "value":       { "type": "string", "desc": "原始值（数字/链接等）" },
+      "icon":        { "type": "Image",  "desc": "段前图标" }
+    }
+  },
+
+  "MessageFilter": {
+    "_doc": "消息过滤信息（用户被过滤/敏感词）",
+    "fields": {
+      "type":         { "type": "uint32", "desc": "过滤类型" },
+      "filterReason": { "type": "string", "desc": "过滤原因（敏感词/频率等）" }
+    }
+  },
+
+  "SendResult": {
+    "_doc": "发送结果",
+    "fields": {
+      "success": { "type": "bool",   "desc": "是否成功" },
+      "code":    { "type": "int64",  "desc": "错误码" },
+      "message": { "type": "string", "desc": "错误信息" }
+    }
+  },
+
+  "=== 消息级字段映射（method 为键）===": {},
+
+  "WebcastChatMessage": {
+    "_doc": "弹幕/聊天消息（最高频）",
+    "method": "WebcastChatMessage",
+    "msgId_field": "common.msgId",
+    "user_field": "user",
+    "text_field": "content",
+    "fields": {
+      "common":           { "type": "Common", "desc": "公共头" },
+      "user":             { "type": "User",   "desc": "发送者" },
+      "content":          { "type": "string", "desc": "弹幕文本内容" },
+      "roomId":           { "type": "uint64", "desc": "直播间 ID" },
+      "priority":         { "type": "uint32", "desc": "优先级（大礼物/高等级用户消息 > 普通）" },
+      "rtfContent":       { "type": "Text",   "desc": "富文本" },
+      "publicAreaCommon": { "type": "PublicAreaCommon", "desc": "公域信息" },
+      "label":            { "type": "Image",  "desc": "标签（高等级提示）" },
+      "commentQualityScore": { "type": "CommentQualityScore", "desc": "弹幕评分" },
+      "enterRoomByAction":{ "type": "bool",   "desc": "是否随入场动作一起发送" }
+    },
+    "ui": {
+      "template": "{user.nickName}: {content}",
+      "highlights": "user.payGrade.level > 30 时金色边框；isAdmin 显示房管图标；fansClub 显示灯牌"
+    }
+  },
+
+  "WebcastGiftMessage": {
+    "_doc": "礼物消息（送礼物，含连击）",
+    "method": "WebcastGiftMessage",
+    "primary": true,
+    "focus": "礼物/榜单",
+    "fields": {
+      "common":      { "type": "Common", "desc": "公共头" },
+      "user":        { "type": "User",   "desc": "送礼用户" },
+      "toUser":      { "type": "User",   "desc": "收礼方（通常主播）" },
+      "gift":        { "type": "Gift",   "desc": "礼物对象（含 id/name/diamondCount/图标/特效）" },
+      "roomId":      { "type": "uint64", "desc": "直播间 ID" },
+      "count":       { "type": "uint32", "desc": "本次数量" },
+      "comboCount":  { "type": "uint32", "desc": "连击次数（x1/x2/x3...）" },
+      "repeatCount": { "type": "uint32", "desc": "重复次数（同用户同礼物连续累计）" },
+      "comboId":     { "type": "uint64", "desc": "连击 ID（同一连击唯一标识）" },
+      "groupCount":  { "type": "uint32", "desc": "本批合并数量" },
+      "remainTier":  { "type": "uint64", "desc": "剩余等级/档位" },
+      "batchCompose":{ "type": "bool",   "desc": "是否批量合并显示" },
+      "diamondCount":{ "type": "uint32", "desc": "本次礼物总价（=gift.diamondCount * count）" },
+      "totalDiamondCount": { "type": "uint64", "desc": "本连击累计总钻石数" },
+      "effectDisplay":{ "type": "uint32", "desc": "特效展示位 1=列表 2=半屏 3=全屏" },
+      "priority":    { "type": "GiftIMPriority", "desc": "IM 展示优先级队列状态" },
+      "text":        { "type": "Text",   "desc": "展示文字（'送出了 {gift.name} x{count}'）" },
+      "isDisplayPanel": { "type": "bool", "desc": "是否展示礼物面板" },
+      "isFirstSendInRoom": { "type": "bool", "desc": "本直播间首次送此礼物" },
+      "isSpecialShot":{ "type": "bool",  "desc": "是否特殊镜头/特效位" },
+      "bananaCount": { "type": "uint32", "desc": "香蕉数量（互动礼物）" },
+      "screenEffectType": { "type": "uint32", "desc": "全屏特效类型" },
+      "sendTime":    { "type": "uint64", "desc": "发送时间（毫秒）" },
+      "publicAreaCommon": { "type": "PublicAreaCommon", "desc": "公域信息" },
+      "monitorExtra":{ "type": "string", "desc": "风控附加信息" },
+      "forceDisplay":{ "type": "bool",   "desc": "是否强制展示" },
+      "displayPriority": { "type": "uint32", "desc": "展示优先级" },
+      "giftColor":   { "type": "string", "desc": "礼物主题色" },
+      "logId":       { "type": "string", "desc": "日志 ID" }
+    },
+    "ui": {
+      "template": "{user.nickName} 送出 {gift.name} x{comboCount}",
+      "value_calc": "total_value = gift.diamondCount * count (单位:钻石), rmb ≈ diamondCount * 0.1",
+      "combo_rule": "同 comboId 持续累加 comboCount；断开后重置"
+    },
+    "rank": {
+      "description": "送礼后触发 WebcastContributionMessage 更新贡献榜；gift.giftRankScore 为榜单增量",
+      "increments": ["WebcastRoomStatsMessage.giftCount", "WebcastContributionMessage.ranks.score"]
+    }
+  },
+
+  "WebcastLikeMessage": {
+    "_doc": "点赞消息（连点批量上报）",
+    "method": "WebcastLikeMessage",
+    "fields": {
+      "common":       { "type": "Common", "desc": "公共头" },
+      "user":         { "type": "User",   "desc": "点赞用户" },
+      "count":        { "type": "uint64", "desc": "本次点赞数（通常 1-20）" },
+      "total":        { "type": "uint64", "desc": "直播间累计点赞数" },
+      "roomId":       { "type": "uint64", "desc": "直播间 ID" },
+      "displayType":  { "type": "uint32", "desc": "展示类型 1=桃心 2=星型等" },
+      "label":        { "type": "Image",  "desc": "点赞标签" },
+      "diamondCount": { "type": "uint32", "desc": "付费点赞钻石数（0 表示常规点赞）" },
+      "likeIconMap":  { "type": "LikeIconMap", "desc": "不同等级点赞图标" },
+      "colorEffect":  { "type": "uint32", "desc": "彩色特效" }
+    }
+  },
+
+  "WebcastMemberMessage": {
+    "_doc": "进入直播间消息（普通进场）",
+    "method": "WebcastMemberMessage",
+    "fields": {
+      "common":      { "type": "Common", "desc": "公共头" },
+      "user":        { "type": "User",   "desc": "进场用户" },
+      "roomId":      { "type": "uint64", "desc": "直播间 ID" },
+      "memberCount": { "type": "uint64", "desc": "进场后在线人数" },
+      "text":        { "type": "Text",   "desc": "进场提示文字" },
+      "action":      { "type": "uint32", "desc": "动作类型 1=进入 2=关注后进入" },
+      "enterRoomByAction": { "type": "bool",   "desc": "是否带动作进场" },
+      "topVIPNo":    { "type": "uint64", "desc": "前 N 名 VIP 标志" },
+      "isSetAdmin":  { "type": "bool",   "desc": "是否被任命房管" },
+      "position":    { "type": "uint32", "desc": "进场序号" }
+    }
+  },
+
+  "WebcastSocialMessage": {
+    "_doc": "关注/分享/点赞直播间社交动作",
+    "method": "WebcastSocialMessage",
+    "fields": {
+      "common":      { "type": "Common", "desc": "公共头" },
+      "user":        { "type": "User",   "desc": "操作用户" },
+      "roomId":      { "type": "uint64", "desc": "直播间 ID" },
+      "action":      { "type": "uint32", "desc": "1=关注主播 2=分享直播间 3=访问主页 4=点赞直播间",
+        "enum": {"1":"关注","2":"分享","3":"访问主页","4":"点赞直播间"} },
+      "shareType":   { "type": "uint32", "desc": "分享渠道 1=微信 2=朋友圈 3=QQ 4=微博 5=复制链接" },
+      "followCount": { "type": "uint64", "desc": "直播间累计关注数" },
+      "displayType": { "type": "uint32", "desc": "展示类型" },
+      "label":       { "type": "Image",  "desc": "动作标签（关注/分享）" },
+      "text":        { "type": "Text",   "desc": "提示文字（'关注了主播'）" },
+      "publicAreaCommon": { "type": "PublicAreaCommon", "desc": "公域信息" }
+    }
+  },
+
+  "WebcastRoomUserSeqMessage": {
+    "_doc": "直播间在线/榜单序列消息",
+    "method": "WebcastRoomUserSeqMessage",
+    "fields": {
+      "common":           { "type": "Common", "desc": "公共头" },
+      "seats":            { "type": "uint64", "desc": "席位/在线相关计数" },
+      "ranks":            { "type": "uint64", "desc": "榜单相关计数" },
+      "topUser":          { "type": "UserRank", "desc": "榜首用户" },
+      "rankList":         { "type": "repeated UserRank", "desc": "用户榜单列表" },
+      "total":            { "type": "uint64", "desc": "累计用户数/总量" },
+      "refreshTimestamp": { "type": "uint64", "desc": "刷新时间戳" }
+    }
+  },
+
+  "WebcastEmojiChatMessage": {
+    "_doc": "大表情/表情包弹幕",
+    "method": "WebcastEmojiChatMessage",
+    "fields": {
+      "emoji":    { "type": "EmojiStruct", "desc": "EmojiStruct payload" },
+      "emojiType": { "type": "uint64", "desc": "Emoji type" },
+      "isEmoji": { "type": "bool", "desc": "Whether this is an emoji" },
+      "emojiDuration": { "type": "uint64", "desc": "Emoji display duration" },
+      "common":   { "type": "Common", "desc": "公共头" },
+      "user":     { "type": "User",   "desc": "发送者" },
+      "content":  { "type": "string", "desc": "表情文案/占位" },
+      "displayText": { "type": "Text", "desc": "展示文字/表情图片，图片在 piecesV2.imageValue" },
+      "publicAreaCommon": { "type": "PublicAreaCommon", "desc": "公区展示扩展" }
+    }
+  },
+  "ActivityEmojiGroupsMessage": {
+    "_doc": "抖音网页合成表情分组及图片清单",
+    "method": "ActivityEmojiGroupsMessage",
+    "fields": {
+      "common": { "type": "Common", "desc": "通用消息" },
+      "activityEmojiGroups": { "type": "repeated EffectiveActivityEmojiGroup", "desc": "有效合成表情分组" }
+    }
+  },
+  "WebcastLuckyBoxMessage": {
+    "_doc": "绂忚璇︽儏",
+    "method": "WebcastLuckyBoxMessage",
+    "fields": {
+      "common": { "type": "Common", "desc": "閫氱敤娑堟伅" },
+      "luckyBoxType": { "type": "uint32", "desc": "绂忚绫诲瀷" },
+      "luckyBoxId": { "type": "uint64", "desc": "绂忚ID" },
+      "sendTime": { "type": "uint64", "desc": "鍙戦€佹椂闂?" },
+      "duration": { "type": "uint32", "desc": "鎸佺画鏃堕棿" },
+      "count": { "type": "uint32", "desc": "鏁伴噺" },
+      "title": { "type": "string", "desc": "鏍囬" },
+      "sender": { "type": "User", "desc": "鍙戦€佽€?" },
+      "icon": { "type": "Image", "desc": "鍥炬爣" },
+      "diamondCount": { "type": "uint32", "desc": "閽荤煶鏁?" },
+      "reshareAmount": { "type": "uint64", "desc": "杞彂閲?" },
+      "luckyBoxIdStr": { "type": "string", "desc": "绂忚ID瀛楃涓?" },
+      "giftCount": { "type": "uint32", "desc": "绀肩墿鏁伴噺" }
+    }
+  },
+  "WebcastLuckyBoxTempStatusMessage": {
+    "_doc": "绂忚鐘舵€佹洿鏂?",
+    "method": "WebcastLuckyBoxTempStatusMessage",
+    "fields": {
+      "common": { "type": "Common", "desc": "閫氱敤娑堟伅" }
+    }
+  },
+  "WebcastLuckyBoxRewardMessage": {
+    "_doc": "绂忚寮€濂栫粨鏋?",
+    "method": "WebcastLuckyBoxRewardMessage",
+    "fields": {
+      "common": { "type": "Common", "desc": "閫氱敤娑堟伅" },
+      "luckyBoxId": { "type": "uint64", "desc": "绂忚ID" },
+      "luckyBoxIdStr": { "type": "string", "desc": "绂忚ID瀛楃涓?" },
+      "winnerUserIds": { "type": "repeated string", "desc": "中奖用户 ID 列表" },
+      "rewardedDetails": { "type": "repeated string", "desc": "中奖用户详情 JSON 字符串" },
+      "rewardMessageType": { "type": "uint64", "desc": "开奖结果消息类型" },
+      "relatedItemId": { "type": "string", "desc": "关联活动或奖项 ID" }
+    }
+  },
+  "WebcastXGLotteryMessage": {
+    "_doc": "Lucky-box draw details with winner profiles",
+    "method": "WebcastXGLotteryMessage",
+    "fields": {
+      "common": { "type": "Common", "desc": "Common message header" },
+      "lotteryInfo": { "type": "LotteryInfo", "desc": "Lucky-box draw info" }
+    }
+  },
+  "WebcastLotteryEventNewMessage": {
+    "_doc": "lottery.melon 福袋发起/状态事件",
+    "method": "WebcastLotteryEventNewMessage",
+    "fields": {
+      "common": { "type": "Common", "desc": "通用消息" },
+      "lotteryId": { "type": "uint64", "desc": "福袋/抽奖 ID" },
+      "lotteryStatus": { "type": "int32", "desc": "状态" },
+      "lotteryStartTime": { "type": "uint64", "desc": "开始时间，秒" },
+      "lotteryDrawTime": { "type": "uint64", "desc": "开奖时间，秒" },
+      "lotteryCurrentTime": { "type": "uint64", "desc": "当前时间，秒" },
+      "prizeType": { "type": "uint64", "desc": "奖品类型" },
+      "prizeCount": { "type": "uint64", "desc": "奖品数量/金额" },
+      "luckyCount": { "type": "uint64", "desc": "中奖名额" },
+      "awardName": { "type": "string", "desc": "奖品名称" },
+      "awardDescription": { "type": "string", "desc": "奖品描述" },
+      "conditionsDetail": { "type": "repeated LotteryCondition", "desc": "参与条件" }
+    }
+  },
+  "WebcastLotteryCandidateEventMessage": {
+    "_doc": "lottery.melon 福袋参与事件",
+    "method": "WebcastLotteryCandidateEventMessage",
+    "fields": {
+      "common": { "type": "Common", "desc": "通用消息" },
+      "lotteryId": { "type": "uint64", "desc": "福袋/抽奖 ID" },
+      "userId": { "type": "uint64", "desc": "参与用户 UID" },
+      "participateSuccess": { "type": "bool", "desc": "是否参与成功" },
+      "version": { "type": "uint64", "desc": "参与事件版本" },
+      "userOpenid": { "type": "string", "desc": "参与用户 openid" }
+    }
+  },
+  "WebcastLotteryDrawResultEventMessage": {
+    "_doc": "lottery.melon 福袋开奖结果",
+    "method": "WebcastLotteryDrawResultEventMessage",
+    "fields": {
+      "common": { "type": "Common", "desc": "通用消息" },
+      "lotteryId": { "type": "uint64", "desc": "福袋/抽奖 ID" },
+      "userIds": { "type": "repeated uint64", "desc": "中奖 UID 列表" },
+      "extra": { "type": "string", "desc": "扩展数据" },
+      "userOpenids": { "type": "repeated string", "desc": "中奖 openid 列表" }
+    }
+  },
+
+  "WebcastResponse": {
+    "_doc": "WSS 推送帧封装（外层）",
+    "method": "(push frame)",
+    "fields": {
+      "messages":            { "type": "repeated Message", "desc": "消息集合（每帧可能批量下发）" },
+      "cursor":              { "type": "string", "desc": "游标（ACK 回传）" },
+      "fetchInterval":       { "type": "uint64", "desc": "建议下次拉取间隔（秒）" },
+      "now":                 { "type": "uint64", "desc": "服务器时间（秒）" },
+      "internalExt":         { "type": "string", "desc": "内部扩展字段（加密/压缩标志）" },
+      "fetchType":           { "type": "uint64", "desc": "拉取类型" },
+      "historyNoMore":       { "type": "bool",   "desc": "历史消息是否取完" },
+      "needAck":             { "type": "bool",   "desc": "是否需要 ACK 回执" },
+      "routePushLastReadMid":{ "type": "uint64", "desc": "路由最后消息 ID" },
+      "canReRoute":          { "type": "bool",   "desc": "是否可重新路由" }
+    }
+  },
+
+  "Message": {
+    "_doc": "Response.messages[] 单元 —— 每一条具体消息",
+    "fields": {
+      "method":       { "type": "string", "desc": "消息类型名" },
+      "payload":      { "type": "bytes",  "desc": "protobuf 二进制（按 method 解析）" },
+      "msgId":        { "type": "uint64", "desc": "消息 ID" },
+      "sendTime":     { "type": "uint64", "desc": "发送时间（毫秒）" },
+      "ackPayload":   { "type": "bytes",  "desc": "ACK 附加数据" },
+      "responseId":   { "type": "uint64", "desc": "响应 ID" },
+      "isHistory":    { "type": "bool",   "desc": "是否历史消息" },
+      "isAdmin":      { "type": "bool",   "desc": "是否管理员发送" },
+      "isVisible":    { "type": "bool",   "desc": "是否可见" },
+      "compressed":   { "type": "bool",   "desc": "payload 是否 gzip 压缩" }
+    },
+    "dispatch": "payload 按 method 派发到对应消息类型解析"
+  },
+
+  "WebcastResidentGuestMessage": {
+    "_doc": "星守护榜单推送（重点消息）— 守护榜单变化时全量/增量下发",
+    "method": "WebcastResidentGuestMessage",
+    "focus": "星守护",
+    "fields": {
+      "common":           { "type": "Common", "desc": "公共头" },
+      "guestNum":         { "type": "uint64", "desc": "当前守护总人数" },
+      "guestUserList":    { "type": "repeated ResidentGuestUser", "desc": "守护榜单（按 totalCoin 倒序前 N 名）" },
+      "latestGuestSeq":   { "type": "uint64", "desc": "最新守护序号（递增）" },
+      "latestGuestUser":  { "type": "repeated ResidentGuestUser", "desc": "最新加入/续费/过期的守护用户（增量）" },
+      "roomId":           { "type": "uint64", "desc": "直播间 ID" },
+      "anchorId":         { "type": "uint64", "desc": "主播 ID" },
+      "updateType":       { "type": "uint64", "desc": "1=新加入 2=续费 3=过期 4=等级变更 5=点亮",
+        "enum": {"1":"加入","2":"续费","3":"过期","4":"等级变更","5":"点亮"} },
+      "timestamp":        { "type": "uint64", "desc": "事件时间" },
+      "extra":            { "type": "map<string,string>", "desc": "扩展字段" }
+    },
+    "ui": {
+      "title_bar": "守护人数显示为 guestNum",
+      "list":      "guestUserList 按 rank 渲染守护榜单",
+      "toast":     "updateType=1 时弹出 '{user.nickName} 成为了第{N}位守护'，2 续费、3 过期"
+    }
+  },
+
+  "ResidentGuestUser": {
+    "_doc": "单个星守护用户条目",
+    "fields": {
+      "user":            { "type": "User",    "desc": "守护用户" },
+      "guestLevel":      { "type": "uint64",  "desc": "守护等级 1-6",
+        "enum": {"1":"青铜守护","2":"白银守护","3":"黄金守护","4":"铂金守护","5":"钻石守护","6":"星耀守护"} },
+      "guestDays":       { "type": "uint64",  "desc": "累计守护天数" },
+      "expireTimestamp": { "type": "uint64",  "desc": "守护到期时间戳" },
+      "totalCoin":       { "type": "uint64",  "desc": "累计贡献钻石数（=守护期间累计消费）" },
+      "rank":            { "type": "uint64",  "desc": "榜单位次（1=榜一）" },
+      "levelIcon":       { "type": "Image",   "desc": "等级图标" },
+      "badge":           { "type": "Image",   "desc": "守护徽章（展示在头像旁）" },
+      "privilegeText":   { "type": "Text",    "desc": "特权说明文字" },
+      "lightUpStatus":   { "type": "uint64",  "desc": "0=未点亮 1=已点亮 2=待点亮" },
+      "lightUpBadge":    { "type": "Image",   "desc": "点亮徽章（动态）" },
+      "guardType":       { "type": "uint64",  "desc": "1=周守护 2=月守护 3=季守护 4=年守护",
+        "enum": {"1":"周守护","2":"月守护","3":"季守护","4":"年守护"} },
+      "continueWeeks":   { "type": "uint64",  "desc": "连续守护周数" },
+      "residentCount":   { "type": "uint64",  "desc": "当前累计守护周/月数" },
+      "guestTitle":      { "type": "string",  "desc": "守护称号（如 '钻石守护·榜一'）" },
+      "honorBadges":     { "type": "repeated Image", "desc": "荣誉徽章列表（连守/至尊等）" }
+    }
+  },
+
+  "WebcastStarGuardMessage": {
+    "_doc": "星守护明确动作消息；action 与 displayText 用于区分开通、续费和过期。",
+    "method": "WebcastStarGuardMessage",
+    "focus": "星守护",
+    "fields": {
+      "common":          { "type": "Common", "desc": "公共头" },
+      "user":            { "type": "User",   "desc": "星守护用户" },
+      "guardLevel":      { "type": "uint64", "desc": "守护等级" },
+      "action":          { "type": "uint64", "desc": "业务动作码；当前归档不足以确认枚举，需结合 displayText 判断" },
+      "guardBadge":      { "type": "Image",  "desc": "守护徽章" },
+      "guardIcon":       { "type": "Image",  "desc": "守护图标" },
+      "guardName":       { "type": "string", "desc": "守护名称" },
+      "anchorId":        { "type": "uint64", "desc": "主播用户 ID" },
+      "expireTime":      { "type": "uint64", "desc": "到期时间" },
+      "displayText":     { "type": "Text",   "desc": "动作富文本" },
+      "rankList":        { "type": "repeated StarGuardRankItem", "desc": "守护榜单" },
+      "totalGuardCount": { "type": "uint64", "desc": "守护总人数" },
+      "guardDuration":   { "type": "uint64", "desc": "守护时长" },
+      "badgeName":       { "type": "string", "desc": "徽章名称" }
+    }
+  },
+
+  "WebcastStarGuardInfoMessage": {
+    "_doc": "星守护面板 / 用户进入时推送的守护状态",
+    "method": "WebcastStarGuardInfoMessage",
+    "focus": "星守护",
+    "fields": {
+      "common":          { "type": "Common", "desc": "公共头" },
+      "user":            { "type": "User",   "desc": "查询/进入的用户" },
+      "roomId":          { "type": "uint64", "desc": "直播间 ID" },
+      "isGuard":         { "type": "bool",   "desc": "是否当前主播的守护" },
+      "guardLevel":      { "type": "uint64", "desc": "我的守护等级" },
+      "remainingDays":   { "type": "uint64", "desc": "剩余天数" },
+      "nextLevelDays":   { "type": "uint64", "desc": "距下一级所需天数" },
+      "myRank":          { "type": "uint64", "desc": "我的榜单排名（0=未上榜）" },
+      "totalGuards":     { "type": "uint64", "desc": "守护总数（=ResidentGuest.guestNum）" },
+      "welcomeText":     { "type": "Text",   "desc": "守护入场欢迎语（'欢迎钻石守护 XX 回家'）" },
+      "badge":           { "type": "Image",  "desc": "守护徽章" },
+      "levelBadge":      { "type": "Image",  "desc": "等级徽章" },
+      "privilegeFlags":  { "type": "uint64", "desc": "特权位掩码（bit0专属弹幕 bit1专属礼物 bit2进场特效 bit3专属头像框）" },
+      "upgradeTimestamp":{ "type": "uint64", "desc": "升级时间" },
+      "privilegeUsers":  { "type": "repeated User", "desc": "同等级/更高等级守护列表" }
+    }
+  },
+
+  "WebcastMemberSpecialTipMessage": {
+    "_doc": "会员/VIP/贵族/守护入场特效提示",
+    "method": "WebcastMemberSpecialTipMessage",
+    "focus": "会员",
+    "fields": {
+      "common":          { "type": "Common", "desc": "公共头" },
+      "user":            { "type": "User",   "desc": "入场用户" },
+      "memberType":      { "type": "uint64", "desc": "1=VIP 2=高级会员 3=贵族 4=守护",
+        "enum": {"1":"VIP","2":"高级会员","3":"贵族","4":"守护"} },
+      "memberLevel":     { "type": "uint64", "desc": "会员等级" },
+      "memberName":      { "type": "string", "desc": "等级名称（如 '公爵' / '钻石守护'）" },
+      "memberBadge":     { "type": "Image",  "desc": "会员徽章" },
+      "enterEffect":     { "type": "Image",  "desc": "入场特效动画" },
+      "displayText":     { "type": "Text",   "desc": "入场文字" },
+      "remainSeconds":   { "type": "uint64", "desc": "特效停留秒数" },
+      "isExpired":       { "type": "bool",   "desc": "是否已过期" },
+      "autoRenew":       { "type": "bool",   "desc": "是否自动续费" },
+      "privilegeLevel":  { "type": "uint64", "desc": "特权等级" },
+      "animationEffect": { "type": "Image",  "desc": "动画特效资源" },
+      "backgroundEffect":{ "type": "Image",  "desc": "背景特效" },
+      "subtitle":        { "type": "Text",   "desc": "副标题（'进场座驾：XXX'）" },
+      "schemaUrl":       { "type": "string", "desc": "点击跳转开通续费页" },
+      "seatType":        { "type": "uint64", "desc": "座驾类型" },
+      "seatIcon":        { "type": "Image",  "desc": "座驾图标" },
+      "carType":         { "type": "uint64", "desc": "车型" },
+      "noblePrivilege":  { "type": "uint64", "desc": "贵族特权位" },
+      "tags":            { "type": "repeated Image", "desc": "身份标签" },
+      "messageType":     { "type": "uint64", "desc": "消息类型 1=普通 2=豪华入场 3=全屏入场" }
+    }
+  },
+
+  "WebcastVipEnterMessage": {
+    "_doc": "VIP/贵族进入直播间（独立消息，区别于 MemberMessage）",
+    "method": "WebcastVipEnterMessage",
+    "focus": "会员",
+    "fields": {
+      "common":          { "type": "Common", "desc": "公共头" },
+      "user":            { "type": "User",   "desc": "入场用户" },
+      "vipLevel":        { "type": "uint64", "desc": "VIP 等级" },
+      "nobleLevel":      { "type": "uint64", "desc": "贵族等级（0=非贵族）" },
+      "vipIcon":         { "type": "Image",  "desc": "VIP 图标" },
+      "nobleIcon":       { "type": "Image",  "desc": "贵族图标" },
+      "displayText":     { "type": "Text",   "desc": "入场文字" },
+      "seatEffect":      { "type": "Image",  "desc": "座驾特效" },
+      "enterType":       { "type": "uint64", "desc": "1=普通 2=座驾入场 3=特效入场",
+        "enum": {"1":"普通","2":"座驾","3":"特效"} },
+      "avatarDecorate":  { "type": "Image",  "desc": "头像装饰框" },
+      "stayDuration":    { "type": "uint64", "desc": "横幅停留秒数" },
+      "enterEffectUrl":  { "type": "string", "desc": "入场特效 URL" },
+      "privilegeFlags":  { "type": "uint64", "desc": "特权位掩码" },
+      "topRank":         { "type": "uint64", "desc": "榜单位次（上榜时显示）" }
+    }
+  },
+
+  "WebcastSubscriptionMessage": {
+    "_doc": "会员订阅事件。开通/续费类型需结合 action 与 displayText 判断；不要把用户当前徽章状态当作本次购买。",
+    "method": "WebcastSubscriptionMessage",
+    "focus": "会员",
+    "fields": {
+      "common":         { "type": "Common", "desc": "公共头" },
+      "user":           { "type": "User",   "desc": "购买会员的用户" },
+      "subscribeLevel": { "type": "int64",  "desc": "会员等级" },
+      "subscribeTime":  { "type": "int64",  "desc": "订阅时间" },
+      "action":         { "type": "int32",  "desc": "订阅动作码，业务含义需结合展示文案" },
+      "anchorId":       { "type": "int64",  "desc": "主播用户 ID" },
+      "badge":          { "type": "Image",  "desc": "会员徽章" },
+      "displayText":    { "type": "Text",   "desc": "开通或续费富文本" },
+      "expireTime":     { "type": "int64",  "desc": "到期时间" }
+    }
+  },
+
+  "WebcastRanklistHourEntranceMessage": {
+    "_doc": "小时榜入口推送（榜单提示条/排名变化）",
+    "method": "WebcastRanklistHourEntranceMessage",
+    "focus": "榜单",
+    "fields": {
+      "common":            { "type": "Common", "desc": "公共头" },
+      "rankListType":      { "type": "uint64", "desc": "1=小时榜 2=日榜 3=周榜 4=月榜 5=地区榜 6=人气榜",
+        "enum": {"1":"小时榜","2":"日榜","3":"周榜","4":"月榜","5":"地区榜","6":"人气榜"} },
+      "rank":              { "type": "uint64", "desc": "当前直播间排名（0=未上榜）" },
+      "rankName":          { "type": "string", "desc": "榜单名称（'小时榜·北京'）" },
+      "rankIcon":          { "type": "Image",  "desc": "榜单图标" },
+      "score":             { "type": "uint64", "desc": "当前分数（音浪/助力值）" },
+      "nextRankDiffScore": { "type": "uint64", "desc": "距下一名差值" },
+      "updateTime":        { "type": "uint64", "desc": "更新时间" },
+      "changeRank":        { "type": "repeated RanklistRank", "desc": "变化位次详情（进位/退位）" },
+      "rankTarget":        { "type": "uint64", "desc": "目标名次（如冲进前10）" },
+      "titleText":         { "type": "Text",   "desc": "标题（'距离前10还差N音浪'）" },
+      "schemaUrl":         { "type": "string", "desc": "点击跳转榜单页" },
+      "entranceIcon":      { "type": "Image",  "desc": "入口图标（左上角小时榜入口）" },
+      "promotionScore":    { "type": "uint64", "desc": "晋级所需分数" },
+      "passed":            { "type": "bool",   "desc": "是否已晋级" },
+      "topList":           { "type": "repeated RanklistRank", "desc": "榜单前三名" },
+      "rankScope":         { "type": "uint64", "desc": "榜单范围 1=全站 2=同城 3=品类" },
+      "rankCity":          { "type": "string", "desc": "城市名（同城榜）" },
+      "rankTimestamp":     { "type": "uint64", "desc": "榜单结算时间" },
+      "decorations":       { "type": "repeated Image", "desc": "榜单装饰图标（冠军/晋级徽章）" },
+      "isSuspend":         { "type": "bool",   "desc": "是否休榜" },
+      "subRankListType":   { "type": "uint64", "desc": "子榜单类型" },
+      "displayText":       { "type": "string", "desc": "展示文案" }
+    }
+  },
+
+  "RanklistRank": {
+    "_doc": "榜单项（通用）",
+    "fields": {
+      "rank":     { "type": "uint64", "desc": "名次" },
+      "user":     { "type": "User",   "desc": "用户" },
+      "score":    { "type": "uint64", "desc": "分数/音浪/钻石" },
+      "badge":    { "type": "Image",  "desc": "名次徽章" },
+      "tag":      { "type": "string", "desc": "标签（榜一/黑马/新人）" },
+      "delta":    { "type": "uint64", "desc": "上升/下降位次（正数上升）" },
+      "rankIcon": { "type": "Image",  "desc": "名次图标" },
+      "title":    { "type": "string", "desc": "称号" }
+    }
+  },
+
+  "WebcastContributionMessage": {
+    "_doc": "贡献榜更新（日榜/周榜）",
+    "method": "WebcastContributionMessage",
+    "focus": "榜单",
+    "fields": {
+      "common":    { "type": "Common", "desc": "公共头" },
+      "roomId":    { "type": "uint64", "desc": "直播间 ID" },
+      "rankType":  { "type": "uint64", "desc": "1=日贡献 2=周贡献 3=月贡献" },
+      "ranks":     { "type": "repeated ContributionRank", "desc": "贡献榜列表（前 100 名）" },
+      "total":     { "type": "uint64", "desc": "总贡献人数" },
+      "anchorId":  { "type": "uint64", "desc": "主播 ID" },
+      "updateTime":{ "type": "uint64", "desc": "更新时间" },
+      "displayText":{ "type": "Text",  "desc": "展示文案" },
+      "selfRank":  { "type": "ContributionRank", "desc": "我的排名" }
+    }
+  },
+
+  "WebcastFansclubMessage": {
+    "_doc": "粉丝团/灯牌变化",
+    "method": "WebcastFansclubMessage",
+    "fields": {
+      "common":              { "type": "Common", "desc": "公共头" },
+      "memberCount":         { "type": "uint64", "desc": "粉丝团成员数" },
+      "user":                { "type": "User",   "desc": "触发用户" },
+      "isMembershipLightOn": { "type": "bool",   "desc": "是否点亮灯牌" },
+      "fansclubLevel":       { "type": "uint64", "desc": "粉丝团等级" },
+      "intimarank":          { "type": "uint64", "desc": "亲密榜位次" },
+      "intimacyScore":       { "type": "uint64", "desc": "亲密度分值" },
+      "fansclubName":        { "type": "string", "desc": "粉丝团名" },
+      "anchor":              { "type": "User",   "desc": "主播" },
+      "displayText":         { "type": "Text",   "desc": "展示文案（'XX 加入粉丝团'）" },
+      "badge":               { "type": "Image",  "desc": "徽章" },
+      "requireIntimacy":     { "type": "uint64", "desc": "升级所需亲密度" },
+      "upgradeScore":        { "type": "uint64", "desc": "升级增量" },
+      "lightUpDays":         { "type": "uint64", "desc": "连续点亮天数" },
+      "canLightUp":          { "type": "bool",   "desc": "是否可点亮" },
+      "type":                { "type": "uint64", "desc": "1=加入 2=点亮 3=升级" },
+      "rankList":            { "type": "repeated FansRank", "desc": "亲密榜" },
+      "rankListType":        { "type": "uint64", "desc": "1=日榜 2=周榜" }
+    }
+  },
+
+  "WebcastGiftPlayEventMessage": {
+    "_doc": "礼物特效播放事件（大礼物全屏特效）",
+    "method": "WebcastGiftPlayEventMessage",
+    "focus": "礼物/特效",
+    "fields": {
+      "common":        { "type": "Common", "desc": "公共头" },
+      "giftId":        { "type": "uint64", "desc": "礼物 ID" },
+      "effectId":      { "type": "uint64", "desc": "特效 ID" },
+      "user":          { "type": "User",   "desc": "送礼用户" },
+      "repeatCount":   { "type": "uint64", "desc": "重复次数" },
+      "displayTime":   { "type": "uint64", "desc": "展示时间(ms)" },
+      "effectUrl":     { "type": "Image",  "desc": "特效资源（SVGA/MP4）" },
+      "effectType":    { "type": "string", "desc": "SVGA/LOTTIE/MP4" },
+      "comboCount":    { "type": "uint64", "desc": "连击次数" },
+      "toUser":        { "type": "User",   "desc": "收礼方" },
+      "displayText":   { "type": "Text",   "desc": "展示文字" },
+      "lottieUrl":     { "type": "string", "desc": "Lottie 特效" },
+      "svgaUrl":       { "type": "string", "desc": "SVGA 特效" }
+    }
+  },
+
+  "WebcastRoomStatsMessage": {
+    "_doc": "直播间实时统计（每 5-30 秒推送）",
+    "method": "WebcastRoomStatsMessage",
+    "fields": {
+      "common":             { "type": "Common", "desc": "公共头" },
+      "onlineCount":        { "type": "uint64", "desc": "在线人数" },
+      "totalUser":          { "type": "uint64", "desc": "累计观看" },
+      "likeCount":          { "type": "uint64", "desc": "总点赞数" },
+      "chatCount":          { "type": "uint64", "desc": "弹幕总数" },
+      "giftCount":          { "type": "uint64", "desc": "礼物总钻石数" },
+      "followCount":        { "type": "uint64", "desc": "新增关注" },
+      "shareCount":         { "type": "uint64", "desc": "分享数" },
+      "viewerCount":        { "type": "uint64", "desc": "当前观众数" },
+      "joinFanClubCount":   { "type": "uint64", "desc": "新增粉丝团" },
+      "interactionCount":   { "type": "uint64", "desc": "互动总人次" },
+      "ticketCount":        { "type": "uint64", "desc": "音浪总数（总钻石/10）" },
+      "maxViewerCount":     { "type": "uint64", "desc": "峰值在线" },
+      "residentGuestCount": { "type": "uint64", "desc": "守护人数" },
+      "memberCount":        { "type": "uint64", "desc": "会员人数" },
+      "timestamp":          { "type": "uint64", "desc": "统计时间" }
+    }
+  },
+
+  "WebcastNobleMessage": {
+    "_doc": "贵族信息（爵位：骑士/子爵/伯爵/侯爵/公爵/国王）",
+    "method": "WebcastNobleMessage",
+    "focus": "会员",
+    "fields": {
+      "common":        { "type": "Common", "desc": "公共头" },
+      "user":          { "type": "User",   "desc": "用户" },
+      "nobleLevel":    { "type": "uint64", "desc": "贵族等级 1-6",
+        "enum": {"1":"骑士","2":"子爵","3":"伯爵","4":"侯爵","5":"公爵","6":"国王"} },
+      "nobleName":     { "type": "string", "desc": "爵位名" },
+      "nobleBadge":    { "type": "Image",  "desc": "爵位徽章" },
+      "enterEffect":   { "type": "Image",  "desc": "入场特效" },
+      "seatIcon":      { "type": "Image",  "desc": "座驾图标" },
+      "remainDays":    { "type": "uint64", "desc": "剩余天数" },
+      "displayText":   { "type": "Text",   "desc": "展示文字" }
+    }
+  },
+
+  "WebcastGiftBannerMessage": {
+    "_doc": "礼物横幅（大礼物飘屏通知）",
+    "method": "WebcastGiftBannerMessage",
+    "focus": "礼物",
+    "fields": {
+      "common":      { "type": "Common", "desc": "公共头" },
+      "fromUser":    { "type": "User",   "desc": "送礼用户" },
+      "toUser":      { "type": "User",   "desc": "收礼用户" },
+      "giftId":      { "type": "uint64", "desc": "礼物 ID" },
+      "giftValue":   { "type": "uint64", "desc": "礼物价值" },
+      "giftName":    { "type": "string", "desc": "礼物名" },
+      "giftIcon":    { "type": "Image",  "desc": "礼物图标" },
+      "count":       { "type": "uint64", "desc": "数量" },
+      "displayText": { "type": "Text",   "desc": "横幅文字" },
+      "bannerType":  { "type": "string", "desc": "横幅类型（全直播间/全站）" }
+    }
+  },
+
+  "WebcastControlMessage": {
+    "_doc": "直播间控制消息（禁言/踢人/房管任命）",
+    "method": "WebcastControlMessage",
+    "fields": {
+      "common":      { "type": "Common", "desc": "公共头" },
+      "action":      { "type": "uint64", "desc": "1=禁言 2=解禁 3=踢人 4=房管 5=解除房管" },
+      "targetUserId":{ "type": "uint64", "desc": "被操作用户 ID" },
+      "operator":    { "type": "User",   "desc": "操作者（主播/房管/超管）" },
+      "duration":    { "type": "uint64", "desc": "禁言时长(秒)" },
+      "displayText": { "type": "Text",   "desc": "展示文字（'XX 被禁言10分钟'）" }
+    }
+  },
+
+  "WebcastTeamPlayTeamInfoMessage": {
+    "_doc": "PK 团战信息（主播连麦 PK）",
+    "method": "WebcastTeamPlayTeamInfoMessage",
+    "fields": {
+      "common":        { "type": "Common", "desc": "公共头" },
+      "battleId":      { "type": "uint64", "desc": "PK 场次 ID" },
+      "teams":         { "type": "repeated TeamInfo", "desc": "双方队伍" },
+      "battleStatus":  { "type": "uint64", "desc": "1=等待 2=进行中 3=结算" },
+      "remainSeconds": { "type": "uint64", "desc": "剩余秒数" },
+      "displayText":   { "type": "Text",   "desc": "PK 比分文案" },
+      "winTeamId":     { "type": "uint64", "desc": "获胜队伍 ID" }
+    }
+  },
+
+  "=== Method 派发路由表 ===": {},
+
+  "METHOD_DISPATCH": {
+    "WebcastChatMessage":                { "proto": "douyin_live.proto",  "category": "chat" },
+    "WebcastGiftMessage":                { "proto": "douyin_live.proto",  "category": "gift" },
+    "WebcastLikeMessage":                { "proto": "douyin_live.proto",  "category": "like" },
+    "WebcastMemberMessage":              { "proto": "douyin_live.proto",  "category": "member" },
+    "WebcastSocialMessage":              { "proto": "douyin_live.proto",  "category": "social" },
+    "WebcastRoomUserSeqMessage":         { "proto": "douyin_live.proto",  "category": "room_user_seq" },
+    "WebcastRoomRankMessage":            { "proto": "douyin_extra.proto", "category": "room_rank" },
+    "WebcastEmojiChatMessage":           { "proto": "douyin_live.proto",  "category": "emoji" },
+    "ActivityEmojiGroupsMessage":        { "proto": "douyin_extra.proto", "category": "emoji" },
+    "WebcastResidentGuestMessage":       { "proto": "douyin_extra.proto", "category": "star_guard" },
+    "WebcastStarGuardInfoMessage":       { "proto": "douyin_extra.proto", "category": "star_guard" },
+    "WebcastStarGuardMessage":           { "proto": "douyin_live.proto", "category": "star_guard" },
+    "WebcastMemberSpecialTipMessage":    { "proto": "douyin_extra.proto", "category": "vip" },
+    "WebcastVipEnterMessage":            { "proto": "douyin_extra.proto", "category": "vip" },
+    "WebcastSubscriptionMessage":        { "proto": "douyin_live.proto", "category": "subscription" },
+    "WebcastRanklistHourEntranceMessage":{ "proto": "douyin_extra.proto", "category": "ranklist" },
+    "WebcastRanklistMessage":            { "proto": "douyin_extra.proto", "category": "ranklist" },
+    "WebcastContributionMessage":        { "proto": "douyin_extra.proto", "category": "ranklist" },
+    "WebcastFansclubMessage":            { "proto": "douyin_extra.proto", "category": "fansclub" },
+    "WebcastGiftPlayEventMessage":       { "proto": "douyin_extra.proto", "category": "effect" },
+    "WebcastGiftBannerMessage":          { "proto": "douyin_extra.proto", "category": "gift" },
+    "WebcastRoomStatsMessage":           { "proto": "douyin_extra.proto", "category": "stats" },
+    "WebcastRoomMessage":                { "proto": "douyin_extra.proto", "category": "room" },
+    "WebcastInRoomBannerMessage":        { "proto": "douyin_extra.proto", "category": "banner" },
+    "WebcastNobleMessage":               { "proto": "douyin_extra.proto", "category": "noble" },
+    "WebcastNobleEnterMessage":          { "proto": "douyin_extra.proto", "category": "noble" },
+    "WebcastControlMessage":             { "proto": "douyin_extra.proto", "category": "control" },
+    "WebcastBlockMessage":               { "proto": "douyin_extra.proto", "category": "control" },
+    "WebcastTeamPlayTeamInfoMessage":    { "proto": "douyin_extra.proto", "category": "pk" },
+    "WebcastTeamPlayInteractiveBarMessage":{ "proto": "douyin_extra.proto","category": "pk" },
+    "WebcastTeamPlayApplySortStrategyChangeMessage":{ "proto": "douyin_extra.proto", "category": "pk" },
+    "WebcastGameIntroduceMessage":       { "proto": "douyin_extra.proto", "category": "game" },
+    "WebcastGameCPBaseMessage":          { "proto": "douyin_extra.proto", "category": "game" },
+    "WebcastLowPcuGuideMessage":         { "proto": "douyin_extra.proto", "category": "guide" },
+    "WebcastAckMessage":                 { "proto": "douyin_extra.proto", "category": "ack" },
+    "WebcastEffectInteractMessage":      { "proto": "douyin_extra.proto", "category": "effect" },
+    "WebcastChatLikeMessage":            { "proto": "douyin_extra.proto", "category": "like" },
+    "WebcastRoomDataSyncMessage":        { "proto": "douyin_extra.proto", "category": "room" },
+    "WebcastTaskCenterEntranceMessage":  { "proto": "douyin_extra.proto", "category": "task" },
+    "WebcastNotifyEffectMessage":        { "proto": "douyin_extra.proto", "category": "effect" },
+    "WebcastLuckyBoxEndMessage":         { "proto": "douyin_extra.proto", "category": "lucky_box" },
+    "WebcastExhibitionChatMessage":      { "proto": "douyin_extra.proto", "category": "chat" },
+    "WebcastAudioChatMessage":           { "proto": "douyin_extra.proto", "category": "chat" },
+    "WebcastPrizeNoticeMessage":         { "proto": "douyin_extra.proto", "category": "prize" },
+    "WebcastRoomIntroMessage":           { "proto": "douyin_extra.proto", "category": "room" },
+    "WebcastPreviewCjRpMessage":         { "proto": "douyin_extra.proto", "category": "red_packet" },
+    "WebcastProfitInteractionMessage":   { "proto": "douyin_extra.proto", "category": "profit" },
+    "WebcastLuckyBoxMessage":            { "proto": "douyin_extra.proto", "category": "lucky_box" },
+    "WebcastLuckyBoxTempStatusMessage":  { "proto": "douyin_extra.proto", "category": "lucky_box" },
+    "WebcastLuckyBoxRewardMessage":      { "proto": "douyin_extra.proto", "category": "lucky_box" },
+    "WebcastXGLotteryMessage":           { "proto": "douyin_extra.proto", "category": "lucky_box" },
+    "WebcastLotteryEventNewMessage":     { "proto": "douyin_extra.proto", "category": "lucky_box" },
+    "WebcastLotteryCandidateEventMessage": { "proto": "douyin_extra.proto", "category": "lucky_box" },
+    "WebcastLotteryDrawResultEventMessage": { "proto": "douyin_extra.proto", "category": "lucky_box" }
+  }
+}

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light">
+  <title>LiveMngSys WSS</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark">LM</div>
+        <div><strong>LiveMngSys</strong><span>Web Style System</span></div>
+        <button class="icon-btn sidebar-close" id="sidebarClose" title="关闭导航" aria-label="关闭导航"><i data-lucide="x"></i></button>
+      </div>
+      <nav class="main-nav" aria-label="主导航">
+        <p>资源</p>
+        <button class="nav-item active" data-view="overview"><i data-lucide="layout-dashboard"></i><span>总览</span><b>28</b></button>
+        <button class="nav-item" data-view="layouts"><i data-lucide="panels-top-left"></i><span>全局布局</span><b>4</b></button>
+        <button class="nav-item" data-view="components"><i data-lucide="blocks"></i><span>可复用组件</span><b>19</b></button>
+        <button class="nav-item" data-view="tokens"><i data-lucide="swatch-book"></i><span>设计令牌</span><b>20</b></button>
+        <button class="nav-item" data-view="patterns"><i data-lucide="workflow"></i><span>交互模式</span><b>6</b></button>
+        <p>工作区</p>
+        <button class="nav-item" data-view="tree"><i data-lucide="folder-tree"></i><span>项目树</span><b id="treeCount">0</b></button>
+      </nav>
+      <div class="source-note">
+        <span class="status-dot"></span>
+        <div><strong>来源已索引</strong><small>GUIDemo · MusicBot · Docs/GUI</small></div>
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <header class="topbar">
+        <button class="icon-btn menu-btn" id="menuBtn" title="打开导航" aria-label="打开导航"><i data-lucide="menu"></i></button>
+        <div class="breadcrumb"><span>WSS</span><i data-lucide="chevron-right"></i><strong id="breadcrumbTitle">总览</strong></div>
+        <div class="top-actions">
+          <label class="search-box"><i data-lucide="search"></i><input id="globalSearch" type="search" placeholder="搜索组件、令牌或模式" autocomplete="off"><kbd>/</kbd></label>
+          <button class="icon-btn" id="themeButton" title="切换明暗模式" aria-label="切换明暗模式"><i data-lucide="sun"></i></button>
+          <button class="primary-btn" id="newComponentBtn"><i data-lucide="plus"></i><span>新建组件</span></button>
+        </div>
+      </header>
+
+      <main id="mainContent" tabindex="-1"></main>
+    </div>
+  </div>
+
+  <div class="editor-layer" id="editorLayer" aria-hidden="true">
+    <section class="editor-shell" role="dialog" aria-modal="true" aria-labelledby="editorTitle">
+      <header class="editor-header">
+        <button class="icon-btn" id="editorClose" title="关闭编辑器" aria-label="关闭编辑器"><i data-lucide="arrow-left"></i></button>
+        <div class="editor-heading"><span id="editorType">基础组件</span><input id="editorTitle" value="按钮"></div>
+        <label class="path-field" title="保存到 ReStyle/saved 下的相对路径"><i data-lucide="folder"></i><input id="editorPath" value="components/base/button.html" aria-label="saved 子目录下的保存路径"></label>
+        <div class="viewport-switch" aria-label="预览尺寸">
+          <button class="active" data-width="100%" title="桌面预览"><i data-lucide="monitor"></i></button>
+          <button data-width="768px" title="平板预览"><i data-lucide="tablet"></i></button>
+          <button data-width="390px" title="手机预览"><i data-lucide="smartphone"></i></button>
+        </div>
+        <button class="secondary-btn" id="resetEditor"><i data-lucide="rotate-ccw"></i><span>重置</span></button>
+        <button class="secondary-btn" id="formatEditor"><i data-lucide="wand-sparkles"></i><span>格式化</span></button>
+        <button class="primary-btn" id="saveEditor"><i data-lucide="save"></i><span>保存到本地目录</span></button>
+      </header>
+      <div class="editor-body">
+        <section class="code-pane">
+          <div class="code-tabs" role="tablist">
+            <button class="active" data-code="html" role="tab">HTML <span id="htmlLines"></span></button>
+            <button data-code="css" role="tab">CSS <span id="cssLines"></span></button>
+            <button data-code="js" role="tab">JS <span id="jsLines"></span></button>
+          </div>
+          <div class="code-area-wrap">
+            <div class="line-numbers" id="lineNumbers" aria-hidden="true"></div>
+            <div class="code-stack">
+              <pre id="codeHighlight" aria-hidden="true"></pre>
+              <textarea id="codeEditor" spellcheck="false" wrap="off" aria-label="代码编辑器"></textarea>
+            </div>
+            <div class="comments-resizer" id="commentsResizer" role="separator" aria-label="调整代码与注释宽度" tabindex="0"></div>
+            <aside class="line-comments" aria-label="逐行中文注释">
+              <header><i data-lucide="languages"></i><span>逐行中文释义</span></header>
+              <div id="lineComments"></div>
+            </aside>
+          </div>
+          <footer class="editor-status"><span><i data-lucide="circle-check"></i> 实时预览已开启</span><span id="cursorStatus">Ln 1, Col 1</span></footer>
+        </section>
+        <div class="pane-resizer" id="paneResizer" role="separator" aria-label="调整代码与预览宽度" tabindex="0"></div>
+        <section class="preview-pane">
+          <header><div><strong>预览</strong><span id="previewSize">自适应</span></div><div class="preview-actions"><button class="icon-btn" id="previewZoomOut" title="缩小预览" aria-label="缩小预览"><i data-lucide="zoom-out"></i></button><span class="zoom-label" id="previewZoomLabel">100%</span><button class="icon-btn" id="previewZoomIn" title="放大预览" aria-label="放大预览"><i data-lucide="zoom-in"></i></button><button class="icon-btn" id="previewZoomReset" title="重置预览比例" aria-label="重置预览比例"><i data-lucide="rotate-ccw"></i></button><button class="icon-btn" id="openPreview" title="在新窗口打开预览" aria-label="在新窗口打开预览"><i data-lucide="external-link"></i></button></div></header>
+          <div class="preview-stage"><iframe id="editorPreview" title="组件实时预览" sandbox="allow-scripts"></iframe></div>
+        </section>
+      </div>
+    </section>
+  </div>
+
+  <div class="toast-region" id="toastRegion" aria-live="polite"></div>
+  <script src="./app.js"></script>
+</body>
+</html>

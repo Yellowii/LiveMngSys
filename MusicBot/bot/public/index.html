@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>本地点歌机器人</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <section class="player">
+        <div class="cover" id="cover">♪</div>
+        <div class="song">
+          <div class="eyebrow" id="source">待机</div>
+          <h1 id="title">暂无播放</h1>
+          <div class="artist" id="artist">等待点歌或从空闲列表加入</div>
+          <div class="progress">
+            <span id="time-current">00:00</span>
+            <input id="seek" type="range" min="0" max="1000" value="0">
+            <span id="time-duration">00:00</span>
+          </div>
+          <div class="controls">
+            <button id="play" type="button">播放</button>
+            <button id="pause" type="button">暂停</button>
+            <button id="next" type="button">下一首</button>
+            <label>音量 <input id="volume" type="range" min="0" max="100" step="1" value="80"></label>
+          </div>
+          <div class="device-row">
+            <select id="device"></select>
+            <button id="refresh-devices" type="button">刷新设备</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="lyrics" id="lyrics"></section>
+
+      <aside class="side">
+        <section class="panel">
+          <h2>网易云登录</h2>
+          <div class="stack">
+            <button id="login-qr" type="button">二维码登录</button>
+            <div id="qr-box"></div>
+            <input id="cookie" placeholder="MUSIC_U=...">
+            <button id="save-cookie" type="button">保存 Cookie</button>
+            <button id="login-status" type="button">检查登录</button>
+            <button id="login-refresh" type="button">刷新登录</button>
+            <button id="logout" type="button">退出登录</button>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>网易云歌单</h2>
+          <div class="stack">
+            <input id="playlist-id" placeholder="歌单 ID 或链接">
+            <button id="queue-playlist" type="button">添加到播放队列</button>
+            <button id="import-playlist" type="button">加入空闲列表</button>
+            <input id="local-dir" placeholder="本地歌曲目录，如 D:\Music">
+            <button id="import-local" type="button">加入本地目录</button>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>系统信息</h2>
+          <dl id="system"></dl>
+        </section>
+      </aside>
+
+      <section class="list">
+        <div class="list-head">
+          <h2>播放队列</h2>
+          <span id="queue-count">0</span>
+        </div>
+        <div id="queue"></div>
+      </section>
+
+      <section class="list idle">
+        <div class="list-head">
+          <h2>空闲列表</h2>
+          <span id="idle-count">0</span>
+        </div>
+        <div id="idle"></div>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

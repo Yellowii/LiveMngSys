@@ -1,0 +1,7 @@
+<svg viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="15.000000" height="15.000000" fill="none" customFrame="#000000">
+	<rect id="coins" width="15.000000" height="15.000000" x="0.000000" y="0.000000" />
+	<path id="矢量 53" d="M8.58993 11.085C8.37513 11.7952 7.95448 12.4258 7.3812 12.8968C6.80792 13.3679 6.10778 13.6583 5.36939 13.7312C4.63101 13.8042 3.88756 13.6565 3.23315 13.3069C2.57873 12.9572 2.04277 12.4212 1.69307 11.7668C1.34338 11.1124 1.19569 10.3689 1.26868 9.63054C1.34167 8.89215 1.63207 8.19201 2.10312 7.61873C2.57418 7.04545 3.20471 6.6248 3.91493 6.41" fill-rule="nonzero" stroke="rgb(139,146,168)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.250000" />
+	<path id="矢量 54" d="M9.375 3.75L10 3.75L10 6.25" fill-rule="nonzero" stroke="rgb(139,146,168)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.250000" />
+	<path id="矢量 55" d="M3.83374 9.23L4.37499 8.9175L5.62499 11.0825" fill-rule="nonzero" stroke="rgb(139,146,168)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.250000" />
+	<circle id="椭圆 12" cx="10" cy="5" r="3.75" stroke="rgb(139,146,168)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.250000" />
+</svg>

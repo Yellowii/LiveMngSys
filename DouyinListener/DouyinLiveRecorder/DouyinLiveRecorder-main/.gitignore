@@ -1,0 +1,9 @@
+/.idea
+/venv
+*/__pycache__
+/logs
+/download
+/dylr/test
+/dylr/old/
+forum.MD
+rooms - bak.json
