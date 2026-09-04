@@ -470,3 +470,16 @@ Every development change must be recorded in Docs/memory before handoff. Record 
 - 重构采用小步提交、每模块独立验证和可回滚迁移，不改变现有 UI 布局或已确认业务规则，除非后续任务明确要求。
 
 待确认/未验证：GitHub 账户登录状态、目标仓库地址/可见性、是否需要保留 Archive/Docs 截图、首次基线的测试命令与运行依赖。
+
+## 2026-09-05 GitHub CLI 与远端配置进展
+
+- 已通过 WinGet 安装 GitHub CLI 2.100.0。
+- 已将 `https://github.com/Yellowii/LiveMngSys.git` 配置为本地 `origin`。
+- 当前 `gh auth status` 显示尚未登录 GitHub；代码尚未提交或推送。
+- 下一步：完成 `gh auth login` 后，再进行最终敏感文件复核、baseline 提交和 `main` 分支推送。
+
+## 2026-09-05 GitHub baseline 推送结果
+
+- 已使用项目级身份 `Yellowii <yellow1468119954@gmail.com>` 创建 baseline 提交 `4134465`（`chore: establish pre-refactor baseline`）。
+- 向 `origin/main` 推送两次均因当前网络到 `github.com:443` 连接重置/失败而未完成；需网络恢复后重试。
+- 本地提交可回滚，工作树状态需在网络恢复后再次确认。

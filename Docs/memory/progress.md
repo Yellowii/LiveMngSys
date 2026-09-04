@@ -280,3 +280,7 @@
 - 首次候选清单约 3,024 个文件、约 207 MB（排除规则生效后）；仍需在提交前检查大文件、凭据命中和第三方/生成目录边界。
 - `gh`（GitHub CLI）未安装；创建 GitHub 远端需要用户提供仓库 URL，或安装/配置 GitHub CLI 后再继续。
 - 待后续：建立无敏感数据的 baseline commit，补充公开配置示例和部署说明，再按 DouyinListener、WebServer、MusicBot、GUIDemo/ReStyle 等模块制定渐进式重构任务。
+
+- GitHub CLI 2.100.0 已安装，origin 已配置为 Yellowii/LiveMngSys；待完成 gh 登录后再提交和推送。
+
+- baseline 提交 4134465 已创建；推送因 github.com:443 网络连接失败，尚未确认远端接收。
