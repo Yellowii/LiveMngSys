@@ -15,5 +15,6 @@ LiveMngSys 的无界面抖音直播监听服务。监听、protobuf 解析和浏
 - `POST /api/livemngsys/live/users/profile`：使用直播消息中的 `secUid` 采集主页资料，并合并当前直播间勋章、粉丝团和会员信息。
 - `GET /api/livemngsys/live/protocol/audit`：统计解析器覆盖、已观察方法、未知方法、解析错误及原始帧样本位置。
 - `/api/livemngsys/live/spark/*`：私信登录、最近会话读取和顺序批量发送。它使用独立的 `Doubao/chat_profile`，不会占用直播监听的浏览器目录。
+- `/api/livemngsys/live/speech/*`：可选的 sherpa-onnx ASR/TTS 与文本翻译接口。安装、模型和配置说明见 `Docs/speech-services.md`。
 
 批量私信默认由页面开启“仅预演”，实际发送必须填写接收人和内容并再次勾选确认。链接卡片由抖音网页端生成，平台页面结构变化时可能退化为普通文本。

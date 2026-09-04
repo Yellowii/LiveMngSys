@@ -25,6 +25,7 @@ MusicBot's `7001` port and DouyinListener's `7002` port are internal loopback de
 - Add LiveMngSys APIs under `/api/livemngsys/*`.
 - Add independent UI pages under `GUIDemo/` and link them from `GUIDemo/index.html`.
 - Keep service-wide host and port changes in `config/service.json`; do not hard-code LAN addresses in pages.
+- Optional ASR, TTS, and translation APIs are documented in `Docs/speech-services.md`.
 
 ## Dynamic content order
 

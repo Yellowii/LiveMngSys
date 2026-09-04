@@ -496,3 +496,10 @@ Every development change must be recorded in Docs/memory before handoff. Record 
 - 重新按平台基础层、直播采集层、数据运营层、互动业务层、展示工具层和外部扩展层分类。
 - 增加总体原则、P0-P3 优先级、验收顺序、当前目录映射及渐进式重构约束。
 - 明确点歌、上车、批量续火花、礼物资源、字幕/翻译、复盘等能力的范围和未完成项，避免把规划误写成已实现功能。
+
+## 2026-09-05 sherpa-onnx speech services
+
+Task: Add optional ASR and TTS backed by sherpa-onnx, plus replaceable text translation, then publish to GitHub.
+Status: Implementation complete; validation and publish in progress.
+Validation: 138 Listener tests pass. The optional sherpa-onnx package and real model files are not installed in this checkout, so real inference remains a deployment check.
+Files: DouyinListener/speech_services.py, service.py, test_speech_services.py, requirements-speech.txt, Docs/speech-services.md.

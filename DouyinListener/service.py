@@ -32,6 +32,7 @@ from profile_client import ProfileClient
 from protocol_audit import build_protocol_audit
 from room_status import RoomStatusProbe
 from spark_service import SparkManager
+from speech_services import DEFAULT_SPEECH_CONFIG, SpeechServiceError, SpeechServices, normalize_speech_config
 
 
 ROOT = Path(__file__).resolve().parent
@@ -66,6 +67,7 @@ DEFAULT_CONFIG = {
         "fallbackTimeoutSeconds": 300,
         "showIdleOnTimeout": False,
     },
+    "speech": DEFAULT_SPEECH_CONFIG,
     "giftAssets": {
         "enabled": True,
         "refreshHours": 24,
@@ -88,13 +90,14 @@ def load_config() -> dict:
         try:
             saved = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
             if isinstance(saved, dict):
-                config.update({key: value for key, value in saved.items() if key not in {"display", "liveCaptions", "giftAssets"}})
+                config.update({key: value for key, value in saved.items() if key not in {"display", "liveCaptions", "giftAssets", "speech"}})
                 if isinstance(saved.get("display"), dict):
                     config["display"].update(saved["display"])
                 if isinstance(saved.get("liveCaptions"), dict):
                     config["liveCaptions"].update(saved["liveCaptions"])
                 if isinstance(saved.get("giftAssets"), dict):
                     config["giftAssets"].update(saved["giftAssets"])
+                config["speech"] = normalize_speech_config(saved.get("speech"))
         except (OSError, json.JSONDecodeError):
             logging.exception("Failed to read listener config")
     return config
@@ -334,6 +337,7 @@ class ListenerManager:
         self.gift_assets = GiftAssetCatalog(gift_asset_storage_root(self.config["giftAssets"].get("storagePath")), lambda: self.config, lambda: self.store.room)
         self.spark = SparkManager()
         self.captions = LiveCaptionCapture(ROOT / "data" / "live_captions", self._schedule_caption_broadcast)
+        self.speech = SpeechServices(ROOT, self.config.get("speech"))
         self.store.configure_room(self.config)
         self.client: DouyinWssClient | DouyinBrowserClient | None = None
         self.task: asyncio.Task | None = None
@@ -361,6 +365,7 @@ class ListenerManager:
         state["config"] = self.config
         state["login"] = self.login_state
         state["captions"] = self.captions.snapshot()
+        state["speech"] = self.speech.status()
         state["giftAssets"] = {**self.gift_assets.public_state(), "storagePath": self.config["giftAssets"].get("storagePath", "data/gift_assets")}
         return state
 
@@ -774,6 +779,7 @@ class ListenerManager:
             "fallbackTimeoutSeconds": max(5, min(3600, fallback_timeout)),
             "showIdleOnTimeout": bool(caption_config.get("showIdleOnTimeout", False)),
         }
+        updated["speech"] = normalize_speech_config(updated.get("speech"))
         asset_config = updated.get("giftAssets") if isinstance(updated.get("giftAssets"), dict) else {}
         try:
             asset_refresh_hours = int(asset_config.get("refreshHours", 24) or 24)
@@ -815,6 +821,8 @@ class ListenerManager:
         save_config(updated)
         await self.reconfigure_gift_assets(updated["giftAssets"]["storagePath"])
         await self.captions.configure(updated["liveCaptions"])
+        if hasattr(self, "speech"):
+            self.speech.configure(updated["speech"])
         if not updated["monitorEnabled"]:
             await self._disable_room_monitor()
         else:
@@ -831,7 +839,7 @@ def json_response(data: Any, status: int = 200) -> web.Response:
 
 
 async def create_app() -> web.Application:
-    app = web.Application(client_max_size=2 * 1024 * 1024)
+    app = web.Application(client_max_size=25 * 1024 * 1024)
     manager = ListenerManager()
     app["manager"] = manager
 
@@ -843,6 +851,60 @@ async def create_app() -> web.Application:
 
     async def captions_state(_: web.Request) -> web.Response:
         return json_response(manager.captions.snapshot())
+
+    async def speech_status(_: web.Request) -> web.Response:
+        return json_response({"ok": True, "state": manager.speech.status()})
+
+    async def speech_asr(request: web.Request) -> web.Response:
+        try:
+            if request.content_type not in {"audio/wav", "audio/x-wav", "application/octet-stream"}:
+                raise SpeechServiceError("unsupported_content_type", "Send a PCM WAV request body", 415)
+            wav_data = await request.read()
+            result = await asyncio.to_thread(manager.speech.recognize_wav, wav_data)
+            return json_response({"ok": True, **result})
+        except SpeechServiceError as error:
+            return json_response({"ok": False, "code": error.code, "message": str(error)}, error.status)
+        except Exception as error:
+            logging.exception("Speech recognition failed")
+            return json_response({"ok": False, "code": "asr_failed", "message": str(error)}, 500)
+
+    async def speech_tts(request: web.Request) -> web.Response:
+        try:
+            body = await request.json()
+            if not isinstance(body, dict):
+                raise SpeechServiceError("invalid_request", "Request must be a JSON object")
+            wav_data, metadata = await asyncio.to_thread(
+                manager.speech.synthesize, body.get("text"), body.get("speakerId"), body.get("speed")
+            )
+            return web.Response(body=wav_data, content_type="audio/wav", headers={
+                "X-Sample-Rate": str(metadata["sampleRate"]),
+                "X-Speaker-Id": str(metadata["speakerId"]),
+                "X-Speech-Speed": str(metadata["speed"]),
+            })
+        except (json.JSONDecodeError, TypeError):
+            return json_response({"ok": False, "code": "invalid_request", "message": "Request must be valid JSON"}, 400)
+        except SpeechServiceError as error:
+            return json_response({"ok": False, "code": error.code, "message": str(error)}, error.status)
+        except Exception as error:
+            logging.exception("Speech synthesis failed")
+            return json_response({"ok": False, "code": "tts_failed", "message": str(error)}, 500)
+
+    async def speech_translate(request: web.Request) -> web.Response:
+        try:
+            body = await request.json()
+            if not isinstance(body, dict):
+                raise SpeechServiceError("invalid_request", "Request must be a JSON object")
+            result = await asyncio.to_thread(
+                manager.speech.translate, body.get("text"), body.get("sourceLanguage", ""), body.get("targetLanguage", "")
+            )
+            return json_response({"ok": True, **result})
+        except (json.JSONDecodeError, TypeError):
+            return json_response({"ok": False, "code": "invalid_request", "message": "Request must be valid JSON"}, 400)
+        except SpeechServiceError as error:
+            return json_response({"ok": False, "code": error.code, "message": str(error)}, error.status)
+        except Exception as error:
+            logging.exception("Translation failed")
+            return json_response({"ok": False, "code": "translation_failed", "message": str(error)}, 500)
 
     async def get_config(_: web.Request) -> web.Response:
         return json_response(manager.config)
@@ -1087,6 +1149,10 @@ async def create_app() -> web.Application:
     app.router.add_get("/health", health)
     app.router.add_get("/api/livemngsys/live/state", state)
     app.router.add_get("/api/livemngsys/live/captions", captions_state)
+    app.router.add_get("/api/livemngsys/live/speech/status", speech_status)
+    app.router.add_post("/api/livemngsys/live/speech/asr", speech_asr)
+    app.router.add_post("/api/livemngsys/live/speech/tts", speech_tts)
+    app.router.add_post("/api/livemngsys/live/speech/translate", speech_translate)
     app.router.add_get("/api/livemngsys/live/config", get_config)
     app.router.add_put("/api/livemngsys/live/config", put_config)
     app.router.add_post("/api/livemngsys/live/start", start_listener)

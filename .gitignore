@@ -52,6 +52,9 @@ venv/
 
 # LiveMngSys runtime data and authenticated browser profiles
 DouyinListener/data/
+DouyinListener/models/
+DouyinListener/speech_models/
+**/speech_models/
 DouyinListener/Doubao/browser_profile/
 DouyinListener/Doubao/chat_profile/
 DouyinListener/DouyinListener/Doubao/browser_profile/

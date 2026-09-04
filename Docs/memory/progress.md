@@ -1,5 +1,11 @@
 # LiveMngSys 进度记录
 
+## 2026-09-05 sherpa-onnx speech services
+
+- Added optional `DouyinListener/speech_services.py` with lazy sherpa-onnx SenseVoice/Whisper ASR, VITS TTS, and LibreTranslate/OpenAI-compatible text translation.
+- Added speech configuration/state and HTTP endpoints for status, PCM WAV ASR, WAV TTS, and translation. Model directories and API keys remain outside Git and all features default to disabled.
+- Validation: sherpa-onnx 1.13.7 Python API objects constructed successfully; `python -m unittest discover` passed 138 tests. Real model inference remains pending because no model files are installed.
+
 ## 2026-07-31 Live captions integration
 
 - Added independent capture service, API state, local persistence option, and focused tests.

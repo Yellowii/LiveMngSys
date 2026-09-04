@@ -1,0 +1,3 @@
+# Optional local speech stack. Core Listener startup does not require these packages.
+-r requirements.txt
+sherpa-onnx>=1.13.7,<2
