@@ -272,6 +272,14 @@
 - Added `musicbot-state-v1` synchronization metadata to every MusicBot state snapshot: monotonic revision, server epoch time, and process boot ID.
 - MusicBot public player, full UI, and GUIDemo live lyric page now estimate playback from server time and ignore stale state arriving out of order across HTTP/WebSocket.
 - MusicBot 7001 restarted; `/api/state` returned the new protocol with revision 2. Node syntax checks passed for all changed JavaScript files.
+
+## 2026-09-05 Multi-room monitor and anonymous identity (test refactor)
+
+- Added `DouyinListener/room_monitor.py` with an independent `RoomMonitorRegistry` that probes multiple rooms concurrently and keeps each room's live state and session ID separate from barrage EventStore data.
+- Fixed stale anonymous payload handling: when a message contains an anonymous `payload.user` but a resolved user in `displayText.piecesV2`, the resolved identity is selected.
+- Normalized users now expose `isAnonymous`; anonymous labels (`匿名`, `匿名.`, `匿名用户`, `匿名观众`) map to `true`, while resolved names map to `false`. This is intended for a frontend badge such as `匿`.
+- Validation: `python -m unittest test_event_store.py test_room_status.py test_room_monitor.py test_anonymous_identity.py` passed 73 tests.
+- This work is in the separate `LiveMngSys-refactor-test` checkout; the original local workspace was not modified. The registry is not yet wired into the single-room HTTP configuration.
 ## 2026-09-05 GitHub 上传与模块化重构准备
 
 - 已确认 `D:\Proj\LiveMngSys` 原先不是 Git 仓库，也未配置 GitHub remote。

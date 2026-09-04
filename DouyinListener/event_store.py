@@ -519,9 +519,12 @@ def normalize_user(user: Any) -> dict:
     anchor_relation = {1: "粉丝", 2: "互关", 3: "互关"}.get(anchor_follow_status, "")
 
     membership_opened = any(badge.get("type") in {"member", "annual_member"} for badge in badges)
+    nickname = str(user.get("nickname") or user.get("nickName") or "匿名观众")
+    is_anonymous = nickname.strip() in {"匿名", "匿名.", "匿名用户", "匿名观众"}
     return {
         "id": str(uid),
-        "nickname": str(user.get("nickname") or user.get("nickName") or "匿名观众"),
+        "nickname": nickname,
+        "isAnonymous": is_anonymous,
         "avatar": avatar,
         "gender": gender,
         "signature": str(user.get("signature") or user.get("signatureText") or user.get("description") or ""),
@@ -632,7 +635,18 @@ def _membership_purchase_signal(method: str, payload: dict) -> tuple[bool, str, 
 
 def _event_raw_user(payload: dict) -> dict:
     common = payload.get("common") if isinstance(payload.get("common"), dict) else {}
-    return _first_dict(payload.get("user"), common.get("user"), _display_text_user(payload))
+    candidates = [payload.get("user"), common.get("user"), _display_text_user(payload)]
+    fallback = {}
+    for candidate in candidates:
+        if not isinstance(candidate, dict):
+            continue
+        if not fallback:
+            fallback = candidate
+        nickname = str(candidate.get("nickname") or candidate.get("nickName") or "").strip()
+        identity = str(candidate.get("id") or candidate.get("secUid") or candidate.get("displayId") or "").strip()
+        if nickname and nickname not in {"匿名", "匿名.", "匿名用户", "匿名观众"} and identity:
+            return candidate
+    return fallback
 
 
 def _event_user(payload: dict) -> dict:
