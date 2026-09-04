@@ -483,3 +483,9 @@ Every development change must be recorded in Docs/memory before handoff. Record 
 - 已使用项目级身份 `Yellowii <yellow1468119954@gmail.com>` 创建 baseline 提交 `4134465`（`chore: establish pre-refactor baseline`）。
 - 向 `origin/main` 推送两次均因当前网络到 `github.com:443` 连接重置/失败而未完成；需网络恢复后重试。
 - 本地提交可回滚，工作树状态需在网络恢复后再次确认。
+
+## 2026-09-05 GitHub 上传完成确认
+
+- 已确认 `Yellowii/LiveMngSys` 公开仓库可访问，默认分支为 `main`。
+- 远端 `main` 已接收提交 `513c988`，本地与远端同步。
+- GitHub 上传阶段完成；后续任务转入模块盘点、架构边界设计和分阶段重构。

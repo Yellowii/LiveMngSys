@@ -284,3 +284,5 @@
 - GitHub CLI 2.100.0 已安装，origin 已配置为 Yellowii/LiveMngSys；待完成 gh 登录后再提交和推送。
 
 - baseline 提交 4134465 已创建；推送因 github.com:443 网络连接失败，尚未确认远端接收。
+
+- 已确认 GitHub 公开仓库 Yellowii/LiveMngSys 的 main 已接收提交 513c988；上传阶段完成，下一步进入模块化重构。
