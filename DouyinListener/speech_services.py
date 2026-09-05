@@ -244,7 +244,11 @@ class SpeechServices:
                         "modelType": "vits",
                     })
             for model in sorted(root.glob("*.gguf")):
-                translation_models.append({"id": model.name, "name": model.name, "path": str(model.relative_to(self.root)).replace("\\", "/")})
+                try:
+                    model_path = str(model.relative_to(self.root)).replace("\\", "/")
+                except ValueError:
+                    model_path = str(model)
+                translation_models.append({"id": model.name, "name": model.name, "path": model_path})
         speaker_count = 1
         if self._tts is not None:
             try:

@@ -33,6 +33,7 @@ from protocol_audit import build_protocol_audit
 from room_status import RoomStatusProbe
 from spark_service import SparkManager
 from speech_services import DEFAULT_SPEECH_CONFIG, SpeechServiceError, SpeechServices, normalize_speech_config
+from speech_model_manager import SpeechModelManager
 from subtitle_pipeline import SubtitlePipeline
 
 
@@ -339,6 +340,7 @@ class ListenerManager:
         self.spark = SparkManager()
         self.captions = LiveCaptionCapture(ROOT / "data" / "live_captions", self._schedule_caption_broadcast)
         self.speech = SpeechServices(ROOT, self.config.get("speech"))
+        self.speech_models = SpeechModelManager(lambda: self.config, ROOT)
         self.subtitle_pipeline = SubtitlePipeline(lambda: self.config, self.speech, self._schedule_caption_broadcast)
         self.store.configure_room(self.config)
         self.client: DouyinWssClient | DouyinBrowserClient | None = None
@@ -860,9 +862,28 @@ async def create_app() -> web.Application:
 
     async def speech_options(_: web.Request) -> web.Response:
         try:
-            return json_response({"ok": True, "options": await asyncio.to_thread(manager.speech.options)})
+            options = await asyncio.to_thread(manager.speech.options)
+            options["catalog"] = await asyncio.to_thread(manager.speech_models.catalog)
+            options["downloads"] = manager.speech_models.downloads()
+            return json_response({"ok": True, "options": options})
         except Exception as error:
             return json_response({"ok": False, "message": str(error)}, 503)
+
+    async def speech_model_downloads(_: web.Request) -> web.Response:
+        return json_response({"ok": True, "downloads": manager.speech_models.downloads()})
+
+    async def speech_model_download(request: web.Request) -> web.Response:
+        try:
+            body = await request.json()
+            return json_response({"ok": True, "download": manager.speech_models.start(body.get("modelId"))})
+        except (ValueError, TypeError, json.JSONDecodeError) as error:
+            return json_response({"ok": False, "message": str(error)}, 400)
+
+    async def speech_model_cancel(request: web.Request) -> web.Response:
+        try:
+            return json_response({"ok": True, "download": manager.speech_models.cancel(request.match_info["model_id"])})
+        except (ValueError, TypeError) as error:
+            return json_response({"ok": False, "message": str(error)}, 400)
 
     async def speech_devices(_: web.Request) -> web.Response:
         try:
@@ -1179,6 +1200,9 @@ async def create_app() -> web.Application:
     app.router.add_get("/api/livemngsys/live/captions", captions_state)
     app.router.add_get("/api/livemngsys/live/speech/status", speech_status)
     app.router.add_get("/api/livemngsys/live/speech/options", speech_options)
+    app.router.add_get("/api/livemngsys/live/speech/models/downloads", speech_model_downloads)
+    app.router.add_post("/api/livemngsys/live/speech/models/download", speech_model_download)
+    app.router.add_post("/api/livemngsys/live/speech/models/download/{model_id}/cancel", speech_model_cancel)
     app.router.add_get("/api/livemngsys/live/speech/devices", speech_devices)
     app.router.add_post("/api/livemngsys/live/speech/capture/start", speech_capture_start)
     app.router.add_post("/api/livemngsys/live/speech/capture/stop", speech_capture_stop)
@@ -1238,6 +1262,7 @@ async def create_app() -> web.Application:
             await asyncio.gather(manager.gift_asset_sync_task, return_exceptions=True)
         await manager.captions.stop()
         await manager.subtitle_pipeline.stop()
+        await manager.speech_models.close()
         await manager.cancel_login()
         if manager.login_account_task and not manager.login_account_task.done():
             manager.login_account_task.cancel()

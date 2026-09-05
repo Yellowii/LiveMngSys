@@ -36,6 +36,8 @@ cd DouyinListener
 
 模型和 llama.cpp 二进制位于 Git 忽略目录，不会进入仓库。根目录 `Start-LiveMngSys.ps1` 会先启动 7003，再启动可选 7004，最后启动 Listener；翻译启动失败只产生警告。
 
+也可以直接在 `运行状态 > 配置 > 语音实验室` 中按 ASR、翻译、TTS 三张卡片选择模型和参数。模型目录会从 ModelScope 的 sherpa-onnx 镜像、HY-MT ModelScope 镜像或 sherpa-onnx 官方 Release 拉取；下载在 Listener 后台执行，页面显示排队、下载进度、解压、完成、失败和取消状态。TTS 的 MeloTTS 归档当前使用官方 Release 备用源，其他卡片优先使用 ModelScope 镜像。
+
 ## 配置
 
 进程启动项位于 `config/service.json`：
@@ -61,6 +63,9 @@ cd DouyinListener
 
 - `GET /api/livemngsys/live/speech/devices`：系统音频输入设备。
 - `GET /api/livemngsys/live/speech/options`：从本机模型目录发现 ASR/TTS/GGUF 模型、语言和 TTS 音色数量。
+- `GET /api/livemngsys/live/speech/models/downloads`：返回后台模型下载任务及进度。
+- `POST /api/livemngsys/live/speech/models/download`：提交 `{"modelId":"asr-streaming-zipformer-zh-en"}` 开始下载；模型目录由 `speech.modelRoot` 决定。
+- `POST /api/livemngsys/live/speech/models/download/{model_id}/cancel`：取消排队、下载或解压中的任务。
 - `POST /api/livemngsys/live/speech/capture/start`：`{"deviceId": 1}`，启动持续采集。
 - `POST /api/livemngsys/live/speech/capture/stop`：停止采集。
 - `GET /api/livemngsys/live/captions`：Windows 字幕源状态。

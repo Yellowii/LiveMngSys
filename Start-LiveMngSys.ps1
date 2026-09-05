@@ -165,7 +165,14 @@ if ($speechAsrEnabled) {
             $listenerSpeechConfig = Get-Content -LiteralPath $listenerSpeechConfigPath -Raw -Encoding UTF8 | ConvertFrom-Json
             $streamingModel = [string]$listenerSpeechConfig.speech.asr.streamingModel
             if ($streamingModel) {
-                $streamingRoot = Join-Path $root 'DouyinListener\data\speech_models' $streamingModel
+                $configuredModelRoot = [string]$listenerSpeechConfig.speech.modelRoot
+                if (-not $configuredModelRoot) { $configuredModelRoot = 'data\speech_models' }
+                if ([IO.Path]::IsPathRooted($configuredModelRoot)) {
+                    $speechModelRoot = $configuredModelRoot
+                } else {
+                    $speechModelRoot = Join-Path $root 'DouyinListener' $configuredModelRoot
+                }
+                $streamingRoot = Join-Path $speechModelRoot $streamingModel
                 if (Test-Path -LiteralPath $streamingRoot) {
                     $encoder = Get-ChildItem -LiteralPath $streamingRoot -Filter 'encoder-*.onnx' -File | Sort-Object Name | Select-Object -First 1
                     $decoder = Get-ChildItem -LiteralPath $streamingRoot -Filter 'decoder-*.onnx' -File | Sort-Object Name | Select-Object -First 1
