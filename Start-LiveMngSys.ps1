@@ -170,9 +170,9 @@ if ($speechAsrEnabled) {
                 if ([IO.Path]::IsPathRooted($configuredModelRoot)) {
                     $speechModelRoot = $configuredModelRoot
                 } else {
-                    $speechModelRoot = Join-Path $root 'DouyinListener' $configuredModelRoot
+                    $speechModelRoot = Join-Path -Path (Join-Path -Path $root -ChildPath 'DouyinListener') -ChildPath $configuredModelRoot
                 }
-                $streamingRoot = Join-Path $speechModelRoot $streamingModel
+                $streamingRoot = Join-Path -Path $speechModelRoot -ChildPath $streamingModel
                 if (Test-Path -LiteralPath $streamingRoot) {
                     $encoder = Get-ChildItem -LiteralPath $streamingRoot -Filter 'encoder-*.onnx' -File | Sort-Object Name | Select-Object -First 1
                     $decoder = Get-ChildItem -LiteralPath $streamingRoot -Filter 'decoder-*.onnx' -File | Sort-Object Name | Select-Object -First 1

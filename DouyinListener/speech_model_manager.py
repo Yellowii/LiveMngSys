@@ -23,34 +23,93 @@ MODEL_CATALOG = [
         "targetDir": "sherpa-onnx-streaming-zipformer-bilingual-zh-en-2023-02-20",
         "archiveName": "streaming-zipformer-bilingual.tar.bz2",
         "sizeHint": "约 488 MB 下载",
+        "selection": {"modelType": "streaming_transducer"},
         "urls": [
             "https://modelscope.cn/models/ZhaoChaoqun/sherpa-onnx-asr-models/resolve/master/sherpa-onnx-streaming-zipformer-bilingual-zh-en-2023-02-20.tar.bz2",
             "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-streaming-zipformer-bilingual-zh-en-2023-02-20.tar.bz2",
         ],
     },
     {
+        "id": "asr-streaming-paraformer-zh-en",
+        "type": "asr_streaming",
+        "name": "Paraformer 流式中英 ASR",
+        "source": "ModelScope 镜像",
+        "targetDir": "sherpa-onnx-streaming-paraformer-bilingual-zh-en",
+        "archiveName": "streaming-paraformer-bilingual-zh-en.tar.bz2",
+        "sizeHint": "约 216 MB 下载",
+        "selection": {"modelType": "streaming_transducer"},
+        "urls": [
+            "https://modelscope.cn/models/ZhaoChaoqun/sherpa-onnx-asr-models/resolve/master/sherpa-onnx-streaming-paraformer-bilingual-zh-en.tar.bz2",
+            "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-streaming-paraformer-bilingual-zh-en.tar.bz2",
+        ],
+    },
+    {
+        "id": "asr-paraformer-zh-small",
+        "type": "asr_offline",
+        "name": "Paraformer 中文轻量版",
+        "source": "ModelScope 镜像",
+        "targetDir": "sherpa-onnx-paraformer-zh-small-2024-03-09",
+        "archiveName": "paraformer-zh-small.tar.bz2",
+        "sizeHint": "约 74 MB 下载",
+        "selection": {"modelType": "paraformer"},
+        "urls": [
+            "https://modelscope.cn/models/ZhaoChaoqun/sherpa-onnx-asr-models/resolve/master/sherpa-onnx-paraformer-zh-small-2024-03-09.tar.bz2",
+            "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-paraformer-zh-small-2024-03-09.tar.bz2",
+        ],
+    },
+    {
         "id": "asr-sensevoice-int8",
         "type": "asr_offline",
-        "name": "SenseVoice/FunASR 中文多语 INT8",
+        "name": "SenseVoice/FunASR 中文多语 INT8（2025）",
         "source": "ModelScope 镜像",
         "targetDir": "sherpa-onnx-sense-voice-funasr-nano-int8-2025-12-17",
         "archiveName": "sense-voice-int8.tar.bz2",
         "sizeHint": "约 179 MB 下载",
+        "selection": {
+            "modelType": "sense_voice",
+            "modelFile": "model.int8.onnx",
+            "tokensFile": "tokens.txt",
+        },
         "urls": [
             "https://modelscope.cn/models/ZhaoChaoqun/sherpa-onnx-asr-models/resolve/master/sherpa-onnx-sense-voice-funasr-nano-int8-2025-12-17.tar.bz2",
-            "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-int8-2024-07-17.tar.bz2",
+            "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-sense-voice-funasr-nano-int8-2025-12-17.tar.bz2",
         ],
     },
     {
         "id": "tts-melo-zh-en",
         "type": "tts",
-        "name": "MeloTTS 中文/英文 VITS",
+        "name": "MeloTTS 中文/英文 VITS（1 音色）",
         "source": "GitHub Releases",
         "targetDir": "vits-melo-tts-zh_en",
         "archiveName": "vits-melo-tts-zh_en.tar.bz2",
         "sizeHint": "约 200 MB",
+        "selection": {
+            "modelType": "vits",
+            "modelFile": "model.onnx",
+            "tokensFile": "tokens.txt",
+            "lexiconFile": "lexicon.txt",
+        },
         "urls": [
             "https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/vits-melo-tts-zh_en.tar.bz2",
+        ],
+    },
+    {
+        "id": "tts-icefall-zh-aishell3",
+        "type": "tts",
+        "name": "AISHELL3 中文 VITS（174 音色）",
+        "source": "GitHub Releases",
+        "targetDir": "vits-icefall-zh-aishell3",
+        "archiveName": "vits-icefall-zh-aishell3.tar.bz2",
+        "sizeHint": "约 1.1 GB 下载",
+        "speakerCount": 174,
+        "selection": {
+            "modelType": "vits",
+            "modelFile": "model.onnx",
+            "tokensFile": "tokens.txt",
+            "lexiconFile": "lexicon.txt",
+        },
+        "urls": [
+            "https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/vits-icefall-zh-aishell3.tar.bz2",
         ],
     },
     {
@@ -60,9 +119,23 @@ MODEL_CATALOG = [
         "source": "ModelScope 镜像",
         "targetFile": "HY-MT1.5-1.8B-Q4_K_M.gguf",
         "sizeHint": "约 1.13 GB",
+        "selection": {"modelFile": "HY-MT1.5-1.8B-Q4_K_M.gguf"},
         "urls": [
             "https://modelscope.cn/models/tencent-hunyuan/hy-mt1.5-1.8b-gguf/resolve/master/HY-MT1.5-1.8B-Q4_K_M.gguf",
             "https://huggingface.co/tencent/HY-MT1.5-1.8B-GGUF/resolve/main/HY-MT1.5-1.8B-Q4_K_M.gguf",
+        ],
+    },
+    {
+        "id": "translation-hy-mt-1.8b-q8",
+        "type": "translation",
+        "name": "HY-MT1.5-1.8B Q8_0",
+        "source": "ModelScope 镜像",
+        "targetFile": "HY-MT1.5-1.8B-Q8_0.gguf",
+        "sizeHint": "约 1.78 GB 下载",
+        "selection": {"modelFile": "HY-MT1.5-1.8B-Q8_0.gguf"},
+        "urls": [
+            "https://modelscope.cn/models/tencent-hunyuan/hy-mt1.5-1.8b-gguf/resolve/master/HY-MT1.5-1.8B-Q8_0.gguf",
+            "https://huggingface.co/tencent/HY-MT1.5-1.8B-GGUF/resolve/main/HY-MT1.5-1.8B-Q8_0.gguf",
         ],
     },
 ]
@@ -97,6 +170,7 @@ class SpeechModelManager:
                     current["path"] = str(target)
             else:
                 current["path"] = ""
+            current["selection"] = dict(item.get("selection") or {})
             with self.lock:
                 job = self.jobs.get(item["id"])
                 current["download"] = dict(job) if job else {"state": "ready" if current["installed"] else "not_downloaded"}

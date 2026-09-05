@@ -360,38 +360,38 @@
                   <span>ASR 进程 <b :class="speechCaptionState.state !== 'unavailable' ? 'ready' : 'error'">{{ speechCaptionState.state === 'unavailable' ? '不可用' : '已连接' }}</b></span>
                   <span>TTS <b>{{ speechState.tts && speechState.tts.loaded ? '已加载' : '待加载' }}</b></span>
                 </div>
-                <label class="listener-switch-row"><span>启用语音服务</span><input v-model="listenerConfig.speech.enabled" :disabled="listenerBusy" type="checkbox"><i></i></label>
-                <div class="speech-model-root"><label>模型目录</label><input v-model.trim="listenerConfig.speech.modelRoot" class="theme-input" placeholder="data/speech_models"></div>
-                <div class="speech-module-grid">
+                <label class="listener-switch-row"><span>启用语音服务</span><input v-model="listenerConfig.speech.enabled" :disabled="listenerBusy" type="checkbox" @change="markSpeechConfigDirty"><i></i></label>
+                <div class="speech-model-root"><label>模型目录</label><input v-model.trim="listenerConfig.speech.modelRoot" class="theme-input" placeholder="data/speech_models" @input="markSpeechConfigDirty"></div>
+                <div class="speech-module-grid" @input="markSpeechConfigDirty" @change="markSpeechConfigDirty">
                   <section class="speech-module-card">
-                    <header><strong>ASR 识别</strong><label class="speech-mini-switch"><input v-model="listenerConfig.speech.asr.enabled" type="checkbox"><span>{{ listenerConfig.speech.asr.enabled ? '启用' : '关闭' }}</span></label></header>
-                    <label class="speech-field-label">实时 streaming 模型</label>
-                    <select v-model="listenerConfig.speech.asr.streamingModel" class="theme-input"><option value="">启动脚本默认模型</option><option v-for="model in speechLab.options.streamingAsrModels" :key="model.id" :value="model.id">{{ model.name }}</option></select>
-                    <label class="speech-field-label">离线诊断模型</label>
-                    <select v-model="speechLab.selectedAsrModel" class="theme-input" @change="selectSpeechModel('asr', speechLab.selectedAsrModel)"><option value="">手动配置模型路径</option><option v-for="model in speechLab.options.asrModels" :key="model.id" :value="model.id">{{ model.name }}</option></select>
-                    <select v-model="listenerConfig.speech.asr.language" class="theme-input"><option v-for="language in speechLab.options.languages" :key="`asr-${language.id}`" :value="language.id">识别语言：{{ language.name }}</option></select>
-                    <div class="speech-model-downloads"><div v-for="model in speechModelsByType('asr')" :key="model.id" class="speech-model-row"><span>{{ model.name }}<small>{{ model.source }} · {{ model.sizeHint }}</small></span><button type="button" class="btn-secondary" :disabled="modelDownloadBusy(model)" @click="downloadSpeechModel(model)">{{ modelDownloadLabel(model) }}</button><progress v-if="modelDownload(model)" :value="modelDownload(model).progress" max="100"></progress><small v-if="modelDownload(model) && modelDownload(model).error" class="speech-model-error">{{ modelDownload(model).error }}</small></div></div>
+                    <header><div class="speech-card-title"><span class="speech-card-icon">声</span><div><strong>ASR 识别</strong><small>实时转写与离线诊断</small></div></div><label class="speech-mini-switch"><input v-model="listenerConfig.speech.asr.enabled" type="checkbox"><span>{{ listenerConfig.speech.asr.enabled ? '启用' : '关闭' }}</span></label></header>
+                    <label class="speech-field-label">实时 streaming 模型 <small>启动 7003 时使用</small></label>
+                    <select v-model="listenerConfig.speech.asr.streamingModel" class="theme-input" @change="selectSpeechStreamingModel(listenerConfig.speech.asr.streamingModel)"><option value="">启动脚本默认模型</option><option v-for="model in speechModelChoices('streamingAsr')" :key="model.id" :value="model.id" :disabled="model.installed === false">{{ model.name }}{{ model.installed === false ? '（未下载）' : '' }}</option></select>
+                    <label class="speech-field-label">离线诊断模型 <small>用于 WAV 测试</small></label>
+                    <select v-model="speechLab.selectedAsrModel" class="theme-input" @change="selectSpeechModel('asr', speechLab.selectedAsrModel)"><option value="">手动配置模型路径</option><option v-for="model in speechModelChoices('asr')" :key="model.id" :value="model.id" :disabled="model.installed === false">{{ model.name }}{{ model.installed === false ? '（未下载）' : '' }}</option></select>
+                    <select v-model="listenerConfig.speech.asr.language" class="theme-input" @change="markSpeechConfigDirty"><option v-for="language in speechLab.options.languages" :key="`asr-${language.id}`" :value="language.id">识别语言：{{ language.name }}</option></select>
+                    <div class="speech-model-downloads"><div class="speech-model-download-heading"><span>可下载 ASR 模型</span><em>{{ speechModelsByType('asr').length }} 个</em></div><div v-for="model in speechModelsByType('asr')" :key="model.id" class="speech-model-row"><span>{{ model.name }}<small>{{ model.source }} · {{ model.sizeHint }}</small></span><button type="button" class="btn-secondary" :disabled="modelDownloadBusy(model)" @click="downloadSpeechModel(model)">{{ modelDownloadLabel(model) }}</button><progress v-if="modelDownload(model)" :value="modelDownload(model).progress" max="100"></progress><small v-if="modelDownload(model) && modelDownload(model).error" class="speech-model-error">{{ modelDownload(model).error }}</small></div></div>
                   </section>
                   <section class="speech-module-card">
-                    <header><strong>翻译</strong><label class="speech-mini-switch"><input v-model="listenerConfig.speech.translation.enabled" type="checkbox"><span>{{ listenerConfig.speech.translation.enabled ? '启用' : '关闭' }}</span></label></header>
-                    <select v-model="listenerConfig.speech.translation.provider" class="theme-input"><option value="none">未配置</option><option value="llama_cpp">llama.cpp server</option><option value="libretranslate">LibreTranslate</option><option value="openai_compatible">OpenAI-compatible</option></select>
-                    <div class="speech-inline-fields"><select v-model="listenerConfig.speech.translation.sourceLanguage" class="theme-input"><option v-for="language in speechLab.options.languages" :key="`source-${language.id}`" :value="language.id">源：{{ language.name }}</option></select><select v-model="listenerConfig.speech.translation.targetLanguage" class="theme-input"><option v-for="language in speechLab.options.languages.filter(item => item.id !== 'auto')" :key="`target-${language.id}`" :value="language.id">目标：{{ language.name }}</option></select></div>
-                    <select v-if="listenerConfig.speech.translation.provider === 'llama_cpp'" v-model="speechLab.selectedTranslationModel" class="theme-input" @change="selectSpeechTranslationModel"><option value="">手动配置 GGUF 模型</option><option v-for="model in speechLab.options.translationModels" :key="model.id" :value="model.id">{{ model.name }}</option></select>
+                    <header><div class="speech-card-title"><span class="speech-card-icon">译</span><div><strong>翻译</strong><small>仅处理 final 完整句</small></div></div><label class="speech-mini-switch"><input v-model="listenerConfig.speech.translation.enabled" type="checkbox"><span>{{ listenerConfig.speech.translation.enabled ? '启用' : '关闭' }}</span></label></header>
+                    <label class="speech-field-label">翻译引擎</label><select v-model="listenerConfig.speech.translation.provider" class="theme-input"><option value="none">未配置</option><option value="llama_cpp">llama.cpp server</option><option value="libretranslate">LibreTranslate</option><option value="openai_compatible">OpenAI-compatible</option></select>
+                    <div class="speech-inline-fields"><select v-model="listenerConfig.speech.translation.sourceLanguage" class="theme-input" @change="markSpeechConfigDirty"><option v-for="language in speechLab.options.languages" :key="`source-${language.id}`" :value="language.id">源：{{ language.name }}</option></select><select v-model="listenerConfig.speech.translation.targetLanguage" class="theme-input" @change="markSpeechConfigDirty"><option v-for="language in speechLab.options.languages.filter(item => item.id !== 'auto')" :key="`target-${language.id}`" :value="language.id">目标：{{ language.name }}</option></select></div>
+                    <select v-if="listenerConfig.speech.translation.provider === 'llama_cpp'" v-model="speechLab.selectedTranslationModel" class="theme-input" @change="selectSpeechTranslationModel"><option value="">手动配置 GGUF 模型</option><option v-for="model in speechModelChoices('translation')" :key="model.id" :value="model.id" :disabled="model.installed === false">{{ model.name }}{{ model.installed === false ? '（未下载）' : '' }}</option></select>
                     <input v-model.trim="listenerConfig.speech.translation.endpoint" class="theme-input" placeholder="翻译 API 地址">
                     <input v-if="listenerConfig.speech.translation.provider === 'openai_compatible'" v-model.trim="listenerConfig.speech.translation.model" class="theme-input" placeholder="模型名称">
                     <label class="speech-field-label">规则清洗</label><div class="speech-inline-fields"><input v-model.number="listenerConfig.speech.cleaning.minCharacters" type="number" min="1" max="20" class="theme-input" placeholder="最少字符"><input v-model.trim="listenerConfig.speech.cleaning.fillerWordsText" class="theme-input" placeholder="语气词：嗯、啊、呃"></div>
                     <p v-if="listenerConfig.speech.translation.provider === 'llama_cpp'" class="speech-config-note">切换 GGUF 后保存配置，并重启 7004 翻译进程后生效。</p>
-                    <div class="speech-model-downloads"><div v-for="model in speechModelsByType('translation')" :key="model.id" class="speech-model-row"><span>{{ model.name }}<small>{{ model.source }} · {{ model.sizeHint }}</small></span><button type="button" class="btn-secondary" :disabled="modelDownloadBusy(model)" @click="downloadSpeechModel(model)">{{ modelDownloadLabel(model) }}</button><progress v-if="modelDownload(model)" :value="modelDownload(model).progress" max="100"></progress><small v-if="modelDownload(model) && modelDownload(model).error" class="speech-model-error">{{ modelDownload(model).error }}</small></div></div>
+                    <div class="speech-model-downloads"><div class="speech-model-download-heading"><span>可下载翻译模型</span><em>{{ speechModelsByType('translation').length }} 个</em></div><div v-for="model in speechModelsByType('translation')" :key="model.id" class="speech-model-row"><span>{{ model.name }}<small>{{ model.source }} · {{ model.sizeHint }}</small></span><button type="button" class="btn-secondary" :disabled="modelDownloadBusy(model)" @click="downloadSpeechModel(model)">{{ modelDownloadLabel(model) }}</button><progress v-if="modelDownload(model)" :value="modelDownload(model).progress" max="100"></progress><small v-if="modelDownload(model) && modelDownload(model).error" class="speech-model-error">{{ modelDownload(model).error }}</small></div></div>
                   </section>
                   <section class="speech-module-card">
-                    <header><strong>TTS 播报</strong><label class="speech-mini-switch"><input v-model="listenerConfig.speech.tts.enabled" type="checkbox"><span>{{ listenerConfig.speech.tts.enabled ? '启用' : '关闭' }}</span></label></header>
-                    <select v-model="speechLab.selectedTtsModel" class="theme-input" @change="selectSpeechModel('tts', speechLab.selectedTtsModel)"><option value="">手动配置模型路径</option><option v-for="model in speechLab.options.ttsModels" :key="model.id" :value="model.id">{{ model.name }}</option></select>
+                    <header><div class="speech-card-title"><span class="speech-card-icon">音</span><div><strong>TTS 播报</strong><small>音色、语速和播报测试</small></div></div><label class="speech-mini-switch"><input v-model="listenerConfig.speech.tts.enabled" type="checkbox"><span>{{ listenerConfig.speech.tts.enabled ? '启用' : '关闭' }}</span></label></header>
+                    <label class="speech-field-label">TTS 模型</label><select v-model="speechLab.selectedTtsModel" class="theme-input" @change="selectSpeechModel('tts', speechLab.selectedTtsModel)"><option value="">手动配置模型路径</option><option v-for="model in speechModelChoices('tts')" :key="model.id" :value="model.id" :disabled="model.installed === false">{{ model.name }}{{ model.installed === false ? '（未下载）' : '' }}</option></select>
                     <input v-model.trim="listenerConfig.speech.tts.tokens" class="theme-input" placeholder="TTS tokens.txt"><input v-model.trim="listenerConfig.speech.tts.lexicon" class="theme-input" placeholder="TTS lexicon.txt">
-                    <div class="speech-inline-fields"><select v-model.number="listenerConfig.speech.tts.speakerId" class="theme-input"><option v-for="speaker in speechLab.options.speakerCount" :key="speaker - 1" :value="speaker - 1">音色 {{ speaker - 1 }}</option></select><input v-model.number="listenerConfig.speech.tts.speed" type="number" min="0.25" max="4" step="0.05" class="theme-input" placeholder="语速"></div>
-                    <div class="speech-model-downloads"><div v-for="model in speechModelsByType('tts')" :key="model.id" class="speech-model-row"><span>{{ model.name }}<small>{{ model.source }} · {{ model.sizeHint }}</small></span><button type="button" class="btn-secondary" :disabled="modelDownloadBusy(model)" @click="downloadSpeechModel(model)">{{ modelDownloadLabel(model) }}</button><progress v-if="modelDownload(model)" :value="modelDownload(model).progress" max="100"></progress><small v-if="modelDownload(model) && modelDownload(model).error" class="speech-model-error">{{ modelDownload(model).error }}</small></div></div>
+                    <div class="speech-inline-fields"><select v-model.number="listenerConfig.speech.tts.speakerId" class="theme-input" @change="markSpeechConfigDirty"><option v-for="speaker in ttsSpeakerCount" :key="speaker - 1" :value="speaker - 1">音色 {{ speaker - 1 }}</option></select><input v-model.number="listenerConfig.speech.tts.speed" type="number" min="0.25" max="4" step="0.05" class="theme-input" @input="markSpeechConfigDirty" placeholder="语速"></div>
+                    <div class="speech-model-downloads"><div class="speech-model-download-heading"><span>可下载 TTS 模型</span><em>{{ speechModelsByType('tts').length }} 个</em></div><div v-for="model in speechModelsByType('tts')" :key="model.id" class="speech-model-row"><span>{{ model.name }}<small>{{ model.source }} · {{ model.sizeHint }}</small></span><button type="button" class="btn-secondary" :disabled="modelDownloadBusy(model)" @click="downloadSpeechModel(model)">{{ modelDownloadLabel(model) }}</button><progress v-if="modelDownload(model)" :value="modelDownload(model).progress" max="100"></progress><small v-if="modelDownload(model) && modelDownload(model).error" class="speech-model-error">{{ modelDownload(model).error }}</small></div></div>
                   </section>
                 </div>
-                <button class="btn-primary speech-save" :disabled="listenerBusy" @click="saveSpeechConfig">保存语音配置</button>
+                <div class="speech-save-row"><span :class="{ dirty: speechConfigDirty }">{{ speechConfigDirty ? '有未保存的语音配置修改' : '配置已同步' }}</span><button class="btn-primary speech-save" :disabled="listenerBusy" @click="saveSpeechConfig">保存语音配置</button></div>
 
                 <div class="speech-test-panel">
                   <div class="listener-transport-segmented speech-test-tabs">
@@ -1337,6 +1337,7 @@
         options: { asrModels: [], streamingAsrModels: [], ttsModels: [], translationModels: [], catalog: [], downloads: [], downloadStates: {}, languages: [{ id: 'auto', name: '自动检测' }, { id: 'zh', name: '中文' }, { id: 'en', name: 'English' }, { id: 'ja', name: '日本語' }, { id: 'ko', name: '한국어' }, { id: 'yue', name: '粤语' }], speakerCount: 1 }
       },
       speechDownloadTimer: null,
+      speechConfigDirty: false,
       portsBusy: false,
       systemControlBusy: false,
       terminalVisible: false,
@@ -2479,14 +2480,15 @@
         const liveCaptions = Object.assign({}, this.listenerConfig.liveCaptions, incoming.liveCaptions || {});
         const giftAssets = Object.assign({}, this.listenerConfig.giftAssets, incoming.giftAssets || {});
         const incomingSpeech = incoming.speech || {};
+        const speechDraft = this.speechConfigDirty ? this.listenerConfig.speech : null;
         const speech = Object.assign({}, this.listenerConfig.speech, incomingSpeech);
         speech.asr = Object.assign({}, this.listenerConfig.speech.asr, incomingSpeech.asr || {});
         speech.tts = Object.assign({}, this.listenerConfig.speech.tts, incomingSpeech.tts || {});
         speech.translation = Object.assign({}, this.listenerConfig.speech.translation, incomingSpeech.translation || {});
         speech.cleaning = Object.assign({}, this.listenerConfig.speech.cleaning, incomingSpeech.cleaning || {});
         speech.cleaning.fillerWordsText = (speech.cleaning.fillerWords || []).join('、');
-          this.listenerConfig = Object.assign({}, this.listenerConfig, incoming, { display, liveCaptions, giftAssets, speech });
-          if (this.speechLab && this.speechLab.options) this.syncSpeechSelections();
+          this.listenerConfig = Object.assign({}, this.listenerConfig, incoming, { display, liveCaptions, giftAssets, speech: speechDraft || speech });
+          if (!speechDraft && this.speechLab && this.speechLab.options) this.syncSpeechSelections();
         const nextInterval = Number(this.listenerConfig.audiencePollInterval || 15);
         if (this.listenerPollTimer && previousInterval !== nextInterval) {
           this.setListenerPolling(true);
@@ -2645,6 +2647,7 @@
           .split(/[、,，\s]+/).map(item => item.trim()).filter(Boolean);
         const saved = await this.saveListenerConfig(true, { resetLiveData: false });
         if (saved) {
+          this.speechConfigDirty = false;
           this.speechLab.message = '语音配置已保存';
           this.speechLab.messageType = 'success';
           await this.loadListenerState();
@@ -2653,6 +2656,9 @@
       setSpeechMessage(message, type) {
         this.speechLab.message = message || '';
         this.speechLab.messageType = type || '';
+      },
+      markSpeechConfigDirty() {
+        this.speechConfigDirty = true;
       },
       async speechResponseError(response) {
         let result = {};
@@ -2683,7 +2689,7 @@
           if (!response.ok) return await this.speechResponseError(response);
           const result = await response.json();
           this.speechLab.options = Object.assign(this.speechLab.options, result.options || {});
-          this.syncSpeechSelections();
+          if (!this.speechConfigDirty) this.syncSpeechSelections();
           if (!this.speechDownloadTimer) this.speechDownloadTimer = window.setInterval(this.loadSpeechDownloads, 1000);
         } catch (error) {
           this.setSpeechMessage(error.message || '读取语音模型选项失败', 'error');
@@ -2705,6 +2711,23 @@
       },
       speechModelsByType(type) {
         return (this.speechLab.options.catalog || []).filter(model => type === 'asr' ? model.type.indexOf('asr') === 0 : model.type === type);
+      },
+      speechModelChoices(type) {
+        const catalog = this.speechModelsByType(type);
+        const discovered = type === 'streamingAsr' ? (this.speechLab.options.streamingAsrModels || []) : type === 'asr' ? (this.speechLab.options.asrModels || []) : type === 'tts' ? (this.speechLab.options.ttsModels || []) : (this.speechLab.options.translationModels || []);
+        const allowed = type === 'streamingAsr' ? catalog.filter(model => !model.selection || model.selection.modelType === 'streaming_transducer') : type === 'asr' ? catalog.filter(model => !model.selection || model.selection.modelType !== 'streaming_transducer') : catalog;
+        const known = new Set(allowed.map(model => model.id));
+        const knownDirs = new Set(allowed.map(model => model.targetDir).filter(Boolean));
+        return allowed.concat(discovered.filter(model => {
+          if (type === 'asr' && model.modelType === 'streaming_transducer') return false;
+          if (type === 'streamingAsr' && model.modelType !== 'streaming_transducer') return false;
+          return !known.has(model.id) && !knownDirs.has(model.id);
+        }).map(model => Object.assign({ installed: true, source: '本地目录', sizeHint: '已发现' }, model)));
+      },
+      ttsSpeakerCount() {
+        const selected = (this.speechLab.options.catalog || []).find(model => model.id === this.speechLab.selectedTtsModel || model.targetDir === this.speechLab.selectedTtsModel);
+        const fromCatalog = Number(selected && selected.speakerCount);
+        return Math.max(1, fromCatalog || Number(this.speechLab.options.speakerCount) || 1);
       },
       modelDownload(model) {
         return (this.speechLab.options.downloads || []).find(item => item.modelId === model.id) || model.download;
@@ -2762,10 +2785,19 @@
           const model = options.ttsModels.find(item => item.id === id);
           if (model) Object.assign(this.listenerConfig.speech.tts, { model: model.model, tokens: model.tokens, lexicon: model.lexicon, modelType: model.modelType });
         }
+        this.markSpeechConfigDirty();
+      },
+      selectSpeechStreamingModel(id) {
+        const model = this.speechModelChoices('streamingAsr').find(item => item.id === id);
+        if (model && model.installed !== false) {
+          this.listenerConfig.speech.asr.streamingModel = model.id;
+          this.markSpeechConfigDirty();
+        }
       },
       selectSpeechTranslationModel() {
         const model = this.speechLab.options.translationModels.find(item => item.id === this.speechLab.selectedTranslationModel);
         if (model) this.listenerConfig.speech.translation.model = model.path;
+        this.markSpeechConfigDirty();
       },
       async toggleSpeechCapture() {
         this.speechLab.busy = true;

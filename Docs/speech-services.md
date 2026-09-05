@@ -38,6 +38,8 @@ cd DouyinListener
 
 也可以直接在 `运行状态 > 配置 > 语音实验室` 中按 ASR、翻译、TTS 三张卡片选择模型和参数。模型目录会从 ModelScope 的 sherpa-onnx 镜像、HY-MT ModelScope 镜像或 sherpa-onnx 官方 Release 拉取；下载在 Listener 后台执行，页面显示排队、下载进度、解压、完成、失败和取消状态。TTS 的 MeloTTS 归档当前使用官方 Release 备用源，其他卡片优先使用 ModelScope 镜像。
 
+ASR 目录包含 Zipformer 流式中英、Paraformer 流式中英、Paraformer 中文轻量版和 SenseVoice/FunASR 多语模型；翻译目录包含 HY-MT Q4_K_M、Q8_0 两种量化；TTS 目录包含单音色 MeloTTS 和 174 音色 AISHELL3。未下载模型会在选择框中标记“未下载”，需先点击同卡片的下载按钮，下载完成后再保存配置。
+
 ## 配置
 
 进程启动项位于 `config/service.json`：

@@ -1195,9 +1195,16 @@ body.light-mode .coolors-color-control {
 .speech-module-card { min-width: 0; display: flex; flex-direction: column; gap: 7px; padding: 11px; border: 1px solid var(--theme-border-color); border-radius: 7px; background: rgba(var(--theme-color-active-rgb), .025); }
 .speech-module-card header { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 24px; }
 .speech-module-card header strong { font-size: 12px; }
+.speech-card-title { min-width: 0; display: flex; align-items: center; gap: 8px; }
+.speech-card-title > div { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.speech-card-title small { color: var(--theme-muted-text-color); font-size: 9.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.speech-card-icon { width: 25px; height: 25px; display: grid; place-items: center; flex: 0 0 25px; border-radius: 7px; background: rgba(var(--theme-color-active-rgb), .16); color: var(--theme-color-active); font-size: 12px; font-weight: 750; }
 .speech-module-card > .theme-input, .speech-module-card .theme-input { width: 100%; min-width: 0; height: 32px; padding: 5px 8px; font-size: 11px; }
-.speech-field-label { color: var(--theme-muted-text-color); font-size: 10.5px; }
+.speech-field-label { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; color: var(--theme-muted-text-color); font-size: 10.5px; }
+.speech-field-label small { color: var(--theme-muted-text-color); font-size: 9px; font-weight: 400; opacity: .75; }
 .speech-model-downloads { display: flex; flex-direction: column; gap: 5px; margin-top: 2px; padding-top: 7px; border-top: 1px solid var(--theme-border-color); }
+.speech-model-download-heading { display: flex; align-items: center; justify-content: space-between; color: var(--theme-muted-text-color); font-size: 10px; }
+.speech-model-download-heading em { color: var(--theme-color-active); font-size: 9px; font-style: normal; }
 .speech-model-row { min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 5px 7px; }
 .speech-model-row > span { min-width: 0; overflow-wrap: anywhere; color: var(--theme-text-color); font-size: 10.5px; line-height: 1.35; }
 .speech-model-row > span small { display: block; margin-top: 2px; color: var(--theme-muted-text-color); font-size: 9px; }
@@ -1209,6 +1216,10 @@ body.light-mode .coolors-color-control {
 .speech-translation-config[open] { display: flex; flex-direction: column; gap: 7px; }
 .speech-translation-config .listener-switch-row { min-height: 34px; padding: 5px 8px; font-size: 12px; }
 .speech-save { width: 100%; min-height: 34px; margin-top: 10px; justify-content: center; }
+.speech-save-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+.speech-save-row > span { flex: 1; color: var(--theme-muted-text-color); font-size: 10.5px; }
+.speech-save-row > span.dirty { color: #e7a43e; }
+.speech-save-row .speech-save { width: auto; min-width: 140px; margin-top: 0; }
 .speech-test-panel { margin: 0 0 12px; padding-bottom: 12px; border-bottom: 1px solid var(--theme-border-color); }
 .speech-test-tabs { width: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .speech-test-tabs button { min-height: 30px; }
@@ -1839,6 +1850,8 @@ body.light-mode .coolors-color-control {
 @media (max-width: 560px) {
   .speech-feature-grid { grid-template-columns: 1fr; }
   .speech-module-grid { grid-template-columns: 1fr; }
+  .speech-save-row { align-items: stretch; flex-direction: column; }
+  .speech-save-row .speech-save { width: 100%; }
   .speech-device-row, .speech-live-stage { grid-template-columns: 1fr; }
 }
 @media (max-width: 520px) {

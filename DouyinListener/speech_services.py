@@ -224,15 +224,25 @@ class SpeechServices:
             for directory in sorted(item for item in root.iterdir() if item.is_dir()):
                 files = {item.name for item in directory.iterdir() if item.is_file()}
                 if "tokens.txt" in files and any(name.endswith(".onnx") for name in files):
+                    relative = str(directory.relative_to(root)).replace("\\", "/")
                     if any(name.startswith("encoder-") for name in files) and any(name.startswith("decoder-") for name in files) and any(name.startswith("joiner-") for name in files):
-                        streaming_asr_models.append({"id": str(directory.relative_to(root)).replace("\\", "/"), "name": directory.name})
+                        streaming_asr_models.append({"id": relative, "name": directory.name, "modelType": "streaming_transducer"})
                     if "sense-voice" in directory.name.lower() and ("model.int8.onnx" in files or "model.onnx" in files):
                         asr_models.append({
-                            "id": str(directory.relative_to(root)).replace("\\", "/"),
+                            "id": relative,
                             "name": directory.name,
                             "model": str(directory.relative_to(root)).replace("\\", "/") + ("/model.int8.onnx" if "model.int8.onnx" in files else "/model.onnx"),
                             "tokens": str(directory.relative_to(root)).replace("\\", "/") + "/tokens.txt",
                             "modelType": "sense_voice" if "sense-voice" in directory.name.lower() else "sense_voice",
+                        })
+                    elif "lexicon.txt" not in files and "vits" not in directory.name.lower() and not any(name.startswith(prefix) for prefix in ("encoder-", "decoder-", "joiner-" ) for name in files) and any(name.endswith(".onnx") for name in files) and "tokens.txt" in files:
+                        model_file = next(name for name in sorted(files) if name.endswith(".onnx"))
+                        asr_models.append({
+                            "id": relative,
+                            "name": directory.name,
+                            "model": f"{relative}/{model_file}",
+                            "tokens": f"{relative}/tokens.txt",
+                            "modelType": "paraformer",
                         })
                 if "model.onnx" in files and "tokens.txt" in files and ("lexicon.txt" in files or "vits" in directory.name.lower()):
                     tts_models.append({
@@ -289,6 +299,14 @@ class SpeechServices:
             return sherpa.OfflineRecognizer.from_sense_voice(
                 model=self._path(config["model"], True, "SenseVoice model"),
                 use_itn=config["useItn"],
+                **common,
+            )
+        if model_type == "paraformer":
+            factory = getattr(sherpa.OfflineRecognizer, "from_paraformer", None)
+            if not factory:
+                raise SpeechServiceError("unsupported_asr_model", "当前 sherpa-onnx 版本不支持 Paraformer")
+            return factory(
+                paraformer=self._path(config["model"], True, "Paraformer model"),
                 **common,
             )
         if model_type == "whisper":
